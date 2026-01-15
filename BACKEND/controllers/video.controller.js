@@ -1,18 +1,19 @@
-import { PrismaClient } from "@prisma/client";
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-/**
- * Fetch video metadata
- */
-export const getVideoById = async (req, res) => {
+const getVideoById = async (req, res) => {
   const { id } = req.params;
 
   const video = await prisma.video.findUnique({
     where: { id },
     include: {
       user: {
-        select: { id: true, username: true, avatarUrl: true },
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
       },
       qualities: true,
     },
@@ -25,10 +26,7 @@ export const getVideoById = async (req, res) => {
   res.json(video);
 };
 
-/**
- * Return streaming URL
- */
-export const getStreamUrl = async (req, res) => {
+const getStreamUrl = async (req, res) => {
   const { id } = req.params;
 
   const video = await prisma.video.findUnique({
@@ -46,4 +44,9 @@ export const getStreamUrl = async (req, res) => {
   res.json({
     streamUrl: `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${video.masterPlaylist}`,
   });
+};
+
+module.exports = {
+  getVideoById,
+  getStreamUrl,
 };
