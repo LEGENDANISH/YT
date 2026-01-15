@@ -19,7 +19,7 @@ const createUpload = async (req, res) => {
   try {
     // 1. Check if user is authenticated
     if (!req.user || !req.user.id) {
-      console.error("❌ No user found in request");
+      console.error(" No user found in request");
       return res.status(401).json({ 
         message: "Unauthorized - No user found",
         error: "AUTH_ERROR" 
@@ -29,7 +29,7 @@ const createUpload = async (req, res) => {
     const userId = req.user.id;
     const { title, description, fileSize, mimeType, originalName } = req.body;
 
-    console.log("📥 Upload init request:", {
+    console.log(" Upload init request:", {
       userId,
       title,
       fileSize,
@@ -39,7 +39,7 @@ const createUpload = async (req, res) => {
 
     // 2. Validate required fields
     if (!title || !fileSize || !mimeType) {
-      console.error("❌ Missing required fields");
+      console.error(" Missing required fields");
       return res.status(400).json({ 
         message: "Missing required fields",
         required: ["title", "fileSize", "mimeType"],
@@ -59,7 +59,7 @@ const createUpload = async (req, res) => {
 
     // 4. Check environment variables
     if (!process.env.S3_ENDPOINT || !process.env.S3_RAW_BUCKET) {
-      console.error("❌ Missing S3 environment variables");
+      console.error(" Missing S3 environment variables");
       return res.status(500).json({ 
         message: "Server configuration error - S3 not configured",
         error: "CONFIG_ERROR"
@@ -69,7 +69,7 @@ const createUpload = async (req, res) => {
     const videoId = uuid();
     const s3Key = `raw/${videoId}/${originalName || "video.mp4"}`;
 
-    console.log("🎬 Creating video record:", { videoId, s3Key });
+    console.log(" Creating video record:", { videoId, s3Key });
 
     // 5. Create video record in database
     try {
@@ -87,9 +87,9 @@ const createUpload = async (req, res) => {
           uploadProgress: 0,
         },
       });
-      console.log("✅ Video record created");
+      console.log(" Video record created");
     } catch (dbError) {
-      console.error("❌ Database error:", dbError);
+      console.error(" Database error:", dbError);
       return res.status(500).json({ 
         message: "Database error",
         error: "DB_ERROR",
@@ -110,7 +110,7 @@ const createUpload = async (req, res) => {
         expiresIn: 3600, // 1 hour
       });
 
-      console.log("✅ Presigned URL generated");
+      console.log("Presigned URL generated");
 
       res.json({ 
         videoId, 
@@ -118,7 +118,7 @@ const createUpload = async (req, res) => {
         s3Key,
       });
     } catch (s3Error) {
-      console.error("❌ S3 error:", s3Error);
+      console.error("S3 error:", s3Error);
       
       // Cleanup: delete video record if presigned URL fails
       await prisma.video.delete({ where: { id: videoId } });
@@ -131,7 +131,7 @@ const createUpload = async (req, res) => {
     }
 
   } catch (err) {
-    console.error("❌ Upload init failed:", err);
+    console.error("Upload init failed:", err);
     res.status(500).json({ 
       message: "Upload init failed",
       error: err.message,

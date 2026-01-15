@@ -249,6 +249,78 @@ const VideoTestPage = () => {
       });
     }
   };
+// ============================================
+// ❌ CANCEL VIDEO
+// ============================================
+const cancelVideo = async () => {
+  try {
+    const res = await axios.post(
+      `${API}/${videoId}/cancel`,
+      {},
+      authConfig
+    );
+
+    setProcessingStatus("CANCELLED");
+    setResult({
+      step: "Cancelled",
+      ...res.data,
+    });
+  } catch (err) {
+    setResult({
+      error: true,
+      message: err.response?.data?.message || err.message,
+    });
+  }
+};
+// ============================================
+// 🗑️ DELETE VIDEO
+// ============================================
+const deleteVideo = async () => {
+  try {
+    const res = await axios.delete(
+      `${API}/${videoId}`,
+      authConfig
+    );
+
+    setResult({
+      step: "Deleted",
+      ...res.data,
+    });
+
+    resetTest();
+  } catch (err) {
+    setResult({
+      error: true,
+      message: err.response?.data?.message || err.message,
+    });
+  }
+};
+// ============================================
+// ✏️ UPDATE VIDEO
+// ============================================
+const updateVideo = async () => {
+  try {
+    const res = await axios.put(
+      `${API}/${videoId}`,
+      {
+        title: "Updated Title from Test UI",
+        description: "Updated description",
+        visibility: "PUBLIC",
+      },
+      authConfig
+    );
+
+    setResult({
+      step: "Updated",
+      ...res.data,
+    });
+  } catch (err) {
+    setResult({
+      error: true,
+      message: err.response?.data?.message || err.message,
+    });
+  }
+};
 
   // ============================================
   // RESET FUNCTION
@@ -380,6 +452,32 @@ const VideoTestPage = () => {
             >
               🔄 Reset
             </button>
+
+
+            <button
+  onClick={cancelVideo}
+  disabled={!videoId}
+  className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:bg-gray-400 transition"
+>
+  ❌ Cancel Video
+</button>
+
+<button
+  onClick={updateVideo}
+  disabled={!videoId}
+  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 transition"
+>
+  ✏️ Update Video
+</button>
+
+<button
+  onClick={deleteVideo}
+  disabled={!videoId}
+  className="px-4 py-2 bg-red-700 text-white rounded-lg hover:bg-red-800 disabled:bg-gray-400 transition"
+>
+  🗑️ Delete Video
+</button>
+
           </div>
         </div>
 

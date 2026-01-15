@@ -7,7 +7,9 @@ const {
   getStreamUrl,
 } = require("../controllers/video.controller");
 const { authMiddleware } = require("../middleware/authMiddleware");
-
+const { cancelVideo } = require("../controllers/videoCancel.controller");
+const { deleteVideo } = require("../controllers/videoDelete.controller");
+const { updateVideo } = require("../controllers/videoUpdate.controller");
 const router = express.Router();
 
 // Upload endpoints
@@ -19,4 +21,9 @@ router.put("/upload/progress/:videoId", authMiddleware, updateUploadProgress);
 router.get("/:id", getVideoById);
 router.get("/stream/:id", getStreamUrl);
 
+
+
+router.post("/:id/cancel", authMiddleware, cancelVideo);
+router.delete("/:id", authMiddleware, deleteVideo);
+router.put("/:id", authMiddleware, updateVideo);
 module.exports = router;
