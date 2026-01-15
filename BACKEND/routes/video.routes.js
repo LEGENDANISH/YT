@@ -5,7 +5,7 @@ const {
   getVideoById,
   getStreamUrl,
 } = require("../controllers/video.controller");
-const { authMiddleware } = require("../middlewares/auth");
+const { authMiddleware } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
