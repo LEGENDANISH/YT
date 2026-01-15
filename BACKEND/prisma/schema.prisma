@@ -60,6 +60,7 @@ model Video {
   visibility      Visibility  @default(PRIVATE)
   views           Int         @default(0)
   originalFileUrl String?
+   uploadProgress   Int      @default(0)
   masterPlaylist  String? // master.m3u8 URL
   
   // Metadata

@@ -1,154 +1,410 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import io from "socket.io-client";
 
-const API = "http://localhost:8000";
+const API = "http://localhost:8000/api/videos";
+const SOCKET_URL = "http://localhost:8000";
 
 const VideoTestPage = () => {
   const token = localStorage.getItem("authToken");
+  const socketRef = useRef(null);
 
   const [file, setFile] = useState(null);
-  const [uploadData, setUploadData] = useState(null);
-  const [videoId, setVideoId] = useState("");
+  const [uploadUrl, setUploadUrl] = useState(null);
+  const [videoId, setVideoId] = useState(null);
   const [result, setResult] = useState(null);
+  
+  // NEW: Progress tracking
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [processingStatus, setProcessingStatus] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
-  const authHeader = {
+  const authConfig = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   };
 
-  /* 1️⃣ INITIATE UPLOAD */
+  // ============================================
+  // WebSocket Connection
+  // ============================================
+  useEffect(() => {
+    if (!token) return;
+
+    // Initialize WebSocket connection
+    socketRef.current = io(SOCKET_URL, {
+      auth: { token },
+      transports: ["websocket", "polling"],
+    });
+
+    socketRef.current.on("connect", () => {
+      console.log("✅ WebSocket connected");
+      setResult({ message: "WebSocket connected" });
+    });
+
+    socketRef.current.on("disconnect", () => {
+      console.log("❌ WebSocket disconnected");
+    });
+
+    // Listen for video updates
+    socketRef.current.on("video:update", (data) => {
+      console.log("📡 Video update:", data);
+      
+      if (data.uploadProgress !== undefined) {
+        setUploadProgress(data.uploadProgress);
+      }
+      
+      if (data.status) {
+        setProcessingStatus(data.status);
+      }
+
+      setResult((prev) => ({
+        ...prev,
+        latestUpdate: data,
+        timestamp: new Date().toISOString(),
+      }));
+    });
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+      }
+    };
+  }, [token]);
+
+  // ============================================
+  // 1️⃣ INITIATE UPLOAD
+  // ============================================
   const initiateUpload = async () => {
     try {
+      setResult({ message: "Initiating upload..." });
+      
       const res = await axios.post(
-        `${API}/api/upload/init`,
+        `${API}/upload/init`,
         {
-          filename: file.name,
-          contentType: file.type,
+          title: "Test Video",
+          description: "Uploaded from test panel",
+          fileSize: file.size,
+          mimeType: file.type,
+          originalName: file.name,
         },
-        authHeader
+        authConfig
       );
 
-      setUploadData(res.data);
+      setUploadUrl(res.data.uploadUrl);
       setVideoId(res.data.videoId);
-      console.log("INIT:", res.data);
+      setUploadProgress(0);
+      setProcessingStatus("UPLOADING");
+
+      setResult({
+        step: "Init Complete",
+        videoId: res.data.videoId,
+        message: "Ready to upload file",
+      });
     } catch (err) {
       console.error(err);
+      setResult({
+        error: true,
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
-  /* 2️⃣ UPLOAD FILE TO PRESIGNED URL */
+  // ============================================
+  // 2️⃣ UPLOAD FILE TO S3 WITH PROGRESS
+  // ============================================
   const uploadToStorage = async () => {
     try {
-      await axios.put(uploadData.uploadUrl, file, {
-        headers: {
-          "Content-Type": file.type,
-        },
+      setIsUploading(true);
+      setResult({ message: "Uploading to storage..." });
+
+      const xhr = new XMLHttpRequest();
+
+      // Track upload progress
+      xhr.upload.addEventListener("progress", async (e) => {
+        if (e.lengthComputable) {
+          const percentComplete = Math.round((e.loaded / e.total) * 100);
+          setUploadProgress(percentComplete);
+
+          // Update backend every 5% or at 100%
+          if (percentComplete % 5 === 0 || percentComplete === 100) {
+            try {
+              await axios.put(
+                `${API}/upload/progress/${videoId}`,
+                { progress: percentComplete },
+                authConfig
+              );
+            } catch (err) {
+              console.error("Progress update failed:", err);
+            }
+          }
+        }
       });
 
-      alert("File uploaded to storage");
+      // Handle upload completion
+      xhr.addEventListener("load", () => {
+        if (xhr.status === 200) {
+          setIsUploading(false);
+          setResult({
+            step: "Upload Complete",
+            message: "File uploaded to storage successfully",
+            progress: 100,
+          });
+        } else {
+          setIsUploading(false);
+          setResult({
+            error: true,
+            message: `Upload failed with status ${xhr.status}`,
+          });
+        }
+      });
+
+      // Handle errors
+      xhr.addEventListener("error", () => {
+        setIsUploading(false);
+        setResult({
+          error: true,
+          message: "Upload failed - network error",
+        });
+      });
+
+      // Start upload
+      xhr.open("PUT", uploadUrl);
+      xhr.setRequestHeader("Content-Type", file.type);
+      xhr.send(file);
+
     } catch (err) {
+      setIsUploading(false);
       console.error(err);
+      setResult({
+        error: true,
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
-  /* 3️⃣ COMPLETE UPLOAD */
+  // ============================================
+  // 3️⃣ COMPLETE UPLOAD (TRIGGER PROCESSING)
+  // ============================================
   const completeUpload = async () => {
     try {
+      setResult({ message: "Starting video processing..." });
+      
       const res = await axios.post(
-        `${API}/api/upload/complete`,
-        {
-          uploadId: uploadData.uploadId,
-          videoId,
-        },
-        authHeader
+        `${API}/upload/complete`,
+        { videoId },
+        authConfig
       );
 
-      setResult(res.data);
-      console.log("COMPLETE:", res.data);
+      setProcessingStatus("PROCESSING");
+      setResult({
+        step: "Processing Started",
+        ...res.data,
+        message: "Video is being processed. Watch for real-time updates!",
+      });
     } catch (err) {
       console.error(err);
+      setResult({
+        error: true,
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
-  /* 4️⃣ GET VIDEO METADATA */
+  // ============================================
+  // 4️⃣ GET VIDEO METADATA
+  // ============================================
   const getVideo = async () => {
     try {
-      const res = await axios.get(`${API}/api/${videoId}`);
-      setResult(res.data);
+      console.log("videoId:", videoId);
+      const res = await axios.get(`${API}/${videoId}`);
+      setResult({
+        step: "Video Metadata",
+        ...res.data,
+      });
     } catch (err) {
       console.error(err);
+      setResult({
+        error: true,
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
-  /* 5️⃣ GET STREAM URL */
+  // ============================================
+  // 5️⃣ GET STREAM URL
+  // ============================================
   const getStream = async () => {
     try {
-      const res = await axios.get(`${API}/api/stream/${videoId}`);
-      setResult(res.data);
+      const res = await axios.get(`${API}/stream/${videoId}`);
+      setResult({
+        step: "Stream URL",
+        ...res.data,
+      });
     } catch (err) {
       console.error(err);
+      setResult({
+        error: true,
+        message: err.response?.data?.message || err.message,
+      });
     }
   };
 
+  // ============================================
+  // RESET FUNCTION
+  // ============================================
+  const resetTest = () => {
+    setFile(null);
+    setUploadUrl(null);
+    setVideoId(null);
+    setResult(null);
+    setUploadProgress(0);
+    setProcessingStatus(null);
+    setIsUploading(false);
+  };
+
+  // ============================================
+  // UI RENDERING
+  // ============================================
   return (
     <div className="min-h-screen p-8 bg-gray-100">
-      <h1 className="text-2xl font-bold mb-6">🎥 Video API Test Panel</h1>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6">
+          🎥 Video Upload & Processing Test
+        </h1>
 
-      {/* FILE INPUT */}
-      <input
-        type="file"
-        accept="video/*"
-        onChange={(e) => setFile(e.target.files[0])}
-        className="mb-4"
-      />
+        {/* WebSocket Status */}
+        <div className="mb-4 p-3 bg-white rounded-lg shadow">
+          <div className="flex items-center gap-2">
+            <div
+              className={`w-3 h-3 rounded-full ${
+                socketRef.current?.connected ? "bg-green-500" : "bg-red-500"
+              }`}
+            />
+            <span className="text-sm font-medium">
+              WebSocket:{" "}
+              {socketRef.current?.connected ? "Connected" : "Disconnected"}
+            </span>
+          </div>
+        </div>
 
-      <div className="flex flex-wrap gap-3 mb-6">
-        <button
-          onClick={initiateUpload}
-          disabled={!file}
-          className="btn"
-        >
-          Init Upload
-        </button>
+        {/* File Input */}
+        <div className="mb-6 p-4 bg-white rounded-lg shadow">
+          <label className="block text-sm font-medium mb-2">
+            Select Video File
+          </label>
+          <input
+            type="file"
+            accept="video/*"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-full file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+          />
+          {file && (
+            <p className="mt-2 text-sm text-gray-600">
+              Selected: {file.name} ({(file.size / 1024 / 1024).toFixed(2)} MB)
+            </p>
+          )}
+        </div>
 
-        <button
-          onClick={uploadToStorage}
-          disabled={!uploadData}
-          className="btn"
-        >
-          Upload File
-        </button>
+        {/* Progress Bar */}
+        {(uploadProgress > 0 || processingStatus) && (
+          <div className="mb-6 p-4 bg-white rounded-lg shadow">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-sm font-medium">
+                Status: {processingStatus || "IDLE"}
+              </span>
+              <span className="text-sm text-gray-600">
+                {uploadProgress}%
+              </span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+              <div
+                className="bg-blue-600 h-4 transition-all duration-300 ease-out"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+          </div>
+        )}
 
-        <button
-          onClick={completeUpload}
-          disabled={!uploadData}
-          className="btn"
-        >
-          Complete Upload
-        </button>
+        {/* Action Buttons */}
+        <div className="mb-6 p-4 bg-white rounded-lg shadow">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <button
+              onClick={initiateUpload}
+              disabled={!file || isUploading}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            >
+              1️⃣ Init Upload
+            </button>
 
-        <button
-          onClick={getVideo}
-          disabled={!videoId}
-          className="btn"
-        >
-          Get Video Metadata
-        </button>
+            <button
+              onClick={uploadToStorage}
+              disabled={!uploadUrl || isUploading}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            >
+              {isUploading ? "Uploading..." : "2️⃣ Upload File"}
+            </button>
 
-        <button
-          onClick={getStream}
-          disabled={!videoId}
-          className="btn"
-        >
-          Get Stream URL
-        </button>
+            <button
+              onClick={completeUpload}
+              disabled={!videoId || uploadProgress < 100 || isUploading}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            >
+              3️⃣ Complete Upload
+            </button>
+
+            <button
+              onClick={getVideo}
+              disabled={!videoId}
+              className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            >
+              4️⃣ Get Video
+            </button>
+
+            <button
+              onClick={getStream}
+              disabled={!videoId}
+              className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+            >
+              5️⃣ Get Stream URL
+            </button>
+
+            <button
+              onClick={resetTest}
+              className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+            >
+              🔄 Reset
+            </button>
+          </div>
+        </div>
+
+        {/* Current Video ID */}
+        {videoId && (
+          <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+            <p className="text-sm">
+              <span className="font-semibold">Current Video ID:</span>{" "}
+              <code className="bg-blue-100 px-2 py-1 rounded">{videoId}</code>
+            </p>
+          </div>
+        )}
+
+        {/* Result Display */}
+        <div className="bg-gray-900 rounded-lg shadow-lg overflow-hidden">
+          <div className="bg-gray-800 px-4 py-2 border-b border-gray-700">
+            <h2 className="text-sm font-semibold text-gray-200">
+              Response / Updates
+            </h2>
+          </div>
+          <pre className="p-4 text-green-400 text-sm overflow-auto max-h-96">
+            {result ? JSON.stringify(result, null, 2) : "No data yet..."}
+          </pre>
+        </div>
       </div>
-
-      {/* RESULT */}
-      <pre className="bg-black text-green-400 p-4 rounded text-sm overflow-auto">
-        {JSON.stringify(result, null, 2)}
-      </pre>
     </div>
   );
 };

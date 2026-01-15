@@ -1,6 +1,7 @@
 const express = require("express");
 const { createUpload } = require("../controllers/upload");
 const { completeUpload } = require("../controllers/completeUpload");
+const { updateUploadProgress } = require("../controllers/uploadProgress.controller");
 const {
   getVideoById,
   getStreamUrl,
@@ -9,24 +10,13 @@ const { authMiddleware } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-/**
- * INITIATE UPLOAD
- */
+// Upload endpoints
 router.post("/upload/init", authMiddleware, createUpload);
-
-/**
- * COMPLETE UPLOAD
- */
 router.post("/upload/complete", authMiddleware, completeUpload);
+router.put("/upload/progress/:videoId", authMiddleware, updateUploadProgress);
 
-/**
- * GET VIDEO METADATA
- */
+// Video endpoints
 router.get("/:id", getVideoById);
-
-/**
- * GET STREAM URL
- */
 router.get("/stream/:id", getStreamUrl);
 
 module.exports = router;
