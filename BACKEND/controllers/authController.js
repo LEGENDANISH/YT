@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const prisma = require("../prisma/client"); // adjust path if needed
+const prisma = require("../prisma/client"); 
 
 
 const registerUser = async (req, res) => {

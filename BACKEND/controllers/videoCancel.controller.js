@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { DeleteObjectCommand } = require("@aws-sdk/client-s3");
 const { videoQueue } = require("../queues/videoQueue");
-const { s3 } = require("../config/s3"); // or wherever you create S3 client
+const { s3 } = require("../config/s3"); 
 
 const prisma = new PrismaClient();
 

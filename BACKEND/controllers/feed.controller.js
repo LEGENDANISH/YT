@@ -1,7 +1,9 @@
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+const { getTrendingVideos } = require("../services/feed.service");
 
+const prisma = new PrismaClient();
 const PAGE_SIZE = 10;
+
 function serializeVideo(video) {
   return {
     ...video,
@@ -19,9 +21,7 @@ const getHomeFeed = async (req, res) => {
         status: "READY",
         visibility: "PUBLIC",
       },
-      orderBy: {
-        createdAt: "desc",
-      },
+      orderBy: { createdAt: "desc" },
       take: PAGE_SIZE + 1,
       ...(cursor && {
         cursor: { createdAt: new Date(cursor) },
@@ -29,11 +29,7 @@ const getHomeFeed = async (req, res) => {
       }),
       include: {
         user: {
-          select: {
-            id: true,
-            username: true,
-            avatarUrl: true,
-          },
+          select: { id: true, username: true, avatarUrl: true },
         },
       },
     });
@@ -44,14 +40,28 @@ const getHomeFeed = async (req, res) => {
       nextCursor = nextItem.createdAt;
     }
 
- res.json({
-  videos: videos.map(serializeVideo),
-  nextCursor,
-});
+    res.json({
+      videos: videos.map(serializeVideo),
+      nextCursor,
+    });
   } catch (err) {
     console.error("Home feed error:", err);
     res.status(500).json({ message: "Failed to load feed" });
   }
 };
 
-module.exports = { getHomeFeed };
+const getTrendingFeed = async (req, res) => {
+  try {
+    const videos = await getTrendingVideos();
+
+    res.json({
+      videos: videos.map(serializeVideo), // ✅ REQUIRED
+    });
+  } catch (err) {
+    console.error("Trending feed error:", err);
+    res.status(500).json({ message: "Failed to load trending feed" });
+  }
+};
+
+
+module.exports = { getHomeFeed, getTrendingFeed };

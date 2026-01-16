@@ -37,7 +37,7 @@ const completeUpload = async (req, res) => {
       });
     }
 
-    // ✅ VERIFY FILE EXISTS IN S3 (NO SIZE CHECK)
+    // VERIFY FILE EXISTS IN S3 (NO SIZE CHECK)
     try {
       const headResult = await s3.send(
         new HeadObjectCommand({
@@ -68,7 +68,7 @@ const completeUpload = async (req, res) => {
       });
     }
 
-    // ✅ UPDATE STATUS
+    //UPDATE STATUS
     await prisma.video.update({
       where: { id: videoId },
       data: {
@@ -77,7 +77,7 @@ const completeUpload = async (req, res) => {
       },
     });
 
-    // ✅ ADD TO QUEUE
+    //ADD TO QUEUE
     await videoQueue.add(
       "process-video",
       {
@@ -95,7 +95,7 @@ const completeUpload = async (req, res) => {
       }
     );
 
-    // ✅ WEBSOCKET UPDATE
+    //WEBSOCKET UPDATE
     emitVideoUpdate(userId, videoId, {
       status: "PROCESSING",
       uploadProgress: 100,

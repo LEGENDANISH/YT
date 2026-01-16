@@ -18,9 +18,7 @@ const deleteVideo = async (req, res) => {
       return res.status(404).json({ message: "Video not found" });
     }
 
-    // =============================
     // DELETE PROCESSED FILES (HLS)
-    // =============================
     const list = await s3.send(
       new ListObjectsV2Command({
         Bucket: process.env.S3_PROCESSED_BUCKET,
@@ -39,9 +37,7 @@ const deleteVideo = async (req, res) => {
       }
     }
 
-    // =============================
     // DELETE RAW FILE
-    // =============================
     if (video.originalFileUrl) {
       await s3.send(
         new DeleteObjectCommand({
@@ -51,9 +47,7 @@ const deleteVideo = async (req, res) => {
       ).catch(() => {});
     }
 
-    // =============================
     // DELETE DB RECORD
-    // =============================
     await prisma.video.delete({
       where: { id },
     });

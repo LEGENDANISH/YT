@@ -17,38 +17,30 @@ const { Readable } = require("stream");
 const execPromise = promisify(exec);
 const prisma = new PrismaClient();
 
-// --------------------
 // S3 CLIENT
-// --------------------
 const { s3 } = require("./config/s3");
 
-// --------------------
 // TEMP DIRECTORY (CROSS-PLATFORM)
-// --------------------
 const BASE_TEMP_DIR = path.join(os.tmpdir(), "yt-worker");
 
 if (!fs.existsSync(BASE_TEMP_DIR)) {
   fs.mkdirSync(BASE_TEMP_DIR, { recursive: true });
 }
 
-// --------------------
 // WORKER
-// --------------------
 const worker = new Worker(
   "video-processing",
   async (job) => {
     const { videoId, userId, s3Key } = job.data;
 
-    console.log(`🎬 Processing video: ${videoId}`);
-    console.log(`📁 S3 Key: ${s3Key}`);
+    console.log(`Processing video: ${videoId}`);
+    console.log(`S3 Key: ${s3Key}`);
 
     const localInput = path.join(BASE_TEMP_DIR, `${videoId}-input.mp4`);
     const outputDir = path.join(BASE_TEMP_DIR, videoId);
 
     try {
-      // --------------------
       // UPDATE STATUS
-      // --------------------
      await prisma.video.update({
   where: { id: videoId },
   data: {
@@ -58,10 +50,8 @@ const worker = new Worker(
 });
 
 
-      // --------------------
       // DOWNLOAD FROM S3
-      // --------------------
-      console.log(`📥 Downloading video from S3...`);
+      console.log(`Downloading video from S3...`);
 
       const rawObject = await s3.send(
         new GetObjectCommand({
@@ -77,23 +67,19 @@ const worker = new Worker(
         writeStream.on("error", reject);
       });
 
-      console.log(`✅ Downloaded to ${localInput}`);
+      console.log(`Downloaded to ${localInput}`);
 
-      // --------------------
       // CREATE OUTPUT DIR
-      // --------------------
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
       }
 
-      // --------------------
       // TRANSCODE (HLS)
-      // --------------------
   await prisma.video.update({
   where: { id: videoId },
   data: { processingStage: "TRANSCODE" },
 });
-      console.log(`🎞️ Transcoding video with FFmpeg...`);
+      console.log(`Transcoding video with FFmpeg...`);
 
 const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
 -map 0:v -map 0:v \
@@ -116,18 +102,18 @@ if (generatedFiles.length === 0) {
   throw new Error("FFmpeg produced no output files");
 }
 
-console.log(`✅ Transcoding complete`);
+console.log(`Transcoding complete`);
 
 
-      // --------------------
+
       // UPLOAD PROCESSED FILES
-      // --------------------
+
       await prisma.video.update({
   where: { id: videoId },
   data: { processingStage: "UPLOAD" },
 });
 
-      console.log(`📤 Uploading HLS files to S3...`);
+      console.log(`Uploading HLS files to S3...`);
 
       const files = fs.readdirSync(outputDir);
 
@@ -147,11 +133,11 @@ console.log(`✅ Transcoding complete`);
         );
       }
 
-      console.log(`✅ Uploaded ${files.length} files`);
+      console.log(`Uploaded ${files.length} files`);
 
-      // --------------------
-      // UPDATE STATUS → READY
-      // --------------------
+      
+      // UPDATE STATUS READY
+     
    await prisma.video.update({
   where: { id: videoId },
   data: {
@@ -164,10 +150,10 @@ console.log(`✅ Transcoding complete`);
 
 
 
-      console.log(`🎉 Video ${videoId} READY`);
+      console.log(`Video ${videoId} READY`);
 
     } catch (error) {
-      console.error(`❌ Processing failed for ${videoId}:`, error);
+      console.error(`Processing failed for ${videoId}:`, error);
 
      await prisma.video.update({
   where: { id: videoId },
@@ -206,11 +192,11 @@ console.log(`✅ Transcoding complete`);
 // EVENTS
 // --------------------
 worker.on("completed", (job) => {
-  console.log(`✅ Job ${job.id} completed`);
+  console.log(`Job ${job.id} completed`);
 });
 
 worker.on("failed", (job, err) => {
-  console.error(`❌ Job ${job?.id} failed:`, err.message);
+  console.error(`Job ${job?.id} failed:`, err.message);
 });
 
-console.log("👷 Video processing worker started");
+console.log("Video processing worker started");

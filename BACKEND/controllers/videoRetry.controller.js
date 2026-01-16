@@ -3,7 +3,7 @@ const { Queue } = require("bullmq");
 
 const prisma = new PrismaClient();
 
-// ⚠️ Must match worker queue name exactly
+// Must match worker queue name exactly
 const videoQueue = new Queue("video-processing", {
   connection: {
     host: process.env.REDIS_HOST || "localhost",
@@ -16,7 +16,7 @@ const retryProcessing = async (req, res) => {
     const videoId = req.params.id;
     const userId = req.user.id;
 
-    // 1️⃣ Fetch video
+    // Fetch video
     const video = await prisma.video.findUnique({
       where: { id: videoId },
     });
@@ -25,12 +25,12 @@ const retryProcessing = async (req, res) => {
       return res.status(404).json({ message: "Video not found" });
     }
 
-    // 2️⃣ Ownership check
+    // Ownership check
     if (video.userId !== userId) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
-    // 3️⃣ Validate retryable state
+    // Validate retryable state
 const MAX_RETRIES = 3;
 
 if (video.status !== "PROCESSING_FAILED") {

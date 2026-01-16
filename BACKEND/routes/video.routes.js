@@ -22,8 +22,6 @@ router.put("/upload/progress/:videoId", authMiddleware, updateUploadProgress);
 router.get("/:id", getVideoById);
 router.get("/stream/:id", getStreamUrl);
 
-
-
 router.post("/:id/cancel", authMiddleware, cancelVideo);
 router.delete("/:id", authMiddleware, deleteVideo);
 router.put("/:id", authMiddleware, updateVideo);

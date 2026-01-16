@@ -13,11 +13,8 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Prisma Schema for YouTube Clone Video Streaming Platform
 
-// ============================================
 // USER MANAGEMENT
-// ============================================
 
 model User {
   id            String   @id @default(uuid())
@@ -46,9 +43,7 @@ model User {
   @@index([username])
 }
 
-// ============================================
 // VIDEO MANAGEMENT
-// ============================================
 
 model Video {
   id              String      @id @default(uuid())
@@ -120,9 +115,7 @@ enum Visibility {
   UNLISTED
 }
 
-// ============================================
 // UPLOAD SESSION MANAGEMENT
-// ============================================
 
 model UploadSession {
   id              String   @id @default(uuid())
@@ -183,9 +176,7 @@ enum ChunkStatus {
   FAILED
 }
 
-// ============================================
 // VIDEO QUALITY & PROCESSING
-// ============================================
 
 model VideoQuality {
   id           String  @id @default(uuid())
@@ -219,9 +210,7 @@ enum ProcessingStatus {
   FAILED
 }
 
-// ============================================
 // ENGAGEMENT (LIKES, COMMENTS)
-// ============================================
 
 model Like {
   id        String   @id @default(uuid())
@@ -263,9 +252,7 @@ model Comment {
   @@index([parentId])
 }
 
-// ============================================
 // SUBSCRIPTIONS
-// ============================================
 
 model Subscription {
   id          String   @id @default(uuid())
@@ -284,9 +271,7 @@ model Subscription {
   @@index([channelId])
 }
 
-// ============================================
 // PLAYLISTS
-// ============================================
 
 model Playlist {
   id          String   @id @default(uuid())
@@ -322,9 +307,7 @@ model PlaylistVideo {
   @@index([playlistId])
 }
 
-// ============================================
 // TAGS & CATEGORIES
-// ============================================
 
 model Tag {
   id     String     @id @default(uuid())
@@ -348,9 +331,7 @@ model VideoTag {
   @@index([tagId])
 }
 
-// ============================================
 // WATCH HISTORY & ANALYTICS
-// ============================================
 
 model WatchHistory {
   id            String   @id @default(uuid())
@@ -370,9 +351,7 @@ model WatchHistory {
   @@index([watchedAt])
 }
 
-// ============================================
 // NOTIFICATIONS
-// ============================================
 
 model Notification {
   id        String   @id @default(uuid())
@@ -401,9 +380,7 @@ enum NotificationType {
   PROCESSING_FAILED
 }
 
-// ============================================
 // PROCESSING JOBS (Optional - can use Redis)
-// ============================================
 
 model ProcessingJob {
   id          String   @id @default(uuid())
