@@ -12,6 +12,7 @@ const { deleteVideo } = require("../controllers/videoDelete.controller");
 const { updateVideo } = require("../controllers/videoUpdate.controller");
 const { retryProcessing } = require("../controllers/videoRetry.controller");
 const { getRecommendationsForVideo } = require("../controllers/videoRecommendation.service");
+const { getAutoplayNext } = require("../controllers/autoplay.controller");
 const router = express.Router();
 
 // Upload endpoints
@@ -28,6 +29,7 @@ router.delete("/:id", authMiddleware, deleteVideo);
 router.put("/:id", authMiddleware, updateVideo);
 
 router.get("/:id/recommendations", getRecommendationsForVideo);
+router.get("/:id/autoplay", authMiddleware, getAutoplayNext);
 
 
 router.post("/:id/retry-processing", authMiddleware, retryProcessing);
