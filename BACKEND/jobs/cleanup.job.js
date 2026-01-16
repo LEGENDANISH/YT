@@ -9,28 +9,34 @@ async function cleanup() {
 
   const staleVideos = await prisma.video.findMany({
     where: {
-      status: { in: ["UPLOADING", "PROCESSING", "FAILED"] },
+      status: { in: ["UPLOADING", "PROCESSING"] },
       updatedAt: { lt: cutoff },
     },
   });
 
   for (const video of staleVideos) {
-    if (video.originalFileUrl) {
-      await s3.send(
-        new DeleteObjectCommand({
-          Bucket: process.env.S3_RAW_BUCKET,
-          Key: video.originalFileUrl,
-        })
-      ).catch(() => {});
-    }
+    // ❌ DO NOT delete raw file if processing
+    // Worker may still retry / resume
 
     await prisma.video.update({
       where: { id: video.id },
-      data: { status: "FAILED" },
+      data: {
+        status: "PROCESSING_FAILED",
+        errorMessage: "Cleanup: video stuck for more than 1 hour",
+        processingStage: video.processingStage,
+        processingAttempts: { increment: 1 },
+        lastProcessedAt: new Date(),
+      },
     });
   }
 
   console.log(`🧹 Cleanup completed: ${staleVideos.length} videos`);
 }
 
-cleanup();
+cleanup()
+  .catch((err) => {
+    console.error("Cleanup failed:", err);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

@@ -88,6 +88,12 @@ model Video {
   playlistVideos  PlaylistVideo[]
   watchHistory    WatchHistory[]
 
+  processingStage     String?
+  errorMessage        String?
+  errorCode           String?
+  processingAttempts  Int      @default(0)
+  lastProcessedAt     DateTime?
+
   @@index([userId])
   @@index([status])
   @@index([visibility])
@@ -97,11 +103,16 @@ model Video {
 
 enum VideoStatus {
   UPLOADING
+  UPLOAD_FAILED
+
   PROCESSING
+  PROCESSING_FAILED
+
   READY
-  FAILED
+  CANCELLED
   DELETED
 }
+
 
 enum Visibility {
   PUBLIC
@@ -130,6 +141,10 @@ model UploadSession {
   updatedAt       DateTime @updatedAt
   completedAt     DateTime?
 
+
+  uploadedBytes   BigInt @default(0)
+  lastChunkIndex  Int?
+
   chunks          UploadChunk[]
 
   @@index([videoId])
@@ -148,6 +163,7 @@ model UploadChunk {
   
   status          ChunkStatus @default(PENDING)
   uploadedAt      DateTime    @default(now())
+  verifiedAt DateTime?
 
   @@unique([sessionId, chunkIndex])
   @@index([sessionId])
@@ -188,6 +204,8 @@ model VideoQuality {
   
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  error String?
 
   @@unique([videoId, resolution])
   @@index([videoId])

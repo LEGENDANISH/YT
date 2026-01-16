@@ -57,10 +57,14 @@ const worker = new Worker(
       // --------------------
       // UPDATE STATUS
       // --------------------
-      await prisma.video.update({
-        where: { id: videoId },
-        data: { status: "PROCESSING" },
-      });
+     await prisma.video.update({
+  where: { id: videoId },
+  data: {
+    status: "PROCESSING",
+    processingStage: "DOWNLOAD",
+  },
+});
+
 
       // --------------------
       // DOWNLOAD FROM S3
@@ -93,14 +97,18 @@ const worker = new Worker(
       // --------------------
       // TRANSCODE (HLS)
       // --------------------
+      await prisma.video.update({
+  where: { id: videoId },
+  data: { processingStage: "TRANSCODE" },
+});
       console.log(`🎞️ Transcoding video with FFmpeg...`);
 
-     const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
--map 0:v -map 0:a -map 0:v -map 0:a \
--c:v libx264 -crf 22 -c:a aac -ar 48000 \
--filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k -b:a:0 96k \
--filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k -b:a:1 128k \
--var_stream_map "v:0,a:0 v:1,a:1" \
+const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
+-map 0:v -map 0:v \
+-c:v libx264 -crf 22 \
+-filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
+-filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
+-var_stream_map "v:0 v:1" \
 -master_pl_name master.m3u8 \
 -f hls -hls_time 6 -hls_playlist_type vod \
 -hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
@@ -122,6 +130,11 @@ console.log(`✅ Transcoding complete`);
       // --------------------
       // UPLOAD PROCESSED FILES
       // --------------------
+      await prisma.video.update({
+  where: { id: videoId },
+  data: { processingStage: "UPLOAD" },
+});
+
       console.log(`📤 Uploading HLS files to S3...`);
 
       const files = fs.readdirSync(outputDir);
@@ -147,14 +160,16 @@ console.log(`✅ Transcoding complete`);
       // --------------------
       // UPDATE STATUS → READY
       // --------------------
-     await prisma.video.update({
+   await prisma.video.update({
   where: { id: videoId },
   data: {
     status: "READY",
+    processingStage: "FINALIZE",
     visibility: "PUBLIC",
     masterPlaylist: `videos/${videoId}/master.m3u8`,
   },
 });
+
 
 
       console.log(`🎉 Video ${videoId} READY`);
@@ -162,10 +177,15 @@ console.log(`✅ Transcoding complete`);
     } catch (error) {
       console.error(`❌ Processing failed for ${videoId}:`, error);
 
-      await prisma.video.update({
-        where: { id: videoId },
-        data: { status: "FAILED" },
-      });
+     await prisma.video.update({
+  where: { id: videoId },
+  data: {
+    status: "PROCESSING_FAILED",
+    errorMessage: error.message,
+    processingAttempts: { increment: 1 },
+    lastProcessedAt: new Date(),
+  },
+});
 
       throw error;
     } finally {
