@@ -89,7 +89,7 @@ const worker = new Worker(
       // --------------------
       // TRANSCODE (HLS)
       // --------------------
-      await prisma.video.update({
+  await prisma.video.update({
   where: { id: videoId },
   data: { processingStage: "TRANSCODE" },
 });
