@@ -11,6 +11,7 @@ const { cancelVideo } = require("../controllers/videoCancel.controller");
 const { deleteVideo } = require("../controllers/videoDelete.controller");
 const { updateVideo } = require("../controllers/videoUpdate.controller");
 const { retryProcessing } = require("../controllers/videoRetry.controller");
+const { getRecommendationsForVideo } = require("../controllers/videoRecommendation.service");
 const router = express.Router();
 
 // Upload endpoints
@@ -25,6 +26,9 @@ router.get("/stream/:id", getStreamUrl);
 router.post("/:id/cancel", authMiddleware, cancelVideo);
 router.delete("/:id", authMiddleware, deleteVideo);
 router.put("/:id", authMiddleware, updateVideo);
+
+router.get("/:id/recommendations", getRecommendationsForVideo);
+
 
 router.post("/:id/retry-processing", authMiddleware, retryProcessing);
 module.exports = router;
