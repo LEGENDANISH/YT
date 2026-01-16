@@ -15,8 +15,7 @@ async function cleanup() {
   });
 
   for (const video of staleVideos) {
-    // ❌ DO NOT delete raw file if processing
-    // Worker may still retry / resume
+ 
 
     await prisma.video.update({
       where: { id: video.id },
