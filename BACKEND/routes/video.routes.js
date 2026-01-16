@@ -12,6 +12,8 @@ const { deleteVideo } = require("../controllers/videoDelete.controller");
 const { updateVideo } = require("../controllers/videoUpdate.controller");
 const { retryProcessing } = require("../controllers/videoRetry.controller");
 const { getRecommendationsForVideo } = require("../controllers/videoRecommendation.service");
+const { recordView } = require("../controllers/recordView.controller");
+const { getWatchRecommendations } = require("../controllers/recommend.controller");
 const { getAutoplayNext } = require("../controllers/autoplay.controller");
 const router = express.Router();
 
@@ -30,6 +32,11 @@ router.put("/:id", authMiddleware, updateVideo);
 
 router.get("/:id/recommendations", getRecommendationsForVideo);
 router.get("/:id/autoplay", authMiddleware, getAutoplayNext);
+
+router.post("/:id/view", authMiddleware, recordView);
+router.get("/:id/recommend", getWatchRecommendations);
+
+
 
 
 router.post("/:id/retry-processing", authMiddleware, retryProcessing);
