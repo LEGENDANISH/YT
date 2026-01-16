@@ -1,6 +1,6 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware");
-const { getHomeFeed, getTrendingFeed } = require("../controllers/feed.controller");
+const { getHomeFeed, getTrendingFeed ,getHybridHomeFeed } = require("../controllers/feed.controller");
 const { recordView } = require("../controllers/videoView.controller");
 
 const router = express.Router();
@@ -9,5 +9,6 @@ const router = express.Router();
 router.get("/home", authMiddleware, getHomeFeed);
 router.post("/:id/view", authMiddleware, recordView);
 router.get("/trending", authMiddleware, getTrendingFeed);
+router.get("/hybrid", authMiddleware, getHybridHomeFeed);
 
 module.exports = router;

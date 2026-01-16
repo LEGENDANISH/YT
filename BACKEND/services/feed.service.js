@@ -48,5 +48,43 @@ async function getTrendingVideos(limit = 20) {
     .sort((a, b) => b.trendingScore - a.trendingScore)
     .slice(0, limit);
 }
+async function getPersonalizedVideos(userId, limit = 20) {
+  // Get videos the user already watched
+  const history = await prisma.watchHistory.findMany({
+    where: { userId },
+    select: { videoId: true },
+  });
 
-module.exports = { getTrendingVideos };
+  const watchedIds = history.map((h) => h.videoId);
+
+  const videos = await prisma.video.findMany({
+    where: {
+      status: "READY",
+      visibility: "PUBLIC",
+      // Do not show already watched videos
+      id: { notIn: watchedIds },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: limit,
+    include: {
+      user: {
+        select: {
+          id: true,
+          username: true,
+          avatarUrl: true,
+        },
+      },
+    },
+  });
+
+  return videos.map((v) => ({
+    ...v,
+    views: Number(v.views),
+    fileSize: v.fileSize ? Number(v.fileSize) : null,
+  }));
+}
+
+
+module.exports = { getTrendingVideos,getPersonalizedVideos };

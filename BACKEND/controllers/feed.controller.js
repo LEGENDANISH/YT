@@ -1,5 +1,6 @@
 const { PrismaClient } = require("@prisma/client");
 const { getTrendingVideos } = require("../services/feed.service");
+const { getHybridFeed } = require("../services/hybridRank.service");
 
 const prisma = new PrismaClient();
 const PAGE_SIZE = 10;
@@ -63,5 +64,16 @@ const getTrendingFeed = async (req, res) => {
   }
 };
 
+const getHybridHomeFeed = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const videos = await getHybridFeed(userId);
 
-module.exports = { getHomeFeed, getTrendingFeed };
+    res.json({ videos });
+  } catch (err) {
+    console.error("Hybrid feed error:", err);
+    res.status(500).json({ message: "Failed to load hybrid feed" });
+  }
+};
+
+module.exports = { getHomeFeed, getTrendingFeed ,getHybridHomeFeed};
