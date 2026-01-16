@@ -3,7 +3,7 @@ const {
   DeleteObjectCommand,
   ListObjectsV2Command,
 } = require("@aws-sdk/client-s3");
-const { s3 } = require("../lib/s3");
+const { s3 } = require("../config/s3");
 
 const prisma = new PrismaClient();
 

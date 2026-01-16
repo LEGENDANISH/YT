@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const { S3Client, HeadObjectCommand } = require("@aws-sdk/client-s3");
 const { videoQueue } = require("../queues/videoQueue");
 const { emitVideoUpdate } = require("../websocket");
-const { s3 } = require("../lib/s3");
+const { s3 } = require("../config/s3");
 
 const prisma = new PrismaClient();
 

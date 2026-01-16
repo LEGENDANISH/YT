@@ -20,7 +20,7 @@ const prisma = new PrismaClient();
 // --------------------
 // S3 CLIENT
 // --------------------
-const { s3 } = require("./lib/s3");
+const { s3 } = require("./config/s3");
 
 // --------------------
 // TEMP DIRECTORY (CROSS-PLATFORM)
