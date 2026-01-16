@@ -7,6 +7,7 @@ const { initializeWebSocket } = require("./websocket");
 const authRoutes = require("./routes/authRoutes");
 const videoRoutes = require("./routes/video.routes");
 const feedRoutes = require("./routes/feed.routes");
+const recommendationRoutes = require("./routes/recommendation.routes"); 
 const app = express();
 
 //  Create HTTP server BEFORE WebSocket
@@ -22,6 +23,9 @@ initializeWebSocket(server);
 app.use("/api", authRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/feed", feedRoutes);
+
+
+app.use("/api", recommendationRoutes);
 // check endpoint
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
