@@ -1,4 +1,6 @@
-const VideoCard = ({ video }: { video: any }) => {
+import { Card, CardContent } from "@/components/ui/card"
+
+const VideoCard = ({ video }) => {
   return (
     <Card className="border-none shadow-none cursor-pointer">
       <CardContent className="p-0 space-y-2">
@@ -17,7 +19,8 @@ const VideoCard = ({ video }: { video: any }) => {
         {/* Meta */}
         <div className="flex gap-3">
           <img
-            src={video.channel.avatarUrl}
+            src={video.channel?.avatarUrl}
+            alt={video.channel?.name}
             className="h-9 w-9 rounded-full"
           />
 
@@ -26,7 +29,7 @@ const VideoCard = ({ video }: { video: any }) => {
               {video.title}
             </p>
             <p className="text-muted-foreground text-xs">
-              {video.channel.name}
+              {video.channel?.name}
             </p>
             <p className="text-muted-foreground text-xs">
               {video.views} views
@@ -37,4 +40,5 @@ const VideoCard = ({ video }: { video: any }) => {
     </Card>
   )
 }
+
 export default VideoCard
