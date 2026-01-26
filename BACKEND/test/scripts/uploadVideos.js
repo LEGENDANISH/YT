@@ -14,7 +14,7 @@ const randomToken = () =>
   tokens[Math.floor(Math.random() * tokens.length)]
 
 const run = async () => {
-  for (let i = 1; i <= 2; i++) {
+  for (let i = 1; i <= 50; i++) {
     const token = randomToken()
 
     try {
