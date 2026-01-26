@@ -7,34 +7,38 @@ const registerUser = async (req, res) => {
   try {
     const { email, username, password, displayName } = req.body;
 
-    // Validate
     if (!email || !username || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({
+        message: "Email, username and password are required",
+      });
     }
 
-    // Check existing user
-    const userExists = await prisma.user.findFirst({
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long",
+      });
+    }
+
+    const existingUser = await prisma.user.findFirst({
       where: {
         OR: [{ email }, { username }],
       },
     });
 
-    if (userExists) {
-      return res.status(400).json({
-        message: "Email or username already in use",
+    if (existingUser) {
+      return res.status(409).json({
+        message: "Email or username already exists",
       });
     }
 
-    // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // Create user
     const user = await prisma.user.create({
       data: {
         email,
         username,
         passwordHash,
-        displayName,
+        displayName: displayName || username,
       },
       select: {
         id: true,
@@ -51,7 +55,10 @@ const registerUser = async (req, res) => {
       user,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
   }
 };
 

@@ -16,34 +16,34 @@ datasource db {
 
 // USER MANAGEMENT
 
-model User {
-  id            String   @id @default(uuid())
-  email         String   @unique
-  username      String   @unique
-  passwordHash  String
-  displayName   String?
-  avatarUrl     String?
-  channelBanner String?
-  bio           String?
-  isVerified    Boolean  @default(false)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  model User {
+    id            String   @id @default(uuid())
+    email         String   @unique
+    username      String   @unique
+    passwordHash  String
+    displayName   String?
+    avatarUrl     String?
+    channelBanner String?
+    bio           String?
+    isVerified    Boolean  @default(false)
+    createdAt     DateTime @default(now())
+    updatedAt     DateTime @updatedAt
 
-  // Relations
-  videos        Video[]
-  comments      Comment[]
-  likes         Like[]
-  subscriptions Subscription[] @relation("Subscriber")
-  subscribers   Subscription[] @relation("Channel")
-  playlists     Playlist[]
-  watchHistory  WatchHistory[]
-  notifications Notification[]
+    // Relations
+    videos        Video[]
+    comments      Comment[]
+    likes         Like[]
+    subscriptions Subscription[] @relation("Subscriber")
+    subscribers   Subscription[] @relation("Channel")
+    playlists     Playlist[]
+    watchHistory  WatchHistory[]
+    notifications Notification[]
 
-  @@index([email])
-  @@index([username])
-}
+    @@index([email])
+    @@index([username])
+  }
 
-// VIDEO MANAGEMENT
+  // VIDEO MANAGEMENT
 
 model Video {
   id              String      @id @default(uuid())
