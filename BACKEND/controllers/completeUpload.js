@@ -69,14 +69,17 @@ const completeUpload = async (req, res) => {
     }
 
     //UPDATE STATUS
-    await prisma.video.update({
-      where: { id: videoId },
-      data: {
-        status: "PROCESSING",
-        uploadProgress: 100,
-      },
-    });
+   //UPDATE STATUS
+const updatedVideo = await prisma.video.update({
+  where: { id: videoId },
+  data: {
+    status: "PROCESSING",
+    uploadProgress: 100,
+  },
+});
 
+console.log(`✅ Video ${videoId} updated to PROCESSING`);
+console.log(`📦 S3 Key: ${video.originalFileUrl}`);
     //ADD TO QUEUE
     await videoQueue.add(
       "process-video",
@@ -94,7 +97,7 @@ const completeUpload = async (req, res) => {
         },
       }
     );
-
+console.log(`✅ Job ${videoId} added to queue`);
     //WEBSOCKET UPDATE
     emitVideoUpdate(userId, videoId, {
       status: "PROCESSING",

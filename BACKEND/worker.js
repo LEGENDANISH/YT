@@ -39,15 +39,27 @@ const worker = new Worker(
     const localInput = path.join(BASE_TEMP_DIR, `${videoId}-input.mp4`);
     const outputDir = path.join(BASE_TEMP_DIR, videoId);
 
-    try {
-      // UPDATE STATUS
-     await prisma.video.update({
-  where: { id: videoId },
-  data: {
-    status: "PROCESSING",
-    processingStage: "DOWNLOAD",
-  },
-});
+try {
+  // CHECK IF VIDEO EXISTS FIRST
+  const videoExists = await prisma.video.findUnique({
+    where: { id: videoId }
+  });
+
+  if (!videoExists) {
+    console.error(`❌ Video ${videoId} NOT FOUND in database`);
+    return; // Exit job without error
+  }
+
+  console.log(`✅ Video ${videoId} found, processing...`);
+
+  // UPDATE STATUS
+  await prisma.video.update({
+    where: { id: videoId },
+    data: {
+      status: "PROCESSING",
+      processingStage: "DOWNLOAD",
+    },
+  });
 
 
       // DOWNLOAD FROM S3
@@ -152,21 +164,34 @@ console.log(`Transcoding complete`);
 
       console.log(`Video ${videoId} READY`);
 
-    } catch (error) {
-      console.error(`Processing failed for ${videoId}:`, error);
+    }  catch (error) {
+  console.error(`Processing failed for ${videoId}:`, error);
 
-     await prisma.video.update({
-  where: { id: videoId },
-  data: {
-    status: "PROCESSING_FAILED",
-    errorMessage: error.message,
-    processingAttempts: { increment: 1 },
-    lastProcessedAt: new Date(),
-  },
-});
+  // Check if video exists before updating
+  try {
+    const videoExists = await prisma.video.findUnique({
+      where: { id: videoId }
+    });
 
-      throw error;
-    } finally {
+    if (videoExists) {
+      await prisma.video.update({
+        where: { id: videoId },
+        data: {
+          status: "FAILED",
+          errorMessage: error.message,
+          processingAttempts: { increment: 1 },
+          lastProcessedAt: new Date(),
+        },
+      });
+    } else {
+      console.error(`❌ Cannot update - video ${videoId} doesn't exist`);
+    }
+  } catch (updateError) {
+    console.error(`❌ Error updating video status:`, updateError.message);
+  }
+
+  throw error;
+}finally {
       // --------------------
       // CLEANUP
       // --------------------
@@ -189,7 +214,7 @@ console.log(`Transcoding complete`);
 );
 
 // --------------------
-// EVENTS
+// EVENTS 
 // --------------------
 worker.on("completed", (job) => {
   console.log(`Job ${job.id} completed`);

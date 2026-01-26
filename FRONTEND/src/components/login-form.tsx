@@ -31,28 +31,33 @@ export function LoginForm({
 
   const navigate = useNavigate()
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+const handleLogin = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setLoading(true)
 
-    try {
-      const res = await axios.post(`${BASE_URL}/api/login`, {
-        email,
-        password,
-      })
+  try {
+    const res = await axios.post(`${BASE_URL}/api/login`, {
+      email,
+      password,
+    })
 
-      if (res.data?.user) {
-        localStorage.setItem("user", JSON.stringify(res.data.user))
-        navigate("/") // change if needed
-      } else {
-        alert(res.data?.message || "Login failed")
-      }
-    } catch (err: any) {
-      alert(err.response?.data?.message || "Something went wrong")
-    } finally {
-      setLoading(false)
+    const { user, token } = res.data
+
+    if (token && user) {
+      localStorage.setItem("token", token) // ✅ SAVE JWT
+      localStorage.setItem("user", JSON.stringify(user))
+
+      navigate("/") // Home
+    } else {
+      alert("Invalid login response")
     }
+  } catch (err: any) {
+    alert(err.response?.data?.message || "Something went wrong")
+  } finally {
+    setLoading(false)
   }
+}
+
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

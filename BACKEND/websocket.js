@@ -2,6 +2,7 @@ const { Server } = require("socket.io");
 const jwt = require("jsonwebtoken");
 
 let io;
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
 
 const initializeWebSocket = (server) => {
   io = new Server(server, {

@@ -4,7 +4,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import VideoCard from "./VideoCard"
 
 const PORT = import.meta.env.VITE_BACKEND_PORT
-const BASE_URL = `http://localhost:${PORT}`
+const BASE_URL = `http://localhost:${PORT}/api`
 
 const Home = () => {
   const [videos, setVideos] = useState([])
@@ -15,7 +15,7 @@ const Home = () => {
       try {
         const token = localStorage.getItem("token")
 
-        const res = await axios.get(`${BASE_URL}/home`, {
+        const res = await axios.get(`${BASE_URL}/feed/home`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -63,4 +63,3 @@ const Home = () => {
 }
 
 export default Home
-  
