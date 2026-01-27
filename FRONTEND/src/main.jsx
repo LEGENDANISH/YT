@@ -12,6 +12,7 @@ import Watch from "./page/watch/Watch";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
+      
       <Route path="/" element={<Home />} />
       <Route path="/video" element={<VideoTestPage />} />
             <Route path="/test" element={<Test/>} />
