@@ -1,8 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card"
+import { useNavigate } from "react-router-dom"
 
 const VideoCard = ({ video }) => {
+  const navigate = useNavigate()
+
   return (
-    <Card className="border-none shadow-none cursor-pointer">
+    <Card
+      onClick={() => navigate(`/watch/${video._id}`)}
+      className="border-none shadow-none cursor-pointer"
+    >
       <CardContent className="p-0 space-y-2">
         {/* Thumbnail */}
         <div className="relative aspect-video rounded-xl overflow-hidden bg-muted">
@@ -25,9 +31,7 @@ const VideoCard = ({ video }) => {
           />
 
           <div className="text-sm">
-            <p className="font-semibold line-clamp-2">
-              {video.title}
-            </p>
+            <p className="font-semibold line-clamp-2">{video.title}</p>
             <p className="text-muted-foreground text-xs">
               {video.channel?.name}
             </p>

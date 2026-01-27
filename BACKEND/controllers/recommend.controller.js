@@ -1,10 +1,13 @@
-const { getVideoRecommendations } = require("../services/recommendation.service");
+const { getRelatedVideos } = require("../services/recommendation.service");
 
 const getWatchRecommendations = async (req, res) => {
   try {
     const { id: videoId } = req.params;
 
-    const videos = await getVideoRecommendations(videoId, 10);
+    const videos = await getRelatedVideos({
+      videoId,
+      limit: 10,
+    });
 
     res.json({ videos });
   } catch (err) {
