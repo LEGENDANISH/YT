@@ -1,18 +1,13 @@
-// worker.js
 const { Worker } = require("bullmq");
 const { PrismaClient } = require("@prisma/client");
-const {
-  S3Client,
-  GetObjectCommand,
-  PutObjectCommand,
-} = require("@aws-sdk/client-s3");
-
+const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { exec } = require("child_process");
 const { promisify } = require("util");
 const fs = require("fs");
 const path = require("path");
 const os = require("os");
 const { Readable } = require("stream");
+const ffmpeg = require("fluent-ffmpeg");
 
 const execPromise = promisify(exec);
 const prisma = new PrismaClient();
@@ -22,49 +17,55 @@ const { s3 } = require("./config/s3");
 
 // TEMP DIRECTORY (CROSS-PLATFORM)
 const BASE_TEMP_DIR = path.join(os.tmpdir(), "yt-worker");
-
 if (!fs.existsSync(BASE_TEMP_DIR)) {
   fs.mkdirSync(BASE_TEMP_DIR, { recursive: true });
 }
+
+// GET VIDEO DURATION HELPER
+const getVideoDuration = (filePath) => {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) return reject(err);
+      resolve(Math.floor(metadata.format.duration));
+    });
+  });
+};
 
 // WORKER
 const worker = new Worker(
   "video-processing",
   async (job) => {
     const { videoId, userId, s3Key } = job.data;
-
     console.log(`Processing video: ${videoId}`);
     console.log(`S3 Key: ${s3Key}`);
 
     const localInput = path.join(BASE_TEMP_DIR, `${videoId}-input.mp4`);
     const outputDir = path.join(BASE_TEMP_DIR, videoId);
+    let videoDuration = null;
 
-try {
-  // CHECK IF VIDEO EXISTS FIRST
-  const videoExists = await prisma.video.findUnique({
-    where: { id: videoId }
-  });
+    try {
+      // CHECK IF VIDEO EXISTS FIRST
+      const videoExists = await prisma.video.findUnique({
+        where: { id: videoId },
+      });
+      if (!videoExists) {
+        console.error(`❌ Video ${videoId} NOT FOUND in database`);
+        return; // Exit job without error
+      }
 
-  if (!videoExists) {
-    console.error(`❌ Video ${videoId} NOT FOUND in database`);
-    return; // Exit job without error
-  }
+      console.log(`✅ Video ${videoId} found, processing...`);
 
-  console.log(`✅ Video ${videoId} found, processing...`);
-
-  // UPDATE STATUS
-  await prisma.video.update({
-    where: { id: videoId },
-    data: {
-      status: "PROCESSING",
-      processingStage: "DOWNLOAD",
-    },
-  });
-
+      // UPDATE STATUS
+      await prisma.video.update({
+        where: { id: videoId },
+        data: {
+          status: "PROCESSING",
+          processingStage: "DOWNLOAD",
+        },
+      });
 
       // DOWNLOAD FROM S3
       console.log(`Downloading video from S3...`);
-
       const rawObject = await s3.send(
         new GetObjectCommand({
           Bucket: process.env.S3_RAW_BUCKET,
@@ -81,58 +82,62 @@ try {
 
       console.log(`Downloaded to ${localInput}`);
 
+      // --------------------
+      // EXTRACT DURATION
+      // --------------------
+      videoDuration = await getVideoDuration(localInput);
+      console.log(`🎯 Video duration: ${videoDuration}s`);
+
+      await prisma.video.update({
+        where: { id: videoId },
+        data: { duration: videoDuration },
+      });
+
       // CREATE OUTPUT DIR
       if (!fs.existsSync(outputDir)) {
         fs.mkdirSync(outputDir, { recursive: true });
       }
 
       // TRANSCODE (HLS)
-  await prisma.video.update({
-  where: { id: videoId },
-  data: { processingStage: "TRANSCODE" },
-});
+      await prisma.video.update({
+        where: { id: videoId },
+        data: { processingStage: "TRANSCODE" },
+      });
+
       console.log(`Transcoding video with FFmpeg...`);
+      const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
+        -map 0:v -map 0:v \
+        -c:v libx264 -crf 22 \
+        -filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
+        -filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
+        -var_stream_map "v:0 v:1" \
+        -master_pl_name master.m3u8 \
+        -f hls -hls_time 6 -hls_playlist_type vod \
+        -hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
+        "${outputDir}/stream_%v.m3u8"`;
 
-const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
--map 0:v -map 0:v \
--c:v libx264 -crf 22 \
--filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
--filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
--var_stream_map "v:0 v:1" \
--master_pl_name master.m3u8 \
--f hls -hls_time 6 -hls_playlist_type vod \
--hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
-"${outputDir}/stream_%v.m3u8"`;
+      await execPromise(ffmpegCommand);
 
+      const generatedFiles = fs.readdirSync(outputDir);
+      console.log("🧪 Generated files:", generatedFiles);
 
-   await execPromise(ffmpegCommand);
+      if (generatedFiles.length === 0) {
+        throw new Error("FFmpeg produced no output files");
+      }
 
-const generatedFiles = fs.readdirSync(outputDir);
-console.log("🧪 Generated files:", generatedFiles);
-
-if (generatedFiles.length === 0) {
-  throw new Error("FFmpeg produced no output files");
-}
-
-console.log(`Transcoding complete`);
-
-
+      console.log(`Transcoding complete`);
 
       // UPLOAD PROCESSED FILES
-
       await prisma.video.update({
-  where: { id: videoId },
-  data: { processingStage: "UPLOAD" },
-});
+        where: { id: videoId },
+        data: { processingStage: "UPLOAD" },
+      });
 
       console.log(`Uploading HLS files to S3...`);
-
       const files = fs.readdirSync(outputDir);
-
       for (const file of files) {
         const filePath = path.join(outputDir, file);
         const fileBody = fs.readFileSync(filePath);
-
         await s3.send(
           new PutObjectCommand({
             Bucket: process.env.S3_PROCESSED_BUCKET,
@@ -147,51 +152,44 @@ console.log(`Transcoding complete`);
 
       console.log(`Uploaded ${files.length} files`);
 
-      
       // UPDATE STATUS READY
-     
-   await prisma.video.update({
-  where: { id: videoId },
-  data: {
-    status: "READY",
-    processingStage: "FINALIZE",
-    visibility: "PUBLIC",
-    masterPlaylist: `videos/${videoId}/master.m3u8`,
-  },
-});
-
-
-
-      console.log(`Video ${videoId} READY`);
-
-    }  catch (error) {
-  console.error(`Processing failed for ${videoId}:`, error);
-
-  // Check if video exists before updating
-  try {
-    const videoExists = await prisma.video.findUnique({
-      where: { id: videoId }
-    });
-
-    if (videoExists) {
       await prisma.video.update({
         where: { id: videoId },
         data: {
-          status: "FAILED",
-          errorMessage: error.message,
-          processingAttempts: { increment: 1 },
-          lastProcessedAt: new Date(),
+          status: "READY",
+          processingStage: "FINALIZE",
+          visibility: "PUBLIC",
+          masterPlaylist: `videos/${videoId}/master.m3u8`,
+          duration: videoDuration,
         },
       });
-    } else {
-      console.error(`❌ Cannot update - video ${videoId} doesn't exist`);
-    }
-  } catch (updateError) {
-    console.error(`❌ Error updating video status:`, updateError.message);
-  }
 
-  throw error;
-}finally {
+      console.log(`Video ${videoId} READY`);
+    } catch (error) {
+      console.error(`Processing failed for ${videoId}:`, error);
+      // Check if video exists before updating
+      try {
+        const videoExists = await prisma.video.findUnique({
+          where: { id: videoId },
+        });
+        if (videoExists) {
+          await prisma.video.update({
+            where: { id: videoId },
+            data: {
+              status: "FAILED",
+              errorMessage: error.message,
+              processingAttempts: { increment: 1 },
+              lastProcessedAt: new Date(),
+            },
+          });
+        } else {
+          console.error(`❌ Cannot update - video ${videoId} doesn't exist`);
+        }
+      } catch (updateError) {
+        console.error(`❌ Error updating video status:`, updateError.message);
+      }
+      throw error;
+    } finally {
       // --------------------
       // CLEANUP
       // --------------------
@@ -214,7 +212,7 @@ console.log(`Transcoding complete`);
 );
 
 // --------------------
-// EVENTS 
+// EVENTS
 // --------------------
 worker.on("completed", (job) => {
   console.log(`Job ${job.id} completed`);

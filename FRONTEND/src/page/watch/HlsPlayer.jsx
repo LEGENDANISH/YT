@@ -1,7 +1,7 @@
 import Hls from "hls.js"
 import { useEffect, useRef } from "react"
 
-const HlsPlayer = ({ src }) => {
+const HlsPlayer = ({ src, onPlay, onPause, onEnded }) => {
   const videoRef = useRef(null)
 
   useEffect(() => {
@@ -28,9 +28,11 @@ const HlsPlayer = ({ src }) => {
       autoPlay
       playsInline
       className="w-full aspect-video rounded-xl bg-black"
+      onPlay={onPlay}
+      onPause={onPause}
+      onEnded={onEnded}
     />
   )
 }
 
 export default HlsPlayer
-
