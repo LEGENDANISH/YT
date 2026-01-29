@@ -1,3 +1,6 @@
+
+
+
 const { Worker } = require("bullmq");
 const { PrismaClient } = require("@prisma/client");
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -21,12 +24,33 @@ if (!fs.existsSync(BASE_TEMP_DIR)) {
   fs.mkdirSync(BASE_TEMP_DIR, { recursive: true });
 }
 
-// GET VIDEO DURATION HELPER
+// GET VIDEO DURATION HELPER WITH EXTENSIVE LOGGING
 const getVideoDuration = (filePath) => {
   return new Promise((resolve, reject) => {
+    console.log(`📹 [DURATION] Starting ffprobe on: ${filePath}`);
+    console.log(`📹 [DURATION] File exists: ${fs.existsSync(filePath)}`);
+    
+    if (fs.existsSync(filePath)) {
+      const stats = fs.statSync(filePath);
+      console.log(`📹 [DURATION] File size: ${stats.size} bytes`);
+    }
+    
     ffmpeg.ffprobe(filePath, (err, metadata) => {
-      if (err) return reject(err);
-      resolve(Math.floor(metadata.format.duration));
+      if (err) {
+        console.error(`❌ [DURATION] ffprobe error:`, err);
+        return reject(err);
+      }
+      
+      console.log(`📹 [DURATION] Metadata received:`, JSON.stringify(metadata, null, 2));
+      
+      if (!metadata || !metadata.format || !metadata.format.duration) {
+        console.error(`❌ [DURATION] Missing duration in metadata`);
+        return reject(new Error("Duration not found in metadata"));
+      }
+      
+      const duration = Math.floor(metadata.format.duration);
+      console.log(`✅ [DURATION] Extracted duration: ${duration} seconds`);
+      resolve(duration);
     });
   });
 };
@@ -83,15 +107,39 @@ const worker = new Worker(
       console.log(`Downloaded to ${localInput}`);
 
       // --------------------
-      // EXTRACT DURATION
+      // EXTRACT DURATION WITH DETAILED LOGGING
       // --------------------
-      videoDuration = await getVideoDuration(localInput);
-      console.log(`🎯 Video duration: ${videoDuration}s`);
-
-      await prisma.video.update({
-        where: { id: videoId },
-        data: { duration: videoDuration },
-      });
+      console.log(`\n========== DURATION EXTRACTION START ==========`);
+      
+      try {
+        videoDuration = await getVideoDuration(localInput);
+        console.log(`🎯 [MAIN] Video duration captured: ${videoDuration}s`);
+        console.log(`🎯 [MAIN] Duration type: ${typeof videoDuration}`);
+        console.log(`🎯 [MAIN] Duration value check: ${videoDuration !== null && videoDuration !== undefined ? 'VALID' : 'INVALID'}`);
+        
+        // Update database with duration
+        console.log(`💾 [DB] Updating database with duration: ${videoDuration}`);
+        const updateResult = await prisma.video.update({
+          where: { id: videoId },
+          data: { duration: videoDuration },
+        });
+        console.log(`💾 [DB] Update result - duration field: ${updateResult.duration}`);
+        
+        // Verify the update
+        const verifyVideo = await prisma.video.findUnique({
+          where: { id: videoId },
+          select: { id: true, duration: true }
+        });
+        console.log(`✅ [DB VERIFY] Duration in database after update: ${verifyVideo.duration}`);
+        
+      } catch (durationError) {
+        console.error(`❌ [DURATION] Failed to extract duration:`, durationError);
+        console.error(`❌ [DURATION] Error stack:`, durationError.stack);
+        // Don't throw - continue processing without duration
+        videoDuration = null;
+      }
+      
+      console.log(`========== DURATION EXTRACTION END ==========\n`);
 
       // CREATE OUTPUT DIR
       if (!fs.existsSync(outputDir)) {
@@ -153,7 +201,11 @@ const worker = new Worker(
       console.log(`Uploaded ${files.length} files`);
 
       // UPDATE STATUS READY
-      await prisma.video.update({
+      console.log(`\n========== FINAL UPDATE START ==========`);
+      console.log(`📦 [FINAL] Duration value being set: ${videoDuration}`);
+      console.log(`📦 [FINAL] Duration type: ${typeof videoDuration}`);
+      
+      const finalUpdate = await prisma.video.update({
         where: { id: videoId },
         data: {
           status: "READY",
@@ -163,8 +215,18 @@ const worker = new Worker(
           duration: videoDuration,
         },
       });
+      
+      console.log(`📦 [FINAL] Final update result - duration: ${finalUpdate.duration}`);
+      
+      // Final verification
+      const finalVerify = await prisma.video.findUnique({
+        where: { id: videoId },
+        select: { id: true, duration: true, status: true }
+      });
+      console.log(`✅ [FINAL VERIFY] Video in database:`, finalVerify);
+      console.log(`========== FINAL UPDATE END ==========\n`);
 
-      console.log(`Video ${videoId} READY`);
+      console.log(`Video ${videoId} READY with duration: ${videoDuration}s`);
     } catch (error) {
       console.error(`Processing failed for ${videoId}:`, error);
       // Check if video exists before updating

@@ -65,20 +65,20 @@ const createUpload = async (req, res) => {
 
     // 5. Create video record in database
     try {
-      await prisma.video.create({
-        data: {
-          id: videoId,
-          title,
-          description: description || "",
-          userId,
-          status: "UPLOADING",
-          originalFileUrl: s3Key,
-          fileSize,
-          mimeType,
-          originalName: originalName || "video.mp4",
-          uploadProgress: 0,
-        },
-      });
+await prisma.video.create({
+  data: {
+    id: videoId,
+    title: title,
+    description: description,
+    userId: userId,
+    status: "UPLOADING",
+    originalFileUrl: `raw/${videoId}/${originalName}`,
+    fileSize: fileSize ? String(fileSize) : null, // ✅ Convert to string or null
+    mimeType: mimeType,
+    originalName: originalName,
+    uploadProgress: 0
+  }
+})
       console.log(" Video record created");
     } catch (dbError) {
       console.error(" Database error:", dbError);

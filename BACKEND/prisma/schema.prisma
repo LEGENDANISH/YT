@@ -55,11 +55,11 @@ model Video {
   visibility      Visibility  @default(PRIVATE)
   views           Int         @default(0)
   originalFileUrl String?
-   uploadProgress   Int      @default(0)
+  uploadProgress  Int         @default(0)
   masterPlaylist  String? // master.m3u8 URL
   
   // Metadata
-  fileSize        BigInt?
+  fileSize        String?     // Changed from BigInt? to String?
   mimeType        String?
   originalName    String?
   
@@ -94,8 +94,7 @@ model Video {
   @@index([visibility])
   @@index([createdAt])
   @@index([views])
-}
-
+} 
 enum VideoStatus {
   UPLOADING
   UPLOAD_FAILED
@@ -346,6 +345,7 @@ model WatchHistory {
   watchDuration Int // in seconds
   completed     Boolean  @default(false)
 
+  @@unique([userId, videoId])  // ✅ Add this line
   @@index([userId])
   @@index([videoId])
   @@index([watchedAt])
