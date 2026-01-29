@@ -1,12 +1,15 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const MIN_VIEW_SECONDS = 30;
+const MIN_VIEW_PERCENT = 0.3;
+
 const recordView = async (req, res) => {
   const { id: videoId } = req.params;
   const userId = req.user.id;
-  const { watchDuration, completed } = req.body;
+  const { watchDuration } = req.body;
 
-  if (!watchDuration || watchDuration < 1) {
+  if (typeof watchDuration !== "number" || watchDuration < 0) {
     return res.status(400).json({ message: "Invalid watch duration" });
   }
 
@@ -18,18 +21,22 @@ const recordView = async (req, res) => {
     return res.status(404).json({ message: "Video not available" });
   }
 
-  // Check if user has already completed this video
-  const alreadyCompleted = await prisma.watchHistory.findFirst({
-    where: {
-      userId,
-      videoId,
-      completed: true,
-    },
-  });
+  const qualifiesForView =
+    watchDuration >= MIN_VIEW_SECONDS ||
+    watchDuration / video.duration >= MIN_VIEW_PERCENT;
 
   await prisma.$transaction(async (tx) => {
-    // Increment views ONLY if first completion
-    if (completed && !alreadyCompleted) {
+    // Check if view already counted
+    const existingView = await tx.watchHistory.findFirst({
+      where: {
+        userId,
+        videoId,
+        viewCounted: true,
+      },
+    });
+
+    // Increment views ONCE
+    if (qualifiesForView && !existingView) {
       await tx.video.update({
         where: { id: videoId },
         data: {
@@ -38,19 +45,31 @@ const recordView = async (req, res) => {
       });
     }
 
-    await tx.watchHistory.create({
-      data: {
+    // Save / update watch history
+    await tx.watchHistory.upsert({
+      where: {
+        userId_videoId: { userId, videoId },
+      },
+      update: {
+        watchDuration: {
+          increment: watchDuration,
+        },
+        completed: watchDuration >= video.duration,
+        viewCounted: qualifiesForView || existingView?.viewCounted,
+      },
+      create: {
         userId,
         videoId,
         watchDuration,
-        completed: completed ?? false,
+        completed: watchDuration >= video.duration,
+        viewCounted: qualifiesForView,
       },
     });
   });
 
   res.json({
-    message: completed
-      ? "View recorded (completed)"
+    message: qualifiesForView
+      ? "View recorded"
       : "Watch progress recorded",
   });
 };
