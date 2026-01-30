@@ -10,6 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useEffect, useState } from "react"
+import axios from "axios"
 
 const Topbar = ({
   sidebarOpen,
@@ -18,6 +20,31 @@ const Topbar = ({
   toggleDarkMode,
   handleCreateClick,
 }) => {
+ const getCachedUser = async (setUser) => {
+  try {
+    const cachedUser = localStorage.getItem("userData");
+
+    if (cachedUser) {
+      setUser(JSON.parse(cachedUser));
+      return;
+    }
+
+    const res = await axios.get("http://localhost:8000/api/aboutme", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+      },
+    });
+
+    const userData = res.data.data;
+
+    localStorage.setItem("userData", JSON.stringify(userData));
+    setUser(userData);
+
+  } catch (error) {
+    console.error("Failed to fetch user:", error);
+  }
+};
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-zinc-950 border-b border-gray-200 dark:border-zinc-800">
       <div className="flex items-center justify-between px-4 py-2">

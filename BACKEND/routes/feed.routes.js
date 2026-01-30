@@ -1,6 +1,6 @@
 const express = require("express");
 const { authMiddleware } = require("../middleware/authMiddleware");
-const { getHomeFeed, getTrendingFeed ,getHybridHomeFeed } = require("../controllers/feed.controller");
+const { getHomeFeed, getTrendingFeed ,getHybridHomeFeed, clearAllHistory, deleteHistoryItem, getWatchHistory } = require("../controllers/feed.controller");
 const { recordView } = require("../controllers/videoView.controller");
 
 const router = express.Router();
@@ -10,5 +10,10 @@ router.get("/home", authMiddleware, getHomeFeed);
 router.post("/:id/view", authMiddleware, recordView);
 router.get("/trending", authMiddleware, getTrendingFeed);
 router.get("/hybrid", authMiddleware, getHybridHomeFeed);
+//history
+router.get("/history", authMiddleware, getWatchHistory);
+
+router.delete("/history/:videoId", authMiddleware, deleteHistoryItem);
+router.delete("/history", authMiddleware, clearAllHistory);
 
 module.exports = router;

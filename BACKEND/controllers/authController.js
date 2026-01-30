@@ -68,12 +68,10 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate
     if (!email || !password) {
       return res.status(400).json({ message: "Email and password required" });
     }
 
-    // Find user
     const user = await prisma.user.findUnique({
       where: { email },
     });
@@ -82,7 +80,6 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Compare password
     const isPasswordValid = await bcrypt.compare(
       password,
       user.passwordHash
@@ -92,7 +89,6 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
-    // Generate token
     const token = jwt.sign(
       { id: user.id },
       process.env.JWT_SECRET,
@@ -108,13 +104,14 @@ const loginUser = async (req, res) => {
         username: user.username,
         displayName: user.displayName,
         avatarUrl: user.avatarUrl,
-        channelBanner: user.channelBanner,
       },
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error("Login Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 
@@ -151,6 +148,40 @@ const updateUser = async (req, res) => {
   }
 };
 
+const aboutme = async (req, res) => {
+  try {
+    if (!req.user?.id) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        displayName: true,
+        bio: true,
+        avatarUrl: true,
+        channelBanner: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+    console.error("AboutMe Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
 
 const deleteUser = async (req, res) => {
@@ -168,4 +199,4 @@ const deleteUser = async (req, res) => {
 };
 
 
-module.exports={registerUser,loginUser,updateUser,deleteUser};
+module.exports={registerUser,loginUser,updateUser,deleteUser,aboutme};

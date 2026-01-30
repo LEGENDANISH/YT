@@ -76,4 +76,88 @@ const getHybridHomeFeed = async (req, res) => {
   }
 };
 
-module.exports = { getHomeFeed, getTrendingFeed ,getHybridHomeFeed};
+
+
+const deleteHistoryItem = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { videoId } = req.params;
+
+    await prisma.watchHistory.delete({
+      where: {
+        userId_videoId: {
+          userId,
+          videoId,
+        },
+      },
+    });
+
+    return res.json({ message: "History item deleted" });
+  } catch (error) {
+    console.error("Delete history error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+const clearAllHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    await prisma.watchHistory.deleteMany({
+      where: { userId },
+    });
+
+    return res.json({ message: "All history cleared" });
+  } catch (error) {
+    console.error("Clear history error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+const getWatchHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const history = await prisma.watchHistory.findMany({
+      where: {
+        userId,
+        video: {
+          status: "READY",
+          visibility: "PUBLIC",
+        },
+      },
+      orderBy: {
+        watchedAt: "desc",
+      },
+      include: {
+        video: {
+          select: {
+            id: true,
+            title: true,
+            thumbnailUrl: true,
+            duration: true,
+            views: true,
+            createdAt: true,
+            user: {
+              select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatarUrl: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return res.json({
+      success: true,
+      data: history,
+    });
+  } catch (error) {
+    console.error("Watch history error:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
+module.exports = { getHomeFeed, getTrendingFeed ,getHybridHomeFeed,getWatchHistory,deleteHistoryItem,clearAllHistory};

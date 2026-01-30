@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Topbar from "./Topbar"
+import Topbar from "../home/components/Topbar"
 import Sidebar from "./Sidebar"
 const PORT = import.meta.env.VITE_BACKEND_PORT
 const BASE_URL = `http://localhost:${PORT}/api`
