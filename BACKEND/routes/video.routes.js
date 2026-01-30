@@ -15,7 +15,13 @@ const { getRecommendationsForVideo } = require("../controllers/videoRecommendati
 const { recordView } = require("../controllers/recordView.controller");
 const { getWatchRecommendations } = require("../controllers/recommend.controller");
 const { getAutoplayNext } = require("../controllers/autoplay.controller");
+const { likedvideos, likeVideo, unlikeVideo, getVideoLikes } = require("../controllers/likedvideo.Controller");
 const router = express.Router();
+
+// liked videos routes FIRST
+router.get("/likedvideos", authMiddleware, likedvideos);
+router.post("/like/:videoId", authMiddleware, likeVideo);
+router.delete("/like/:videoId", authMiddleware, unlikeVideo);
 
 // Upload endpoints
 router.post("/upload/init", authMiddleware, createUpload);
@@ -23,8 +29,8 @@ router.post("/upload/complete", authMiddleware, completeUpload);
 router.put("/upload/progress/:videoId", authMiddleware, updateUploadProgress);
 
 // Video endpoints
-router.get("/:id", getVideoById);
 router.get("/stream/:id", getStreamUrl);
+router.get("/:id", getVideoById);
 
 router.post("/:id/cancel", authMiddleware, cancelVideo);
 router.delete("/:id", authMiddleware, deleteVideo);
@@ -36,10 +42,10 @@ router.get("/:id/autoplay", authMiddleware, getAutoplayNext);
 router.post("/:id/view", authMiddleware, recordView);
 router.get("/:id/recommend", getWatchRecommendations);
 
-
-
-
-
-
 router.post("/:id/retry-processing", authMiddleware, retryProcessing);
+
+
+router.get("/:id/likes", authMiddleware, getVideoLikes);
+
+
 module.exports = router;
