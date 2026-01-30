@@ -9,6 +9,8 @@ import Signup from "./page/Signup";
 import Home from "./page/home/Home";
 import Watch from "./page/watch/Watch";
 import HistoryPage from "./page/history/HistoryPage";
+import LikedVideos from "./page/likedvideos/LikedVideos";
+import Subscriptions from "./page/subscriptions/Subscriptions";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -21,6 +23,8 @@ createRoot(document.getElementById("root")).render(
             <Route path="/Signup" element={<Signup/>} />
   <Route path="/videos/:id" element={<Watch />} />
   <Route path="/feed/history" element={<HistoryPage />} />
+<Route path="/liked-videos" element={<LikedVideos />} />
+  <Route path="/subscriptions" element={<Subscriptions />} />
 
     </Routes>
   </BrowserRouter>

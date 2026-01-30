@@ -32,6 +32,12 @@
       const [showFullDescription, setShowFullDescription] = useState(false)
       const [subscribed, setSubscribed] = useState(false)
 
+      const [subscriberCount, setSubscriberCount] = useState(0)
+const [channelId, setChannelId] = useState(null)
+
+
+
+
       // ✅ View tracking refs
       const watchStartRef = useRef(null)
       const sentViewRef = useRef(false)
@@ -70,6 +76,26 @@ const load = async () => {
     setStreamUrl(streamRes.data.streamUrl);
     setRelated(recRes.data.videos ?? recRes.data ?? []);
 
+    // ✅ Subscription logic MUST be inside try
+    const channelIdFromVideo = videoData.user?.id;
+    setChannelId(channelIdFromVideo);
+
+    if (channelIdFromVideo) {
+      const [subCountRes, subCheckRes] = await Promise.all([
+        axios.get(`${API_BASE}/subscribers/${channelIdFromVideo}`),
+        token
+          ? axios.get(`${API_BASE}/subscribe/check/${channelIdFromVideo}`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            })
+          : Promise.resolve(null),
+      ]);
+
+      setSubscriberCount(subCountRes.data.subscribers || 0);
+      setSubscribed(subCheckRes?.data?.subscribed || false);
+    }
+
   } catch (err) {
     console.error("Watch load failed:", err);
     setVideo(null);
@@ -77,6 +103,7 @@ const load = async () => {
     setLoading(false);
   }
 };
+
 
 
 
@@ -218,9 +245,43 @@ await refreshVideoLikes();
         alert("Link copied to clipboard!")
       }
 
-      const handleSubscribe = () => {
-        setSubscribed(prev => !prev)
-      }
+  const handleSubscribe = async () => {
+  if (!token || !channelId) {
+    alert("Please login first");
+    return;
+  }
+
+  try {
+    if (subscribed) {
+      await axios.delete(`${API_BASE}/subscribe/${channelId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setSubscribed(false);
+      setSubscriberCount(prev => Math.max(prev - 1, 0));
+
+    } else {
+      await axios.post(
+        `${API_BASE}/subscribe/${channelId}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setSubscribed(true);
+      setSubscriberCount(prev => prev + 1);
+    }
+
+  } catch (err) {
+    console.error("Subscription action failed:", err);
+  }
+};
+
 
       const formatViews = (views) => {
         if (views >= 1000000) {
@@ -384,7 +445,7 @@ await refreshVideoLikes();
                             {video.user?.username || 'Unknown'}
                           </span>
                           <span className="text-xs text-gray-600 dark:text-gray-400">
-                            {video.subscribers ? `${formatViews(video.subscribers)} subscribers` : ''}
+{formatViews(subscriberCount)} subscribers
                           </span>
                         </div>
                         <button

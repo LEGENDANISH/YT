@@ -6,6 +6,7 @@ const cors = require("cors");
 const { initializeWebSocket } = require("./websocket");
 const authRoutes = require("./routes/authRoutes");
 const videoRoutes = require("./routes/video.routes");
+const subscriptionRoutes = require("./routes/subscription.routes");
 const feedRoutes = require("./routes/feed.routes");
 const recommendationRoutes = require("./routes/recommendation.routes"); 
 const app = express();
@@ -24,6 +25,7 @@ app.use("/api", authRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/feed", feedRoutes);
 console.log("DATABASE_URL =", process.env.DATABASE_URL);
+app.use("/api", subscriptionRoutes);
 
 app.use("/api", recommendationRoutes);
 // check endpoint

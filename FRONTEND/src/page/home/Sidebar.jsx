@@ -28,7 +28,7 @@ const Sidebar = ({ sidebarOpen }) => {
 
           <SidebarItem label="History" open={sidebarOpen} to="/feed/history" />
           <SidebarItem label="Your videos" open={sidebarOpen} to="/your-videos" />
-          <SidebarItem label="Watch later" open={sidebarOpen} to="/watch-later" />
+          {/* <SidebarItem label="Watch later" open={sidebarOpen} to="/watch-later" /> */}
           <SidebarItem label="Liked videos" open={sidebarOpen} to="/liked-videos" />
         </div>
       </nav>
