@@ -116,7 +116,11 @@ const getWatchHistory = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const history = await prisma.watchHistory.findMany({
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const historyEntries = await prisma.watchHistory.findMany({
       where: {
         userId,
         video: {
@@ -127,15 +131,11 @@ const getWatchHistory = async (req, res) => {
       orderBy: {
         watchedAt: "desc",
       },
+      skip,
+      take: limit,
       include: {
         video: {
-          select: {
-            id: true,
-            title: true,
-            thumbnailUrl: true,
-            duration: true,
-            views: true,
-            createdAt: true,
+          include: {
             user: {
               select: {
                 id: true,
@@ -151,13 +151,17 @@ const getWatchHistory = async (req, res) => {
 
     return res.json({
       success: true,
-      data: history,
+      page,
+      limit,
+      data: historyEntries,
     });
+
   } catch (error) {
-    console.error("Watch history error:", error);
+    console.error("History Feed Error:", error);
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 
 module.exports = { getHomeFeed, getTrendingFeed ,getHybridHomeFeed,getWatchHistory,deleteHistoryItem,clearAllHistory};
