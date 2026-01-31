@@ -175,7 +175,7 @@ if (cursor) {
       : 'Showing mixed results'}
   </p>
 )}
-          )}
+
         </div>
 
         {/* Error State */}

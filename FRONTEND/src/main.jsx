@@ -13,6 +13,7 @@ import LikedVideos from "./page/likedvideos/LikedVideos";
 import Subscriptions from "./page/subscriptions/Subscriptions";
 import SearchResults from "./page/SearchResults";
 import SearchResultsPage from "./page/searches/SearchContext";
+import ChannelPage from "./page/yourchannel/channnel";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -29,7 +30,7 @@ createRoot(document.getElementById("root")).render(
   <Route path="/subscriptions" element={<Subscriptions />} />
 <Route path="search" element={<SearchResults />} />
 <Route path="/results" element={<SearchResultsPage />} />
-
+<Route path="/channel" element={<ChannelPage />} />
     </Routes>
   </BrowserRouter>
 );

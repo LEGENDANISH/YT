@@ -1,8 +1,12 @@
 const express = require("express");
+const { authMiddleware } = require("../middleware/authMiddleware");
+const { PrismaClient } = require("@prisma/client");
+const prisma = new PrismaClient();
 
 const router = express.Router();
 
 const multer = require("multer");
+const { updateThumbnail } = require("../controllers/thumbnail/thumbnail.controller");
 const upload = multer();
 
 router.put("/thumbnail/:videoId", authMiddleware, upload.single("thumbnail"), updateThumbnail);

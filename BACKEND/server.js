@@ -28,10 +28,13 @@ console.log("DATABASE_URL =", process.env.DATABASE_URL);
 app.use("/api", subscriptionRoutes);
 app.use("/api/search", require("./routes/search.routes"));
 app.use("/api", recommendationRoutes);
+app.use("/api", require("./routes/thumbnail.routes"));
+
 // check endpoint
 app.get("/health", (req, res) => {
   res.json({ status: "ok" });
 });
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
