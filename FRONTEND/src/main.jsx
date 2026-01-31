@@ -14,6 +14,7 @@ import Subscriptions from "./page/subscriptions/Subscriptions";
 import SearchResults from "./page/SearchResults";
 import SearchResultsPage from "./page/searches/SearchContext";
 import ChannelPage from "./page/yourchannel/channnel";
+import UploadPage from "./page/videoUpload/UploadPage";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -31,6 +32,7 @@ createRoot(document.getElementById("root")).render(
 <Route path="search" element={<SearchResults />} />
 <Route path="/results" element={<SearchResultsPage />} />
 <Route path="/channel" element={<ChannelPage />} />
+<Route path="/upload" element={<UploadPage/>} />
     </Routes>
   </BrowserRouter>
 );

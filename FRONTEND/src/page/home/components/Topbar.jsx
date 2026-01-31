@@ -48,10 +48,12 @@ const Topbar = ({
   const [searchHistory, setSearchHistory] = useState([])
   const [hoveredItem, setHoveredItem] = useState(null)
 
+const user = JSON.parse(localStorage.getItem("userData"));
   // Load search history on mount
   useEffect(() => {
     setSearchHistory(getSearchHistory())
   }, [])
+
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -90,6 +92,7 @@ const Topbar = ({
       handleSearch()
     }
   }
+console.log("User:", user);
 
   // Delete individual history item
   const handleDeleteHistory = (itemQuery, e) => {
@@ -288,20 +291,30 @@ const Topbar = ({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-9 w-9 rounded-full">
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>U</AvatarFallback>
-                </Avatar>
+               <Avatar>
+  {user?.avatarUrl ? (
+    <AvatarImage src={user.avatarUrl} />
+  ) : (
+    <AvatarFallback>
+      {user?.displayName?.[0]?.toUpperCase() || "U"}
+    </AvatarFallback>
+  )}
+</Avatar>
+
               </Button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>
-                <p className="text-sm font-medium">User Name</p>
-                <p className="text-xs text-muted-foreground">
-                  user@example.com
-                </p>
-              </DropdownMenuLabel>
+             <DropdownMenuLabel>
+  <p className="text-sm font-medium">
+    {user?.displayName || "User"}
+  </p>
+
+  <p className="text-xs text-muted-foreground">
+    {user?.email}
+  </p>
+</DropdownMenuLabel>
+
 
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => navigate("/channel")}>

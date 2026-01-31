@@ -45,7 +45,8 @@ console.log("About Me Response:", res.data);
         console.error("Failed to fetch channel ID:", err);
       }
     };
-
+loadAboutData();
+loadSubscriberCount();
     fetchChannelId();
   }, []);
 
@@ -56,14 +57,15 @@ useEffect(() => {
   loadVideos();
 }, [channelId]);
 
-
- const loadSubscriberCount = async () => {
+const loadSubscriberCount = async () => {
   if (!channelId) return;
 
   try {
     const response = await fetch(`${API_BASE_URL}/subscribers/${channelId}`);
     const data = await response.json();
-    setSubscriberCount(data.count || 0);
+
+    setSubscriberCount(data.subscribers || 0);
+    console.log("Subscriber Count:", data.subscribers);
   } catch (error) {
     console.error('Error loading subscriber count:', error);
   }
@@ -100,6 +102,7 @@ useEffect(() => {
       
       const data = await response.json();
       setAboutData(data);
+      console.log("About Data:", data); 
     } catch (error) {
       console.error('Error loading about info:', error);
     }
@@ -239,13 +242,22 @@ useEffect(() => {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/60 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-pink-500/30">
-              YC
-            </div>
+<div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-pink-500/30">
+  {aboutData?.data?.avatarUrl ? (
+    <img
+      src={aboutData.data.avatarUrl}
+      alt="Profile"
+      className="w-full h-full object-cover"
+    />
+  ) : (
+    aboutData?.data?.displayName?.[0]?.toUpperCase() || "U"
+  )}
+</div>
+
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-                Your Channel
-              </h1>
+{aboutData?.data?.displayName || "Your Channel"}
+    </h1>
               <p className="text-sm text-slate-400 font-mono">
                 {formatNumber(subscriberCount)} subscribers
               </p>
@@ -520,7 +532,7 @@ useEffect(() => {
                 <div className="space-y-6">
                   <div>
                     <h4 className="text-sm font-semibold text-slate-400 mb-2">Channel Name</h4>
-                    <p className="text-lg font-medium">{aboutData.channelName || 'Your Channel'}</p>
+                    <p className="text-lg font-medium">{aboutData.data.displayName || 'Your Channel'}</p>
                   </div>
                   {aboutData.description && (
                     <div>
@@ -531,12 +543,12 @@ useEffect(() => {
                   {aboutData.email && (
                     <div>
                       <h4 className="text-sm font-semibold text-slate-400 mb-2">Email</h4>
-                      <p className="text-slate-300 font-mono">{aboutData.email}</p>
+                      <p className="text-slate-300 font-mono">{aboutData.data.email}</p>
                     </div>
                   )}
                   <div>
                     <h4 className="text-sm font-semibold text-slate-400 mb-2">Joined</h4>
-                    <p className="text-slate-300">{formatDate(aboutData.createdAt)}</p>
+                    <p className="text-slate-300">{formatDate(aboutData.data.createdAt)}</p>
                   </div>
                 </div>
               )}
