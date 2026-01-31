@@ -1,6 +1,3 @@
-
-
-
 const { Worker } = require("bullmq");
 const { PrismaClient } = require("@prisma/client");
 const { S3Client, GetObjectCommand, PutObjectCommand } = require("@aws-sdk/client-s3");
@@ -55,6 +52,42 @@ const getVideoDuration = (filePath) => {
   });
 };
 
+// GENERATE THUMBNAIL HELPER
+const generateThumbnail = (inputPath, outputPath) => {
+  return new Promise((resolve, reject) => {
+    console.log(`🎨 [FFMPEG] Starting thumbnail generation...`);
+    console.log(`🎨 [FFMPEG] Input: ${inputPath}`);
+    console.log(`🎨 [FFMPEG] Output: ${outputPath}`);
+    console.log(`🎨 [FFMPEG] Output dir: ${path.dirname(outputPath)}`);
+    
+    // Ensure output directory exists
+    const outputDir = path.dirname(outputPath);
+    if (!fs.existsSync(outputDir)) {
+      console.log(`🎨 [FFMPEG] Creating output directory: ${outputDir}`);
+      fs.mkdirSync(outputDir, { recursive: true });
+    }
+    
+    ffmpeg(inputPath)
+      .screenshots({
+        timestamps: ["10%"],
+        filename: path.basename(outputPath),
+        folder: path.dirname(outputPath),
+        size: "1280x720",
+      })
+      .on("start", (commandLine) => {
+        console.log(`🎨 [FFMPEG] Command: ${commandLine}`);
+      })
+      .on("end", () => {
+        console.log(`🎨 [FFMPEG] Thumbnail generation completed`);
+        resolve();
+      })
+      .on("error", (err) => {
+        console.error(`❌ [FFMPEG] Thumbnail generation error:`, err);
+        reject(err);
+      });
+  });
+};
+
 // WORKER
 const worker = new Worker(
   "video-processing",
@@ -65,6 +98,7 @@ const worker = new Worker(
 
     const localInput = path.join(BASE_TEMP_DIR, `${videoId}-input.mp4`);
     const outputDir = path.join(BASE_TEMP_DIR, videoId);
+    const thumbnailPath = path.join(BASE_TEMP_DIR, `${videoId}-thumb.jpg`);
     let videoDuration = null;
 
     try {
@@ -105,6 +139,78 @@ const worker = new Worker(
       });
 
       console.log(`Downloaded to ${localInput}`);
+
+      // --------------------
+      // THUMBNAIL GENERATION
+      // --------------------
+      console.log("🎨 [THUMBNAIL] Starting thumbnail check...");
+
+      // Re-check if thumbnail was already generated (in case of retries)
+      const currentVideo = await prisma.video.findUnique({
+        where: { id: videoId },
+        select: { thumbnailUrl: true }
+      });
+
+      console.log(`🎨 [THUMBNAIL] Current thumbnailUrl in DB: ${currentVideo.thumbnailUrl}`);
+
+      if (!currentVideo.thumbnailUrl) {
+        console.log("🎨 [THUMBNAIL] No thumbnail found — generating...");
+        
+        try {
+          // Generate thumbnail
+          console.log(`🎨 [THUMBNAIL] Generating thumbnail from: ${localInput}`);
+          console.log(`🎨 [THUMBNAIL] Output path: ${thumbnailPath}`);
+          
+          await generateThumbnail(localInput, thumbnailPath);
+          
+          // Verify thumbnail file was created
+          if (!fs.existsSync(thumbnailPath)) {
+            throw new Error(`Thumbnail file not created at ${thumbnailPath}`);
+          }
+          
+          const thumbStats = fs.statSync(thumbnailPath);
+          console.log(`🎨 [THUMBNAIL] Thumbnail created, size: ${thumbStats.size} bytes`);
+          
+          // Read thumbnail
+          const thumbBuffer = fs.readFileSync(thumbnailPath);
+          console.log(`🎨 [THUMBNAIL] Thumbnail buffer size: ${thumbBuffer.length} bytes`);
+          
+          const thumbKey = `thumbnails/${videoId}.jpg`;
+          console.log(`🎨 [THUMBNAIL] Uploading to S3 with key: ${thumbKey}`);
+          console.log(`🎨 [THUMBNAIL] Bucket: ${process.env.S3_PROCESSED_BUCKET}`);
+          
+          // Upload to S3
+          const uploadResult = await s3.send(
+            new PutObjectCommand({
+              Bucket: process.env.S3_PROCESSED_BUCKET,
+              Key: thumbKey,
+              Body: thumbBuffer,
+              ContentType: "image/jpeg",
+            })
+          );
+          
+          console.log(`🎨 [THUMBNAIL] S3 upload result:`, uploadResult);
+          
+const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+          console.log(`🎨 [THUMBNAIL] Thumbnail URL: ${thumbUrl}`);
+          
+          // Update database
+          const updateResult = await prisma.video.update({
+            where: { id: videoId },
+            data: { thumbnailUrl: thumbUrl },
+          });
+          
+          console.log(`🎨 [THUMBNAIL] Database updated with thumbnailUrl: ${updateResult.thumbnailUrl}`);
+          console.log("✅ [THUMBNAIL] Thumbnail generated & uploaded successfully");
+          
+        } catch (thumbnailError) {
+          console.error(`❌ [THUMBNAIL] Failed to generate/upload thumbnail:`, thumbnailError);
+          console.error(`❌ [THUMBNAIL] Error stack:`, thumbnailError.stack);
+          // Don't throw - continue processing without thumbnail
+        }
+      } else {
+        console.log(`✅ [THUMBNAIL] Thumbnail already exists: ${currentVideo.thumbnailUrl}`);
+      }
 
       // --------------------
       // EXTRACT DURATION WITH DETAILED LOGGING
@@ -238,7 +344,7 @@ const worker = new Worker(
           await prisma.video.update({
             where: { id: videoId },
             data: {
-              status: "FAILED",
+              status: "PROCESSING_FAILED", // ✅ FIXED: Changed from "FAILED" to "PROCESSING_FAILED"
               errorMessage: error.message,
               processingAttempts: { increment: 1 },
               lastProcessedAt: new Date(),
@@ -255,6 +361,7 @@ const worker = new Worker(
       // --------------------
       // CLEANUP
       // --------------------
+      if (fs.existsSync(thumbnailPath)) fs.unlinkSync(thumbnailPath);
       if (fs.existsSync(localInput)) fs.unlinkSync(localInput);
       if (fs.existsSync(outputDir))
         fs.rmSync(outputDir, { recursive: true, force: true });

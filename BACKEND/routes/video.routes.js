@@ -16,6 +16,9 @@ const { recordView } = require("../controllers/recordView.controller");
 const { getWatchRecommendations } = require("../controllers/recommend.controller");
 const { getAutoplayNext } = require("../controllers/autoplay.controller");
 const { likedvideos, likeVideo, unlikeVideo, getVideoLikes } = require("../controllers/likedvideo.Controller");
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
+
 const router = express.Router();
 
 // liked videos routes FIRST
@@ -24,7 +27,8 @@ router.post("/like/:videoId", authMiddleware, likeVideo);
 router.delete("/like/:videoId", authMiddleware, unlikeVideo);
 
 // Upload endpoints
-router.post("/upload/init", authMiddleware, createUpload);
+router.post("/upload/init", authMiddleware,  upload.single("thumbnail"), // 👈 optional thumbnail
+  createUpload);
 router.post("/upload/complete", authMiddleware, completeUpload);
 router.put("/upload/progress/:videoId", authMiddleware, updateUploadProgress);
 

@@ -3,6 +3,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { v4: uuid } = require("uuid");
 const { s3 } = require("../config/s3");
+const axios = require("axios");
 
 const prisma = new PrismaClient();
 
@@ -59,6 +60,67 @@ const createUpload = async (req, res) => {
     }
 
     const videoId = uuid();
+    let finalThumbnailUrl = null;
+
+try {
+  // CASE 1 — thumbnail sent as file (multipart)
+  if (req.file) {
+    const thumbKey = `thumbnails/${videoId}.jpg`;
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.S3_PROCESSED_BUCKET,
+        Key: thumbKey,
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype,
+      })
+    );
+
+    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
+  }
+
+  // CASE 2 — thumbnail as base64
+  else if (req.body.thumbnailBase64) {
+    const base64Data = req.body.thumbnailBase64.split(",")[1];
+    const buffer = Buffer.from(base64Data, "base64");
+
+    const thumbKey = `thumbnails/${videoId}.jpg`;
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.S3_PROCESSED_BUCKET,
+        Key: thumbKey,
+        Body: buffer,
+        ContentType: "image/jpeg",
+      })
+    );
+
+    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
+  }
+
+  // CASE 3 — thumbnail from URL
+  else if (req.body.thumbnailUrl) {
+    const response = await axios.get(req.body.thumbnailUrl, {
+      responseType: "arraybuffer",
+    });
+
+    const thumbKey = `thumbnails/${videoId}.jpg`;
+
+    await s3.send(
+      new PutObjectCommand({
+        Bucket: process.env.S3_PROCESSED_BUCKET,
+        Key: thumbKey,
+        Body: response.data,
+        ContentType: "image/jpeg",
+      })
+    );
+
+    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
+  }
+} catch (err) {
+  console.error("Thumbnail upload failed:", err);
+}
+
     const s3Key = `raw/${videoId}/${originalName || "video.mp4"}`;
 
     console.log(" Creating video record:", { videoId, s3Key });
@@ -76,7 +138,9 @@ await prisma.video.create({
     fileSize: fileSize ? String(fileSize) : null, // ✅ Convert to string or null
     mimeType: mimeType,
     originalName: originalName,
-    uploadProgress: 0
+    uploadProgress: 0,
+    thumbnailUrl: finalThumbnailUrl
+
   }
 })
       console.log(" Video record created");
