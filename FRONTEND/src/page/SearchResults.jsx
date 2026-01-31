@@ -1,12 +1,11 @@
 // src/pages/SearchResultsPage.jsx
-// FIXED VERSION - Handles {video: [], channel: []} API format
+// CORRECTED VERSION - Handles backend {type, data} format properly
 
 import { useEffect, useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 import axios from "axios"
-import { Clock, Eye, User, CheckCircle2, Loader2, Filter } from "lucide-react"
+import { Clock, Eye, User, CheckCircle2, Filter } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
 
@@ -19,7 +18,7 @@ const SearchResultsPage = () => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [intent, setIntent] = useState(null)
-  const [filterType, setFilterType] = useState("all") // all, videos, channels
+  const [filterType, setFilterType] = useState("all")
 
   useEffect(() => {
     if (!query) {
@@ -44,43 +43,25 @@ const SearchResultsPage = () => {
         },
       })
 
-      console.log("API Response:", res.data) // Debug log
-
-      // Handle different API response formats
-      let items = []
-      let nextCursor = null
-
-      // Check if response has items array directly
-      if (res.data.items && Array.isArray(res.data.items)) {
-        items = res.data.items
-        nextCursor = res.data.nextCursor
-      }
-      // Or if response has separate video/channel arrays
-      else if (res.data.video || res.data.channel) {
-        // Combine videos and channels into items array
-        const videos = Array.isArray(res.data.video) 
-          ? res.data.video.map(v => ({ ...v, type: 'video' }))
-          : []
-        
-        const channels = Array.isArray(res.data.channel)
-          ? res.data.channel.map(c => ({ ...c, type: 'channel' }))
-          : []
-        
-        items = [...videos, ...channels]
-        nextCursor = res.data.nextCursor || null
-      }
+      console.log("API Response:", res.data)
 
       setIntent(res.data.intent)
 
+      // Transform backend results: {type, data} → flat items with type
+      const parsedItems = (res.data.results || []).map(entry => ({
+        ...entry.data,
+        type: entry.type
+      }))
+
       if (cursor) {
         setResults((prev) => ({
-          items: [...prev.items, ...items],
-          nextCursor: nextCursor,
+          items: [...prev.items, ...parsedItems],
+          nextCursor: res.data.nextCursor,
         }))
       } else {
         setResults({
-          items: items,
-          nextCursor: nextCursor,
+          items: parsedItems,
+          nextCursor: res.data.nextCursor,
         })
       }
     } catch (err) {
@@ -187,9 +168,13 @@ const SearchResultsPage = () => {
             </button>
           </div>
 
-          {intent && (
+          {intent && typeof intent === 'object' && (
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-              Showing results for: {intent}
+              {intent.video > intent.channel 
+                ? 'Showing video-focused results' 
+                : intent.channel > intent.video 
+                ? 'Showing channel-focused results' 
+                : 'Showing mixed results'}
             </p>
           )}
         </div>
@@ -204,18 +189,18 @@ const SearchResultsPage = () => {
         {/* Results */}
         <div className="space-y-4">
           {filteredResults.map((item, index) => (
-            <div key={`${item.type}-${item.id || item._id}-${index}`}>
+            <div key={`${item.type}-${item.id}-${index}`}>
               {item.type === "video" ? (
                 <VideoResult
                   video={item}
-                  onClick={() => handleVideoClick(item.id || item._id)}
+                  onClick={() => handleVideoClick(item.id)}
                   formatViews={formatViews}
                   formatDate={formatDate}
                 />
               ) : (
                 <ChannelResult
                   channel={item}
-                  onClick={() => handleChannelClick(item.id || item._id)}
+                  onClick={() => handleChannelClick(item.id)}
                 />
               )}
             </div>
@@ -271,9 +256,9 @@ const VideoResult = ({ video, onClick, formatViews, formatDate }) => {
     >
       {/* Thumbnail */}
       <div className="relative flex-shrink-0 w-80 h-44 bg-gray-200 dark:bg-zinc-800 rounded-xl overflow-hidden">
-        {video.thumbnailUrl || video.thumbnail ? (
+        {video.thumbnailUrl ? (
           <img
-            src={video.thumbnailUrl || video.thumbnail}
+            src={video.thumbnailUrl}
             alt={video.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
           />
@@ -298,30 +283,32 @@ const VideoResult = ({ video, onClick, formatViews, formatDate }) => {
         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 mb-3">
           <span className="flex items-center gap-1">
             <Eye className="w-4 h-4" />
-            {formatViews(video.views || video.viewCount || 0)} views
+            {formatViews(video.views || 0)} views
           </span>
           <span>•</span>
           <span className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
-            {formatDate(video.createdAt || video.uploadedAt)}
+            {formatDate(video.createdAt)}
           </span>
         </div>
 
         {/* Channel Info */}
-        <div className="flex items-center gap-2 mb-3">
-          <Avatar className="w-6 h-6">
-            <AvatarImage src={video.channel?.avatarUrl || video.channel?.avatar} />
-            <AvatarFallback className="text-xs">
-              {video.channel?.username?.[0]?.toUpperCase() || video.channel?.name?.[0]?.toUpperCase() || "U"}
-            </AvatarFallback>
-          </Avatar>
-          <span className="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">
-            {video.channel?.username || video.channel?.name || "Unknown Channel"}
-          </span>
-          {video.channel?.verified && (
-            <CheckCircle2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-          )}
-        </div>
+        {video.channel && (
+          <div className="flex items-center gap-2 mb-3">
+            <Avatar className="w-6 h-6">
+              <AvatarImage src={video.channel.avatarUrl} />
+              <AvatarFallback className="text-xs">
+                {video.channel.username?.[0]?.toUpperCase() || "U"}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors">
+              {video.channel.username || "Unknown Channel"}
+            </span>
+            {video.channel.verified && (
+              <CheckCircle2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            )}
+          </div>
+        )}
 
         {/* Description */}
         {video.description && (
@@ -349,25 +336,25 @@ const ChannelResult = ({ channel, onClick }) => {
       className="flex items-start gap-6 cursor-pointer group hover:bg-gray-50 dark:hover:bg-zinc-900/50 p-4 rounded-lg transition-colors"
     >
       <Avatar className="w-32 h-32 flex-shrink-0 group-hover:ring-2 ring-blue-500 transition-all">
-        <AvatarImage src={channel.avatarUrl || channel.avatar} />
+        <AvatarImage src={channel.avatarUrl} />
         <AvatarFallback className="text-3xl">
-          {channel.username?.[0]?.toUpperCase() || channel.name?.[0]?.toUpperCase() || "U"}
+          {channel.username?.[0]?.toUpperCase() || "U"}
         </AvatarFallback>
       </Avatar>
 
       <div className="flex-1">
         <div className="flex items-center gap-2 mb-2">
           <h3 className="text-xl font-semibold group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-            {channel.username || channel.name || "Unknown Channel"}
+            {channel.username || "Unknown Channel"}
           </h3>
           {channel.verified && (
             <CheckCircle2 className="w-5 h-5 text-gray-600 dark:text-gray-400" />
           )}
         </div>
 
-        {channel.handle && (
+        {channel.displayName && (
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            @{channel.handle}
+            {channel.displayName}
           </p>
         )}
 
@@ -375,13 +362,13 @@ const ChannelResult = ({ channel, onClick }) => {
           {channel.subscriberCount !== undefined && (
             <span className="flex items-center gap-1">
               <User className="w-4 h-4" />
-              {formatSubscribers(channel.subscriberCount || channel.subscribers)} subscribers
+              {formatSubscribers(channel.subscriberCount)} subscribers
             </span>
           )}
           {channel.videoCount !== undefined && (
             <>
               <span>•</span>
-              <span>{channel.videoCount || channel.videos || 0} videos</span>
+              <span>{channel.videoCount} videos</span>
             </>
           )}
         </div>

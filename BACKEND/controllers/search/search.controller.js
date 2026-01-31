@@ -63,7 +63,7 @@ module.exports = {
         channelCandidates
       } = await searchService.generateCandidates(parsedQuery, type);
 
-      /* ---------- Phase 4: Fetch Full Data ---------- */
+      /* ---------- Phase 4: Fetch Full Data with Relations ---------- */
       let videos = [];
       let channels = [];
 
@@ -73,9 +73,22 @@ module.exports = {
           select: {
             id: true,
             title: true,
+            description: true,
+            thumbnailUrl: true,
+            duration: true,
             views: true,
             createdAt: true,
-            userId: true
+            userId: true,
+            // ✅ Include channel/user information
+            user: {
+              select: {
+                id: true,
+                username: true,
+                displayName: true,
+                avatarUrl: true,
+                isVerified: true
+              }
+            }
           }
         });
       }
@@ -86,12 +99,23 @@ module.exports = {
           select: {
             id: true,
             username: true,
-            createdAt: true
+            displayName: true,
+            avatarUrl: true,
+            bio: true,
+            isVerified: true,
+            createdAt: true,
+            // ✅ Include counts
+            _count: {
+              select: {
+                subscribers: true,
+                videos: true
+              }
+            }
           }
         });
       }
 
-      /* ---------- Phase 4: Ranking ---------- */
+      /* ---------- Phase 5: Ranking ---------- */
       const rankedVideos =
         type !== "channel"
           ? rankingService.rankVideos(videos, parsedQuery)
@@ -102,7 +126,7 @@ module.exports = {
           ? rankingService.rankChannels(channels)
           : [];
 
-      /* ---------- Phase 5: Personalization ---------- */
+      /* ---------- Phase 6: Personalization ---------- */
       const userContext = await buildUserContext(req.user?.id);
 
       const personalizedVideos =
@@ -121,12 +145,46 @@ module.exports = {
             )
           : [];
 
-      /* ---------- Safety Trim (IMPORTANT) ---------- */
-      const MAX_POOL = limit * 5;
-      const safeVideos = personalizedVideos.slice(0, MAX_POOL);
-      const safeChannels = personalizedChannels.slice(0, MAX_POOL);
+      /* ---------- Phase 7: Transform Data for Frontend ---------- */
+      const transformedVideos = personalizedVideos.map(video => ({
+        id: video.id,
+        title: video.title,
+        description: video.description,
+        thumbnailUrl: video.thumbnailUrl,
+        duration: video.duration,
+        views: video.views,
+        createdAt: video.createdAt,
+        userId: video.userId,
+        // Transform user to channel format expected by frontend
+        channel: {
+          id: video.user.id,
+          username: video.user.username,
+          displayName: video.user.displayName,
+          avatarUrl: video.user.avatarUrl,
+          verified: video.user.isVerified
+        },
+        score: video.score // Preserve ranking score if it exists
+      }));
 
-      /* ---------- Phase 6: Cursor Parsing ---------- */
+      const transformedChannels = personalizedChannels.map(channel => ({
+        id: channel.id,
+        username: channel.username,
+        displayName: channel.displayName,
+        avatarUrl: channel.avatarUrl,
+        description: channel.bio,
+        verified: channel.isVerified,
+        createdAt: channel.createdAt,
+        subscriberCount: channel._count?.subscribers || 0,
+        videoCount: channel._count?.videos || 0,
+        score: channel.score // Preserve ranking score if it exists
+      }));
+
+      /* ---------- Phase 8: Safety Trim (IMPORTANT) ---------- */
+      const MAX_POOL = limit * 5;
+      const safeVideos = transformedVideos.slice(0, MAX_POOL);
+      const safeChannels = transformedChannels.slice(0, MAX_POOL);
+
+      /* ---------- Phase 9: Cursor Parsing ---------- */
       let cursor = null;
       if (req.query.cursor) {
         try {
@@ -138,7 +196,7 @@ module.exports = {
         }
       }
 
-      /* ---------- Phase 6: Blending & Pagination ---------- */
+      /* ---------- Phase 10: Blending & Pagination ---------- */
       const blended = blendService.blendResults(
         safeVideos,
         safeChannels,
@@ -146,7 +204,7 @@ module.exports = {
         cursor
       );
 
-      /* ---------- Phase 7: Store Search Context ---------- */
+      /* ---------- Phase 11: Store Search Context ---------- */
       if (req.user?.id && !req.query.cursor) {
         await redis.set(
           `search:context:${req.user.id}`,

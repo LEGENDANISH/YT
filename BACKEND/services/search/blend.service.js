@@ -1,56 +1,52 @@
-function blendResults(videos, channels, limit, cursor) {
-  let all = [
-    ...videos.map(v => ({ ...v, type: "video" })),
-    ...channels.map(c => ({ ...c, type: "channel" }))
-  ];
-
-  // Stable sort
-  all.sort((a, b) => {
-    if (b.score !== a.score) return b.score - a.score;
-    return a.id.localeCompare(b.id);
-  });
-
-  // Cursor filtering
-  if (cursor) {
-    all = all.filter(item => {
-      if (item.score < cursor.score) return true;
-      if (item.score === cursor.score) {
-        return item.id > cursor.id;
-      }
-      return false;
-    });
-  }
-
-  // Soft channel limiting
-  const result = [];
-  let channelStreak = 0;
-
-  for (const item of all) {
-    if (result.length >= limit) break;
-
-    if (item.type === "channel") {
-      if (channelStreak >= 2) continue;
-      channelStreak++;
-    } else {
-      channelStreak = 0;
-    }
-
-    result.push(item);
-  }
-
-  const last = result[result.length - 1];
-
-  const nextCursor = last
-    ? Buffer.from(
-        JSON.stringify({
-          score: last.score,
-          id: last.id,
-          type: last.type
-        })
-      ).toString("base64")
-    : null;
-
-  return { items: result, nextCursor };
+function encodeCursor(cursor) {
+  return Buffer.from(JSON.stringify(cursor)).toString("base64");
 }
 
-module.exports = { blendResults };
+function blendResults(videos = [], channels = [], limit = 20, cursor = null) {
+  let videoIndex = cursor?.videoIndex || 0;
+  let channelIndex = cursor?.channelIndex || 0;
+
+  const items = [];
+
+  while (items.length < limit) {
+    const hasVideo = videoIndex < videos.length;
+    const hasChannel = channelIndex < channels.length;
+
+    if (!hasVideo && !hasChannel) break;
+
+    if (hasVideo) {
+      items.push({
+        type: "video",
+        data: videos[videoIndex]
+      });
+      videoIndex++;
+    }
+
+    if (items.length >= limit) break;
+
+    if (hasChannel) {
+      items.push({
+        type: "channel",
+        data: channels[channelIndex]
+      });
+      channelIndex++;
+    }
+  }
+
+  const hasMore =
+    videoIndex < videos.length || channelIndex < channels.length;
+
+  const nextCursor = hasMore
+    ? encodeCursor({ videoIndex, channelIndex })
+    : null;
+
+  return {
+    results: items,
+    nextCursor,
+    hasMore
+  };
+}
+
+module.exports = {
+  blendResults
+};

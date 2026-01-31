@@ -46,17 +46,24 @@ const SearchResultsPage = () => {
 
       setIntent(res.data.intent)
 
-      if (cursor) {
-        setResults((prev) => ({
-          items: [...prev.items, ...res.data.items],
-          nextCursor: res.data.nextCursor,
-        }))
-      } else {
-        setResults({
-          items: res.data.items || [],
-          nextCursor: res.data.nextCursor,
-        })
-      }
+// Transform backend results → frontend format
+const parsedItems = (res.data.results || []).map(entry => ({
+  ...entry.data,
+  type: entry.type
+}))
+
+if (cursor) {
+  setResults((prev) => ({
+    items: [...prev.items, ...parsedItems],
+    nextCursor: res.data.nextCursor,
+  }))
+} else {
+  setResults({
+    items: parsedItems,
+    nextCursor: res.data.nextCursor,
+  })
+}
+
     } catch (err) {
       console.error("Search error:", err)
       setError("Failed to load search results")
@@ -159,10 +166,15 @@ const SearchResultsPage = () => {
             </button>
           </div>
 
-          {intent && (
-            <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
-              Showing results for: {intent}
-            </p>
+        {intent && typeof intent === 'object' && (
+  <p className="text-sm text-gray-600 dark:text-gray-400 mt-3">
+    {intent.video > intent.channel 
+      ? 'Showing video-focused results' 
+      : intent.channel > intent.video 
+      ? 'Showing channel-focused results' 
+      : 'Showing mixed results'}
+  </p>
+)}
           )}
         </div>
 
