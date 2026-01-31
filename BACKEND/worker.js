@@ -260,15 +260,16 @@ const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/
 
       console.log(`Transcoding video with FFmpeg...`);
       const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
-        -map 0:v -map 0:v \
-        -c:v libx264 -crf 22 \
-        -filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
-        -filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
-        -var_stream_map "v:0 v:1" \
-        -master_pl_name master.m3u8 \
-        -f hls -hls_time 6 -hls_playlist_type vod \
-        -hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
-        "${outputDir}/stream_%v.m3u8"`;
+  -map 0:v -map 0:v -map 0:a -map 0:a \
+  -c:v libx264 -crf 22 \
+  -filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
+  -filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
+  -c:a aac -b:a 128k -ac 2 \
+  -var_stream_map "v:0,a:0 v:1,a:1" \
+  -master_pl_name master.m3u8 \
+  -f hls -hls_time 6 -hls_playlist_type vod \
+  -hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
+  "${outputDir}/stream_%v.m3u8"`;
 
       await execPromise(ffmpegCommand);
 
