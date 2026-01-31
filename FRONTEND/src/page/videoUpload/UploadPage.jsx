@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const VideoUpload = () => {
   // Configuration
-  const API_BASE_URL = 'https://localhost:8000/api/videos';
+  const API_BASE_URL = 'http://localhost:8000/api/videos';
   
   // State
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -24,7 +24,7 @@ const VideoUpload = () => {
 
   // Get auth token (adjust based on your auth implementation)
   const getAuthToken = () => {
-    return localStorage.getItem('authToken') || '';
+    return localStorage.getItem('token') || '';
   };
 
   // Format file size
