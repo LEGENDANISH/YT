@@ -11,6 +11,8 @@ import Watch from "./page/watch/Watch";
 import HistoryPage from "./page/history/HistoryPage";
 import LikedVideos from "./page/likedvideos/LikedVideos";
 import Subscriptions from "./page/subscriptions/Subscriptions";
+import SearchResults from "./page/SearchResults";
+import SearchResultsPage from "./page/searches/SearchContext";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -25,6 +27,8 @@ createRoot(document.getElementById("root")).render(
   <Route path="/feed/history" element={<HistoryPage />} />
 <Route path="/liked-videos" element={<LikedVideos />} />
   <Route path="/subscriptions" element={<Subscriptions />} />
+<Route path="search" element={<SearchResults />} />
+<Route path="/results" element={<SearchResultsPage />} />
 
     </Routes>
   </BrowserRouter>

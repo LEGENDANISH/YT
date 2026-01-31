@@ -197,6 +197,32 @@ const deleteUser = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+const getMyUploadedVideos = async (req, res) => {
+  try {
+    const userId = req.user.id; // from auth middleware
+
+    const videos = await prisma.video.findMany({
+      where: {
+        userId: userId, // ✅ FIXED HERE
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return res.status(200).json({
+      success: true,
+      count: videos.length,
+      videos,
+    });
+  } catch (error) {
+    console.error("Fetch user videos error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching uploaded videos",
+    });
+  }
+};
 
 
-module.exports={registerUser,loginUser,updateUser,deleteUser,aboutme};
+module.exports={registerUser,loginUser,updateUser,deleteUser,aboutme,getMyUploadedVideos};

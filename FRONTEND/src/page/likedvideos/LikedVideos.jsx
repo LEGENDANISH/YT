@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 
-import Topbar from "../home/Topbar"
+import Topbar from "../home/components/Topbar"
 import Sidebar from "../home/Sidebar"
 
 import { Card, CardContent } from "@/components/ui/card"

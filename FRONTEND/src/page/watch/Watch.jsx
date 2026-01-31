@@ -9,7 +9,7 @@
       ChevronUp
     } from "lucide-react"
 
-    import Topbar from "../home/Topbar"
+    import Topbar from "../home/components/Topbar"
     import Sidebar from "../home/Sidebar"
     import HlsPlayer from "./HlsPlayer"
 

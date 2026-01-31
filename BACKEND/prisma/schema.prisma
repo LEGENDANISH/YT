@@ -25,6 +25,8 @@ datasource db {
     avatarUrl     String?
     channelBanner String?
     bio           String?
+      searchVector  Unsupported("tsvector")?
+
     isVerified    Boolean  @default(false)
     createdAt     DateTime @default(now())
     updatedAt     DateTime @updatedAt
@@ -50,6 +52,8 @@ model Video {
   title           String
   description     String?
   thumbnailUrl    String?
+  searchVector Unsupported("tsvector")?
+
   duration        Int? // in seconds
   status          VideoStatus @default(UPLOADING)
   visibility      Visibility  @default(PRIVATE)

@@ -26,7 +26,7 @@ app.use("/api/videos", videoRoutes);
 app.use("/api/feed", feedRoutes);
 console.log("DATABASE_URL =", process.env.DATABASE_URL);
 app.use("/api", subscriptionRoutes);
-
+app.use("/api/search", require("./routes/search.routes"));
 app.use("/api", recommendationRoutes);
 // check endpoint
 app.get("/health", (req, res) => {

@@ -47,8 +47,6 @@ router.post("/:id/view", authMiddleware, recordView);
 router.get("/:id/recommend", getWatchRecommendations);
 
 router.post("/:id/retry-processing", authMiddleware, retryProcessing);
-
-
 router.get("/:id/likes", authMiddleware, getVideoLikes);
 
 
