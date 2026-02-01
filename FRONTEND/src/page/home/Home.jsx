@@ -87,16 +87,9 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-white dark:bg-zinc-950 text-black dark:text-white">
       {/* Header */}
-  <Topbar
-  sidebarOpen={sidebarOpen}
-  setSidebarOpen={setSidebarOpen}
-  darkMode={darkMode}
-  toggleDarkMode={toggleDarkMode}
-  handleCreateClick={handleCreateClick}
-/>
+
 
       <div className="flex pt-14">
-     <Sidebar sidebarOpen={sidebarOpen} />
 
 
         {/* Main content */}

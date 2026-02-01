@@ -9,9 +9,9 @@
       ChevronUp
     } from "lucide-react"
 
-    import Topbar from "../home/components/Topbar"
-    import Sidebar from "../home/Sidebar"
+  
     import HlsPlayer from "./HlsPlayer"
+import VideoMeta from "./VideoMeta"
 
     const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
 
@@ -310,15 +310,7 @@ await refreshVideoLikes();
       if (loading) {
         return (
           <div className="min-h-screen bg-white dark:bg-zinc-950 text-black dark:text-white">
-            <Topbar
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              handleCreateClick={handleCreateClick}
-            />
-            <div className="pt-14 flex">
-              <Sidebar sidebarOpen={sidebarOpen} />
+          <div className="pt-14 flex">
               <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-56" : "ml-16"} px-4 md:px-6 py-6`}>
                 <div className="animate-pulse space-y-4">
                   <div className="aspect-video bg-gray-300 dark:bg-zinc-800 rounded-xl"></div>
@@ -334,16 +326,8 @@ await refreshVideoLikes();
       if (!video) {
         return (
           <div className="min-h-screen bg-white dark:bg-zinc-950 text-black dark:text-white">
-            <Topbar
-              sidebarOpen={sidebarOpen}
-              setSidebarOpen={setSidebarOpen}
-              darkMode={darkMode}
-              toggleDarkMode={toggleDarkMode}
-              handleCreateClick={handleCreateClick}
-            />
-            <div className="pt-14 flex">
-              <Sidebar sidebarOpen={sidebarOpen} />
-              <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-56" : "ml-16"} px-4 md:px-6 py-6`}>
+              <div className="pt-14 flex">
+                       <main className={`flex-1 transition-all duration-300 ${sidebarOpen ? "ml-56" : "ml-16"} px-4 md:px-6 py-6`}>
                 <div className="text-center py-20">
                   <h2 className="text-2xl font-bold mb-2">Video not found</h2>
                   <p className="text-gray-500">This video may have been removed or is unavailable</p>
@@ -356,33 +340,26 @@ await refreshVideoLikes();
 
       return (
         <div className="min-h-screen bg-white dark:bg-zinc-950 text-black dark:text-white">
-
-          <Topbar
-            sidebarOpen={sidebarOpen}
-            setSidebarOpen={setSidebarOpen}
-            darkMode={darkMode}
-            toggleDarkMode={toggleDarkMode}
-            handleCreateClick={handleCreateClick}
-          />
-
           <div className="pt-14 flex">
-            <Sidebar sidebarOpen={sidebarOpen} />
 
             <main
               className={`
                 flex-1 transition-all duration-300
-                ${sidebarOpen ? "ml-56" : "ml-16"}
-                px-4 md:px-6 py-6
+                ${sidebarOpen ? "ml-16" : "ml-16"}
+px-4 md:px-6 py-6
               `}
             >
-              <div className="max-w-[1754px] mx-auto">
-                <div className="grid grid-cols-1 xl:grid-cols-[1fr_402px] gap-6">
+              <div className="max-w-[1680px]
+ mx-auto">
+                <div className="grid-cols-1 xl:grid-cols-[minmax(0,1fr)_360px] 2xl:grid-cols-[minmax(0,1fr)_400px]
+ gap-6">
+<div className="space-y-2">
 
-                  <div className="space-y-3">
-                    
                     {/* VIDEO PLAYER */}
                     <div className="w-full">
                       {streamUrl ? (
+                        <div className="relative aspect-video w-full overflow-hidden rounded-xl bg-black">
+
                         <HlsPlayer
                           src={streamUrl}
                           onPlay={() => {
@@ -423,6 +400,8 @@ await refreshVideoLikes();
                             sendView(duration)
                           }}
                         />
+                        </div>
+
                       ) : (
                         <div className="aspect-video bg-black rounded-xl flex items-center justify-center">
                           <span className="text-white">Stream unavailable</span>
@@ -430,105 +409,25 @@ await refreshVideoLikes();
                       )}
                     </div>
 
-                    <h1 className="text-xl font-semibold leading-tight pr-6">
-                      {video.title}
-                    </h1>
-
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
-                          {video.user?.username ? video.user.username[0].toUpperCase() : 'U'}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="font-semibold text-sm">
-                            {video.user?.username || 'Unknown'}
-                          </span>
-                          <span className="text-xs text-gray-600 dark:text-gray-400">
-{formatViews(subscriberCount)} subscribers
-                          </span>
-                        </div>
-                        <button
-                          onClick={handleSubscribe}
-                          className={`ml-4 px-4 py-2 rounded-full font-medium text-sm transition-all ${
-                            subscribed
-                              ? 'bg-gray-200 dark:bg-zinc-800 text-black dark:text-white hover:bg-gray-300 dark:hover:bg-zinc-700'
-                              : 'bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200'
-                          }`}
-                        >
-                          {subscribed ? 'Subscribed' : 'Subscribe'}
-                        </button>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        
-                        <div className="flex items-center bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden">
-                          <button
-                            onClick={handleLike}
-                            className={`flex items-center gap-2 px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors ${
-                              liked ? 'text-blue-600' : ''
-                            }`}
-                          >
-                            <ThumbsUp className="w-5 h-5" fill={liked ? 'currentColor' : 'none'} />
-  <span className="text-sm font-medium">
-  {formatViews(video.likes || 0)}
-  </span>
-                          </button>
-                          <div className="w-px h-6 bg-gray-300 dark:bg-zinc-700"></div>
-                          <button
-                            onClick={handleDislike}
-                            className={`px-4 py-2 hover:bg-gray-200 dark:hover:bg-zinc-700 transition-colors ${
-                              disliked ? 'text-blue-600' : ''
-                            }`}
-                          >
-                            <ThumbsDown className="w-5 h-5" fill={disliked ? 'currentColor' : 'none'} />
-                          </button>
-                        </div>
-
-                        <button
-                          onClick={handleShare}
-                          className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 rounded-full transition-colors"
-                        >
-                          <Share2 className="w-5 h-5" />
-                          <span className="text-sm font-medium">Share</span>
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="bg-gray-100 dark:bg-zinc-800 rounded-xl p-3">
-                      <div className="flex items-center gap-2 text-sm font-semibold mb-1">
-                        <span>{formatViews(video.views || 0)} views</span>
-                        <span>•</span>
-                        <span>{formatDate(video.createdAt)}</span>
-                      </div>
-                      
-                      {video.description && (
-                        <div className="text-sm">
-                          <p className={`whitespace-pre-wrap ${!showFullDescription ? 'line-clamp-2' : ''}`}>
-                            {video.description}
-                          </p>
-                          {video.description.length > 100 && (
-                            <button
-                              onClick={() => setShowFullDescription(prev => !prev)}
-                              className="flex items-center gap-1 font-semibold mt-2 hover:text-gray-700 dark:hover:text-gray-300"
-                            >
-                              {showFullDescription ? (
-                                <>
-                                  Show less <ChevronUp className="w-4 h-4" />
-                                </>
-                              ) : (
-                                <>
-                                  ...more <ChevronDown className="w-4 h-4" />
-                                </>
-                              )}
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </div>
+<VideoMeta
+  video={video}
+  channelId={channelId}
+  subscriberCount={subscriberCount}
+  subscribed={subscribed}
+  liked={liked}
+  disliked={disliked}
+  showFullDescription={showFullDescription}
+  setShowFullDescription={setShowFullDescription}
+  handleLike={handleLike}
+  handleDislike={handleDislike}
+  handleShare={handleShare}
+  handleSubscribe={handleSubscribe}
+  formatViews={formatViews}
+  formatDate={formatDate}
+/>
 
                     <div className="pt-6">
-                      <div className="flex items-center gap-4 mb-6">
+                      <div className="flex items-center gap-4 ">
                         <h2 className="text-xl font-semibold">
                           {video.comments || 0} Comments
                         </h2>

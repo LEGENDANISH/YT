@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Topbar from "../home/components/Topbar";
-import Sidebar from "../home/Sidebar";
 
 const API_BASE_URL = "http://localhost:8000/api";
 
@@ -16,11 +14,6 @@ const ChannelPageview = () => {
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [subLoading, setSubLoading] = useState(false);
-
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
-
-  const toggleDarkMode = () => setDarkMode((p) => !p);
 
   useEffect(() => {
     fetchChannel();
@@ -40,8 +33,6 @@ const ChannelPageview = () => {
 
       setChannel(data.channel);
       setVideos(data.videos);
-
-      // 🔥 IMPORTANT: initialize subscriberCount from backend
       setSubscriberCount(data.channel.subscriberCount || 0);
     } catch (err) {
       console.error(err);
@@ -104,7 +95,7 @@ const ChannelPageview = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center">
         Loading channel...
       </div>
     );
@@ -112,127 +103,103 @@ const ChannelPageview = () => {
 
   if (!channel) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-white">
+      <div className="min-h-screen flex items-center justify-center">
         Channel not found
       </div>
     );
   }
 
   return (
-    <div
-      className={`min-h-screen ${
-        darkMode ? "bg-[#0f0f0f] text-white" : "bg-gray-100 text-black"
-      }`}
-    >
-      {/* TOPBAR */}
-      <Topbar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        darkMode={darkMode}
-        toggleDarkMode={toggleDarkMode}
-      />
+    <div className="min-h-screen">
+      {/* BANNER */}
+      <div className="w-full h-48 bg-gray-800 overflow-hidden">
+        {channel.banner && (
+          <img
+            src={channel.banner}
+            alt="banner"
+            className="w-full h-full object-cover"
+          />
+        )}
+      </div>
 
-      <div className="flex pt-14">
-        {/* SIDEBAR */}
-        <Sidebar sidebarOpen={sidebarOpen} />
+      {/* CHANNEL HEADER */}
+      <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
+        <div className="flex gap-6 items-center">
+          <img
+            src={channel.avatar || "/avatar.png"}
+            alt="avatar"
+            className="w-24 h-24 rounded-full object-cover border border-gray-700"
+          />
 
-        {/* MAIN CONTENT */}
-        <main
-          className={`flex-1 transition-all duration-300 ${
-            sidebarOpen ? "ml-56" : "ml-20"
+          <div>
+            <h1 className="text-2xl font-bold">{channel.name}</h1>
+            <p className="text-gray-400 text-sm">
+              {formatNumber(subscriberCount)} subscribers •{" "}
+              {formatNumber(channel.totalViews)} views
+            </p>
+            <p className="text-gray-500 text-sm mt-1">
+              Joined {new Date(channel.joinedAt).toDateString()}
+            </p>
+          </div>
+        </div>
+
+        {/* SUBSCRIBE BUTTON */}
+        <button
+          onClick={handleSubscribe}
+          disabled={subLoading}
+          className={`px-6 py-2 rounded-full font-semibold transition ${
+            isSubscribed
+              ? "bg-gray-700 hover:bg-gray-600"
+              : "bg-red-600 hover:bg-red-700 text-white"
           }`}
         >
-          {/* BANNER */}
-          <div className="w-full h-48 bg-gray-800 overflow-hidden">
-            {channel.banner && (
-              <img
-                src={channel.banner}
-                alt="banner"
-                className="w-full h-full object-cover"
-              />
-            )}
-          </div>
+          {subLoading ? "..." : isSubscribed ? "Subscribed" : "Subscribe"}
+        </button>
+      </div>
 
-          {/* CHANNEL HEADER */}
-          <div className="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-            <div className="flex gap-6 items-center">
-              <img
-                src={channel.avatar || "/avatar.png"}
-                alt="avatar"
-                className="w-24 h-24 rounded-full object-cover border border-gray-700"
-              />
-
-              <div>
-                <h1 className="text-2xl font-bold">{channel.name}</h1>
-                <p className="text-gray-400 text-sm">
-                  {formatNumber(subscriberCount)} subscribers •{" "}
-                  {formatNumber(channel.totalViews)} views
-                </p>
-                <p className="text-gray-500 text-sm mt-1">
-                  Joined {new Date(channel.joinedAt).toDateString()}
-                </p>
-              </div>
-            </div>
-
-            {/* SUBSCRIBE BUTTON */}
+      {/* TABS */}
+      <div className="border-b border-gray-800">
+        <div className="max-w-6xl mx-auto flex gap-8 px-6">
+          {["home", "videos", "about"].map((tab) => (
             <button
-              onClick={handleSubscribe}
-              disabled={subLoading}
-              className={`px-6 py-2 rounded-full font-semibold transition ${
-                isSubscribed
-                  ? "bg-gray-700 hover:bg-gray-600"
-                  : "bg-red-600 hover:bg-red-700"
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`py-3 capitalize ${
+                activeTab === tab
+                  ? "border-b-2 border-white"
+                  : "text-gray-400 hover:text-white"
               }`}
             >
-              {subLoading ? "..." : isSubscribed ? "Subscribed" : "Subscribe"}
+              {tab}
             </button>
+          ))}
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="max-w-6xl mx-auto px-6 py-6">
+        {activeTab === "home" && (
+          <>
+            <h2 className="text-xl font-semibold mb-4">Latest Videos</h2>
+            <VideoGrid videos={videos.slice(0, 6)} />
+          </>
+        )}
+
+        {activeTab === "videos" && (
+          <>
+            <h2 className="text-xl font-semibold mb-4">All Videos</h2>
+            <VideoGrid videos={videos} />
+          </>
+        )}
+
+        {activeTab === "about" && (
+          <div className="max-w-2xl space-y-4 text-gray-300">
+            <p>{channel.bio || "No description provided."}</p>
+            <p>Joined on {new Date(channel.joinedAt).toDateString()}</p>
+            <p>{formatNumber(channel.totalVideos)} videos uploaded</p>
+            <p>{formatNumber(channel.totalViews)} total views</p>
           </div>
-
-          {/* TABS */}
-          <div className="border-b border-gray-800">
-            <div className="max-w-6xl mx-auto flex gap-8 px-6">
-              {["home", "videos", "about"].map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`py-3 capitalize ${
-                    activeTab === tab
-                      ? "border-b-2 border-white"
-                      : "text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {tab}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* CONTENT */}
-          <div className="max-w-6xl mx-auto px-6 py-6">
-            {activeTab === "home" && (
-              <>
-                <h2 className="text-xl font-semibold mb-4">Latest Videos</h2>
-                <VideoGrid videos={videos.slice(0, 6)} />
-              </>
-            )}
-
-            {activeTab === "videos" && (
-              <>
-                <h2 className="text-xl font-semibold mb-4">All Videos</h2>
-                <VideoGrid videos={videos} />
-              </>
-            )}
-
-            {activeTab === "about" && (
-              <div className="max-w-2xl space-y-4 text-gray-300">
-                <p>{channel.bio || "No description provided."}</p>
-                <p>Joined on {new Date(channel.joinedAt).toDateString()}</p>
-                <p>{formatNumber(channel.totalVideos)} videos uploaded</p>
-                <p>{formatNumber(channel.totalViews)} total views</p>
-              </div>
-            )}
-          </div>
-        </main>
+        )}
       </div>
     </div>
   );

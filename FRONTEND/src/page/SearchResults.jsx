@@ -119,7 +119,7 @@ const SearchResultsPage = () => {
   if (!query) return null
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 pt-20">
+<div className="w-full">
       <div className="max-w-6xl mx-auto px-4 py-6">
         
         {/* Header with Filters */}
