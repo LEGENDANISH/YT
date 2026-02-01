@@ -58,6 +58,7 @@ const Home = () => {
 
   const handleCreateClick = () => {
     console.log("Create button clicked - upload flow will be implemented")
+    navigate("/upload") 
   }
 
   const toggleDarkMode = () => {

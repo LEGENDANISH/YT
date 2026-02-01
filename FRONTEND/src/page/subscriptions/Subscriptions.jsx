@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import { Link } from "react-router-dom"
 
-import Topbar from "../home/Topbar"
+import Topbar from "../home/components/Topbar"
 import Sidebar from "../home/Sidebar"
 
 import { Button } from "@/components/ui/button"
@@ -13,9 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
 const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
-
 const Subscriptions = () => {
   const token = localStorage.getItem("token")
 

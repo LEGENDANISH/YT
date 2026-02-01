@@ -19,6 +19,67 @@ const ChannelPage = () => {
   const [channelId, setChannelId] = useState(null);
 
   const authToken = localStorage.getItem('token') || 'your-auth-token';
+const [editForm, setEditForm] = useState({
+  title: "",
+  description: "",
+  visibility: "public",
+  scheduledAt: "",
+  tags: ""
+});
+const handleEditClick = (video) => {
+  setSelectedVideo(video);
+  setThumbnailFile(null);
+  setThumbnailPreview(null);
+
+  setEditForm({
+    title: video.title || "",
+    description: video.description || "",
+    visibility: video.visibility || "public",
+    scheduledAt: video.scheduledAt
+      ? new Date(video.scheduledAt).toISOString().slice(0, 16)
+      : "",
+    tags: video.tags?.join(", ") || ""
+  });
+
+  setEditModalOpen(true);
+};
+const handleEditChange = (e) => {
+  const { name, value } = e.target;
+  setEditForm((prev) => ({
+    ...prev,
+    [name]: value
+  }));
+};
+const handleSaveVideoDetails = async () => {
+  try {
+    setUpdating(true);
+
+    const response = await fetch(
+      `${API_BASE_URL}/videos/${selectedVideo.id}`,
+      {
+        method: "PUT",
+        headers: getHeaders(),
+        body: JSON.stringify({
+          title: editForm.title,
+          description: editForm.description,
+          visibility: editForm.visibility,
+          scheduledAt: editForm.scheduledAt || null
+        })
+      }
+    );
+
+    if (!response.ok) throw new Error("Update failed");
+
+    alert("Video updated successfully!");
+    setEditModalOpen(false);
+    loadVideos();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update video");
+  } finally {
+    setUpdating(false);
+  }
+};
 
   const getHeaders = (isMultipart = false) => {
     const headers = {
@@ -108,12 +169,12 @@ const loadSubscriberCount = async () => {
     }
   };
 
-  const handleEditClick = (video) => {
-    setSelectedVideo(video);
-    setThumbnailFile(null);
-    setThumbnailPreview(null);
-    setEditModalOpen(true);
-  };
+//   const handleEditClick = (video) => {
+//     setSelectedVideo(video);
+//     setThumbnailFile(null);
+//     setThumbnailPreview(null);
+//     setEditModalOpen(true);
+//   };
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
@@ -460,6 +521,64 @@ const loadSubscriberCount = async () => {
                     </div>
                   )}
                 </div>
+<div className="mb-4">
+  <label className="block text-sm font-semibold text-slate-400 mb-2">
+    Title
+  </label>
+  <input
+    name="title"
+    value={editForm.title}
+    onChange={handleEditChange}
+    maxLength={100}
+    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:border-pink-500 outline-none"
+  />
+</div>
+<div className="mb-4">
+  <label className="block text-sm font-semibold text-slate-400 mb-2">
+    Description
+  </label>
+  <textarea
+    name="description"
+    value={editForm.description}
+    onChange={handleEditChange}
+    rows={4}
+    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:border-pink-500 outline-none"
+  />
+</div>
+<div className="mb-4">
+  <label className="block text-sm font-semibold text-slate-400 mb-2">
+    Visibility
+  </label>
+  <select
+    name="visibility"
+    value={editForm.visibility}
+    onChange={handleEditChange}
+    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg"
+  >
+    <option value="public">Public</option>
+    <option value="private">Private</option>
+  </select>
+</div>
+<div className="mb-6">
+  <label className="block text-sm font-semibold text-slate-400 mb-2">
+    Schedule Publish
+  </label>
+  <input
+    type="datetime-local"
+    name="scheduledAt"
+    value={editForm.scheduledAt}
+    onChange={handleEditChange}
+    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg"
+  />
+</div>
+<button
+  type="button"
+  onClick={handleSaveVideoDetails}
+  disabled={updating}
+  className="flex-1 px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 font-semibold"
+>
+  Save Changes
+</button>
 
                 {/* Actions */}
                 <div className="flex gap-3">

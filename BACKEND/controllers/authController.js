@@ -224,5 +224,81 @@ const getMyUploadedVideos = async (req, res) => {
   }
 };
 
+const getChannelDetails = async (req, res) => {
+  try {
+    const { channelId } = req.params;
 
-module.exports={registerUser,loginUser,updateUser,deleteUser,aboutme,getMyUploadedVideos};
+    // 1️⃣ Get channel info
+    const channel = await prisma.user.findUnique({
+      where: { id: channelId },
+      select: {
+        id: true,
+        displayName: true,
+        avatarUrl: true,
+        channelBanner: true,
+        bio: true,
+        createdAt: true,
+        subscribers: true,
+        videos: {
+          where: {
+            visibility: "PUBLIC"
+          },
+          select: {
+            id: true,
+            title: true,
+            thumbnailUrl: true,
+            views: true,
+            visibility: true,
+            createdAt: true,
+            duration: true
+          },
+          orderBy: {
+            createdAt: "desc"
+          }
+        }
+      }
+    });
+
+    if (!channel) {
+      return res.status(404).json({
+        success: false,
+        message: "Channel not found"
+      });
+    }
+
+    // 2️⃣ Subscriber Count
+    const subscriberCount = channel.subscribers.length;
+
+    // 3️⃣ Total Views
+    const totalViews = channel.videos.reduce(
+      (sum, video) => sum + video.views,
+      0
+    );
+
+    return res.json({
+      success: true,
+      channel: {
+        id: channel.id,
+        name: channel.displayName,
+        avatar: channel.avatarUrl,
+        banner: channel.channelBanner,
+        bio: channel.bio,
+        joinedAt: channel.createdAt,
+        subscriberCount,
+        totalVideos: channel.videos.length,
+        totalViews
+      },
+      videos: channel.videos
+    });
+
+  } catch (error) {
+    console.error("Channel details error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error"
+    });
+  }
+};
+
+
+module.exports={registerUser,loginUser,updateUser,deleteUser,aboutme,getMyUploadedVideos,getChannelDetails};

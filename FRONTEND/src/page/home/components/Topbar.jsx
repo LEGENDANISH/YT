@@ -48,7 +48,8 @@ const Topbar = ({
   const [searchHistory, setSearchHistory] = useState([])
   const [hoveredItem, setHoveredItem] = useState(null)
 
-const user = JSON.parse(localStorage.getItem("userData"));
+const user = JSON.parse(localStorage.getItem("user"));
+console.log("Topbar User Data:", user);
   // Load search history on mount
   useEffect(() => {
     setSearchHistory(getSearchHistory())
@@ -280,8 +281,11 @@ console.log("User:", user);
             size="icon"
             onClick={handleCreateClick}
             className="hidden sm:inline-flex"
+              
           >
-            <Video className="h-5 w-5" />
+            <Video className="h-5 w-5"
+            
+            />
           </Button>
 
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">

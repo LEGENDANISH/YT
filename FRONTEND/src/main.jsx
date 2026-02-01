@@ -15,6 +15,7 @@ import SearchResults from "./page/SearchResults";
 import SearchResultsPage from "./page/searches/SearchContext";
 import ChannelPage from "./page/yourchannel/channnel";
 import UploadPage from "./page/videoUpload/UploadPage";
+import ChannelPageview from "./page/viewchannel/channelpage";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -33,6 +34,8 @@ createRoot(document.getElementById("root")).render(
 <Route path="/results" element={<SearchResultsPage />} />
 <Route path="/channel" element={<ChannelPage />} />
 <Route path="/upload" element={<UploadPage/>} />
+        <Route path="/channel/:channelId" element={<ChannelPageview />} />
+
     </Routes>
   </BrowserRouter>
 );

@@ -1,5 +1,5 @@
 const express = require("express");
-const { registerUser, loginUser, updateUser, deleteUser, aboutme, getMyUploadedVideos } = require("../controllers/authController");
+const { registerUser, loginUser, updateUser, deleteUser, aboutme, getMyUploadedVideos, getChannelDetails } = require("../controllers/authController");
 const { authMiddleware } = require("../middleware/authMiddleware");
 
 
@@ -13,5 +13,6 @@ router.put("/update", authMiddleware, updateUser);
 router.delete("/delete", authMiddleware, deleteUser);
 router.get("/my-videos", authMiddleware, getMyUploadedVideos);
 
+router.get("/channel/:channelId", getChannelDetails);
 
 module.exports = router;
