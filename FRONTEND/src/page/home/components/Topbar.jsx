@@ -276,17 +276,15 @@ console.log("User:", user);
             {darkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
           </Button>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={handleCreateClick}
-            className="hidden sm:inline-flex"
-              
-          >
-            <Video className="h-5 w-5"
-            
-            />
-          </Button>
+         <Button
+  variant="ghost"
+  size="icon"
+  onClick={() => navigate("/upload")}
+  className="hidden sm:inline-flex"
+>
+  <Video className="h-5 w-5" />
+</Button>
+
 
           <Button variant="ghost" size="icon" className="hidden sm:inline-flex">
             <Bell className="h-5 w-5" />
