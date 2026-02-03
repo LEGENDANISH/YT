@@ -1,11 +1,12 @@
 
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
+//send the video id to get the exact video from which the user subscribed
 const subscribeChannel = async (req, res) => {
   try {
     const subscriberId = req.user.id;
     const { channelId } = req.params;
+    const { videoId } = req.body;
 
     if (subscriberId === channelId) {
       return res.status(400).json({ message: "Cannot subscribe to yourself" });
@@ -25,7 +26,11 @@ const subscribeChannel = async (req, res) => {
     }
 
     await prisma.subscription.create({
-      data: { subscriberId, channelId },
+      data: {
+        subscriberId,
+        channelId,
+        subscribedFromVideoId: videoId || null, // 👈 ADD THIS
+      },
     });
 
     res.json({ message: "Subscribed successfully" });
@@ -35,6 +40,7 @@ const subscribeChannel = async (req, res) => {
     res.status(500).json({ message: "Internal server error" });
   }
 };
+
 const unsubscribeChannel = async (req, res) => {
   try {
     const subscriberId = req.user.id;

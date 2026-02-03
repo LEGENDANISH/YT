@@ -263,15 +263,18 @@ await refreshVideoLikes();
       setSubscriberCount(prev => Math.max(prev - 1, 0));
 
     } else {
-      await axios.post(
-        `${API_BASE}/subscribe/${channelId}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+     await axios.post(
+  `${API_BASE}/subscribe/${channelId}`,
+  {
+    videoId: id, // 👈 THIS is the current video ID
+  },
+  {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }
+);
+
 
       setSubscribed(true);
       setSubscriberCount(prev => prev + 1);

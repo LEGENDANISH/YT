@@ -266,6 +266,9 @@ model Subscription {
   channelId    String
   channel      User    @relation("Channel", fields: [channelId], references: [id], onDelete: Cascade)
   
+    subscribedFromVideoId String?  
+
+
   notifications Boolean @default(true)
   createdAt     DateTime @default(now())
 

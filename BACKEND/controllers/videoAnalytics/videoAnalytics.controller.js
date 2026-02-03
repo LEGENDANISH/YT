@@ -6,7 +6,6 @@ exports.getSingleVideoAnalytics = async (req, res) => {
     const { videoId } = req.params
     const channelId = req.user.id
 
-    // 1️⃣ Verify ownership
     const video = await prisma.video.findFirst({
       where: {
         id: videoId,
@@ -23,7 +22,6 @@ exports.getSingleVideoAnalytics = async (req, res) => {
       return res.status(404).json({ success: false, message: "Video not found" })
     }
 
-    // 2️⃣ Watch time
     const watchStats = await prisma.watchHistory.aggregate({
       where: { videoId },
       _sum: { watchDuration: true }
@@ -31,32 +29,16 @@ exports.getSingleVideoAnalytics = async (req, res) => {
 
     const watchTimeSeconds = watchStats._sum.watchDuration || 0
 
-    // 3️⃣ Subscribers gained from this video
+    // ✅ FIXED: YouTube-style attribution
     const subscribersGained = await prisma.subscription.count({
       where: {
         channelId,
-        subscriber: {
-          watchHistory: {
-            some: {
-              videoId,
-              watchedAt: {
-                lt: prisma.subscription.fields.createdAt
-              }
-            }
-          }
-        }
+        subscribedFromVideoId: videoId
       }
     })
 
-    // 4️⃣ Likes count
-    const likes = await prisma.like.count({
-      where: { videoId }
-    })
-
-    // 5️⃣ Comments count
-    const comments = await prisma.comment.count({
-      where: { videoId }
-    })
+    const likes = await prisma.like.count({ where: { videoId } })
+    const comments = await prisma.comment.count({ where: { videoId } })
 
     return res.json({
       success: true,
@@ -75,3 +57,4 @@ exports.getSingleVideoAnalytics = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to fetch video analytics" })
   }
 }
+
