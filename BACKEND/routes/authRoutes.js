@@ -1,6 +1,7 @@
 const express = require("express");
 const { registerUser, loginUser, updateUser, deleteUser, aboutme, getMyUploadedVideos, getChannelDetails } = require("../controllers/authController");
 const { authMiddleware } = require("../middleware/authMiddleware");
+const upload = require("../middleware/upload");
 
 
 const router = express.Router();
@@ -9,7 +10,15 @@ const router = express.Router();
 router.post("/register", registerUser);
 router.get("/aboutme", authMiddleware, aboutme);
 router.post("/login", loginUser);
-router.put("/update", authMiddleware, updateUser);
+router.put(
+  "/update",
+  authMiddleware,
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "banner", maxCount: 1 }
+  ]),
+  updateUser
+);
 router.delete("/delete", authMiddleware, deleteUser);
 router.get("/my-videos", authMiddleware, getMyUploadedVideos);
 

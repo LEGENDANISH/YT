@@ -9,6 +9,7 @@ import StatsSection from './StatsSection';
 import VideosGrid from './VideosGrid';
 import EditModal from './EditModal';
 import AboutModal from './AboutModal';
+import EditChannelModal from './EditChannelModal';
 
 const ChannelPage = () => {
   const [videos, setVideos] = useState([]);
@@ -22,6 +23,9 @@ const ChannelPage = () => {
   const [updating, setUpdating] = useState(false);
   const [aboutData, setAboutData] = useState(null);
   const [channelId, setChannelId] = useState(null);
+  const [openEdit, setOpenEdit] = useState(false)
+const [channelData, setChannelData] = useState(null)
+
 
   const [editForm, setEditForm] = useState({
     title: "",
@@ -158,6 +162,7 @@ const ChannelPage = () => {
       
       const data = await response.json();
       setAboutData(data);
+       setChannelData(data.data);
       console.log("About Data:", data); 
     } catch (error) {
       console.error('Error loading about info:', error);
@@ -272,7 +277,16 @@ const ChannelPage = () => {
         aboutData={aboutData}
         subscriberCount={subscriberCount}
         handleAboutClick={handleAboutClick}
+          handleSettingsClick={() => setOpenEdit(true)}
       />
+       {openEdit && (
+  <EditChannelModal
+    user={channelData}
+    onClose={() => setOpenEdit(false)}
+    onUpdated={updatedUser => setChannelData(updatedUser)}
+  />
+)}
+
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <StatsSection 

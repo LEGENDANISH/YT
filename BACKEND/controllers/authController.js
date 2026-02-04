@@ -117,16 +117,27 @@ const loginUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { displayName, bio, avatarUrl, channelBanner } = req.body;
+    const { displayName, bio } = req.body;
+
+    const avatarFile = req.files?.avatar?.[0];
+    const bannerFile = req.files?.banner?.[0];
+
+    const data = {
+      displayName,
+      bio,
+    };
+
+    if (avatarFile) {
+      data.avatarUrl = avatarFile.location; // S3 URL
+    }
+
+    if (bannerFile) {
+      data.channelBanner = bannerFile.location;
+    }
 
     const user = await prisma.user.update({
       where: { id: req.user.id },
-      data: {
-        displayName,
-        bio,
-        avatarUrl,
-        channelBanner,
-      },
+      data,
       select: {
         id: true,
         email: true,
@@ -139,14 +150,16 @@ const updateUser = async (req, res) => {
       },
     });
 
-    return res.json({
+    res.json({
       message: "User updated successfully",
       user,
     });
   } catch (error) {
-    return res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: error.message });
   }
 };
+
 
 const aboutme = async (req, res) => {
   try {
