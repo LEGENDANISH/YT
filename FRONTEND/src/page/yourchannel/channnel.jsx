@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Trash2, Edit, RefreshCw, Info, X, Users, Video, Play } from 'lucide-react';
+import { RefreshCw, Info, Users, Video } from 'lucide-react';
 import axios from 'axios';
-// Configuration
-const API_BASE_URL = 'http://localhost:8000/api';
+import { API_BASE_URL } from './config';
+import { getHeaders } from './auth';
+import { formatNumber, formatDate } from './formatters';
+import Header from './Header';
+import StatsSection from './StatsSection';
+import VideosGrid from './VideosGrid';
+import EditModal from './EditModal';
+import AboutModal from './AboutModal';
 
 const ChannelPage = () => {
   const [videos, setVideos] = useState([]);
@@ -15,90 +21,81 @@ const ChannelPage = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState(null);
   const [updating, setUpdating] = useState(false);
   const [aboutData, setAboutData] = useState(null);
-
   const [channelId, setChannelId] = useState(null);
 
-  const authToken = localStorage.getItem('token') || 'your-auth-token';
-const [editForm, setEditForm] = useState({
-  title: "",
-  description: "",
-  visibility: "public",
-  scheduledAt: "",
-  tags: ""
-});
-const handleEditClick = (video) => {
-  setSelectedVideo(video);
-  setThumbnailFile(null);
-  setThumbnailPreview(null);
-
-  setEditForm({
-    title: video.title || "",
-    description: video.description || "",
-    visibility: video.visibility || "public",
-    scheduledAt: video.scheduledAt
-      ? new Date(video.scheduledAt).toISOString().slice(0, 16)
-      : "",
-    tags: video.tags?.join(", ") || ""
+  const [editForm, setEditForm] = useState({
+    title: "",
+    description: "",
+    visibility: "public",
+    scheduledAt: "",
+    tags: ""
   });
 
-  setEditModalOpen(true);
-};
-const handleEditChange = (e) => {
-  const { name, value } = e.target;
-  setEditForm((prev) => ({
-    ...prev,
-    [name]: value
-  }));
-};
-const handleSaveVideoDetails = async () => {
-  try {
-    setUpdating(true);
+  const handleEditClick = (video) => {
+    setSelectedVideo(video);
+    setThumbnailFile(null);
+    setThumbnailPreview(null);
 
-    const response = await fetch(
-      `${API_BASE_URL}/videos/${selectedVideo.id}`,
-      {
-        method: "PUT",
-        headers: getHeaders(),
-        body: JSON.stringify({
-          title: editForm.title,
-          description: editForm.description,
-          visibility: editForm.visibility,
-          scheduledAt: editForm.scheduledAt || null
-        })
-      }
-    );
+    setEditForm({
+      title: video.title || "",
+      description: video.description || "",
+      visibility: video.visibility || "public",
+      scheduledAt: video.scheduledAt
+        ? new Date(video.scheduledAt).toISOString().slice(0, 16)
+        : "",
+      tags: video.tags?.join(", ") || ""
+    });
 
-    if (!response.ok) throw new Error("Update failed");
-
-    alert("Video updated successfully!");
-    setEditModalOpen(false);
-    loadVideos();
-  } catch (err) {
-    console.error(err);
-    alert("Failed to update video");
-  } finally {
-    setUpdating(false);
-  }
-};
-
-  const getHeaders = (isMultipart = false) => {
-    const headers = {
-      'Authorization': `Bearer ${authToken}`
-    };
-    if (!isMultipart) {
-      headers['Content-Type'] = 'application/json';
-    }
-    return headers;
+    setEditModalOpen(true);
   };
-  
- useEffect(() => {
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditForm((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSaveVideoDetails = async () => {
+    try {
+      setUpdating(true);
+
+      const response = await fetch(
+        `${API_BASE_URL}/videos/${selectedVideo.id}`,
+        {
+          method: "PUT",
+          headers: getHeaders(),
+          body: JSON.stringify({
+            title: editForm.title,
+            description: editForm.description,
+            visibility: editForm.visibility,
+            scheduledAt: editForm.scheduledAt || null
+          })
+        }
+      );
+
+      if (!response.ok) throw new Error("Update failed");
+
+      alert("Video updated successfully!");
+      setEditModalOpen(false);
+      loadVideos();
+    } catch (err) {
+      console.error(err);
+      alert("Failed to update video");
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  useEffect(() => {
     const fetchChannelId = async () => {
       try {
         const res = await axios.get(`${API_BASE_URL}/aboutme`, {
           headers: getHeaders(),
         });
         console.log("hii")
-console.log("About Me Response:", res.data);
+        console.log("About Me Response:", res.data);
         const id = res.data?.data?.id;
         setChannelId(id);
         console.log("Channel ID:", id);
@@ -106,52 +103,50 @@ console.log("About Me Response:", res.data);
         console.error("Failed to fetch channel ID:", err);
       }
     };
-loadAboutData();
-loadSubscriberCount();
+    loadAboutData();
+    loadSubscriberCount();
     fetchChannelId();
   }, []);
 
-useEffect(() => {
-  if (!channelId) return;
+  useEffect(() => {
+    if (!channelId) return;
 
-  loadSubscriberCount();
-  loadVideos();
-}, [channelId]);
+    loadSubscriberCount();
+    loadVideos();
+  }, [channelId]);
 
-const loadSubscriberCount = async () => {
-  if (!channelId) return;
+  const loadSubscriberCount = async () => {
+    if (!channelId) return;
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/subscribers/${channelId}`);
-    const data = await response.json();
+    try {
+      const response = await fetch(`${API_BASE_URL}/subscribers/${channelId}`);
+      const data = await response.json();
 
-    setSubscriberCount(data.subscribers || 0);
-    console.log("Subscriber Count:", data.subscribers);
-  } catch (error) {
-    console.error('Error loading subscriber count:', error);
-  }
-};
+      setSubscriberCount(data.subscribers || 0);
+      console.log("Subscriber Count:", data.subscribers);
+    } catch (error) {
+      console.error('Error loading subscriber count:', error);
+    }
+  };
 
+  const loadVideos = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/my-videos`, {
+        headers: getHeaders()
+      });
 
- const loadVideos = async () => {
-  setLoading(true);
-  try {
-    const response = await fetch(`${API_BASE_URL}/my-videos`, {
-      headers: getHeaders()
-    });
+      if (!response.ok) throw new Error('Failed to load videos');
 
-    if (!response.ok) throw new Error('Failed to load videos');
-
-    const data = await response.json();
-    // ✅ Extract the videos array
-    setVideos(data.videos || []); // fallback to empty array if undefined
-  } catch (error) {
-    console.error('Error loading videos:', error);
-    setVideos([]); // ensure state stays as array even on error
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await response.json();
+      setVideos(data.videos || []);
+    } catch (error) {
+      console.error('Error loading videos:', error);
+      setVideos([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const loadAboutData = async () => {
     try {
@@ -168,13 +163,6 @@ const loadSubscriberCount = async () => {
       console.error('Error loading about info:', error);
     }
   };
-
-//   const handleEditClick = (video) => {
-//     setSelectedVideo(video);
-//     setThumbnailFile(null);
-//     setThumbnailPreview(null);
-//     setEditModalOpen(true);
-//   };
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
@@ -202,6 +190,7 @@ const loadSubscriberCount = async () => {
       const formData = new FormData();
       formData.append('thumbnail', thumbnailFile);
       
+      const authToken = localStorage.getItem('token') || 'your-auth-token';
       const response = await fetch(`${API_BASE_URL}/thumbnail/${selectedVideo.id}`, {
         method: 'PUT',
         headers: {
@@ -277,404 +266,62 @@ const loadSubscriberCount = async () => {
     await loadAboutData();
   };
 
-  const formatNumber = (num) => {
-    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
-    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
-    return num.toString();
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return 'Yesterday';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} weeks ago`;
-    if (diffDays < 365) return `${Math.floor(diffDays / 30)} months ago`;
-    return `${Math.floor(diffDays / 365)} years ago`;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/60 border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-<div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-rose-500 via-pink-500 to-orange-500 flex items-center justify-center font-bold text-xl shadow-lg shadow-pink-500/30">
-  {aboutData?.data?.avatarUrl ? (
-    <img
-      src={aboutData.data.avatarUrl}
-      alt="Profile"
-      className="w-full h-full object-cover"
-    />
-  ) : (
-    aboutData?.data?.displayName?.[0]?.toUpperCase() || "U"
-  )}
+<div className="min-h-screen bg-black text-white">
+      <Header 
+        aboutData={aboutData}
+        subscriberCount={subscriberCount}
+        handleAboutClick={handleAboutClick}
+      />
+
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        <StatsSection 
+          subscriberCount={subscriberCount}
+          videosCount={videos.length}
+        />
+
+          <div className="mb-6 flex items-center justify-between">
+  <h2 className="text-2xl font-semibold text-white tracking-tight">
+    Your Videos
+  </h2>
+
+  <button
+    onClick={loadVideos}
+    className="flex items-center gap-2 px-4 py-2 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:border-neutral-700 transition-all duration-200"
+  >
+    <RefreshCw className="w-4 h-4 text-neutral-400" />
+    <span className="text-sm font-medium">Refresh</span>
+  </button>
 </div>
 
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">
-{aboutData?.data?.displayName || "Your Channel"}
-    </h1>
-              <p className="text-sm text-slate-400 font-mono">
-                {formatNumber(subscriberCount)} subscribers
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={handleAboutClick}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-pink-500 transition-all duration-200"
-          >
-            <Info className="w-4 h-4" />
-            <span className="font-medium">About</span>
-          </button>
-        </div>
-      </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        {/* Stats */}
-        <div className="mb-8 flex flex-wrap gap-4">
-          <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-slate-800/50 backdrop-blur border border-slate-700/50 shadow-lg">
-            <Users className="w-5 h-5 text-pink-400" />
-            <span className="font-semibold">{formatNumber(subscriberCount)}</span>
-            <span className="text-slate-400">subscribers</span>
-          </div>
-          <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-slate-800/50 backdrop-blur border border-slate-700/50 shadow-lg">
-            <Video className="w-5 h-5 text-orange-400" />
-            <span className="font-semibold">{videos.length}</span>
-            <span className="text-slate-400">videos</span>
-          </div>
-        </div>
-
-        {/* Section Header */}
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-3xl font-bold bg-gradient-to-r from-white via-pink-200 to-orange-200 bg-clip-text text-transparent">
-            Your Videos
-          </h2>
-          <button
-            onClick={loadVideos}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 transition-all duration-200 shadow-lg shadow-pink-500/30 hover:shadow-pink-500/50 hover:-translate-y-0.5"
-          >
-            <RefreshCw className="w-4 h-4" />
-            <span className="font-semibold">Refresh</span>
-          </button>
-        </div>
-
-        {/* Videos Grid */}
-        {loading ? (
-          <div className="text-center py-24">
-            <div className="inline-block w-12 h-12 border-4 border-slate-700 border-t-pink-500 rounded-full animate-spin"></div>
-            <p className="mt-4 text-slate-400">Loading your videos...</p>
-          </div>
-        ) : videos.length === 0 ? (
-          <div className="text-center py-24">
-            <div className="text-8xl mb-6 opacity-20">📹</div>
-            <h3 className="text-2xl font-bold mb-2">No videos yet</h3>
-            <p className="text-slate-400">Upload your first video to get started!</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {videos.map((video, index) => (
-              <div
-                key={video.id}
-                className="group bg-slate-800/50 backdrop-blur rounded-xl overflow-hidden border border-slate-700/50 hover:border-pink-500/50 transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-pink-500/20"
-                style={{
-                  animation: `fadeInUp 0.5s ease-out ${index * 0.1}s both`
-                }}
-              >
-                {/* Thumbnail */}
-                <div className="relative aspect-video overflow-hidden bg-gradient-to-br from-slate-800 to-slate-900">
-                  {video.thumbnailUrl ? (
-                    <img
-                      src={video.thumbnailUrl}
-                      alt={video.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl opacity-30">
-                      🎬
-                    </div>
-                  )}
-                  
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-3">
-                    <button
-                      onClick={() => handleEditClick(video)}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-600 transition-all shadow-lg transform hover:scale-105"
-                    >
-                      <Edit className="w-4 h-4" />
-                      <span className="font-medium">Edit</span>
-                    </button>
-                    <button
-                      onClick={() => handleDeleteVideo(video.id)}
-                      className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500 border border-red-500 hover:border-red-400 transition-all shadow-lg transform hover:scale-105"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      <span className="font-medium">Delete</span>
-                    </button>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2 line-clamp-2 group-hover:text-pink-300 transition-colors">
-                    {video.title}
-                  </h3>
-                  <div className="flex items-center gap-3 text-sm text-slate-400">
-                    <span className="font-mono">{formatNumber(video.views || 0)} views</span>
-                    <span>•</span>
-                    <span>{formatDate(video.createdAt)}</span>
-                  </div>
-                  {video.description && (
-                    <p className="mt-2 text-sm text-slate-400 line-clamp-2">
-                      {video.description}
-                    </p>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        <VideosGrid 
+          loading={loading}
+          videos={videos}
+          handleEditClick={handleEditClick}
+          handleDeleteVideo={handleDeleteVideo}
+        />
       </main>
 
-      {/* Edit Modal */}
-      {editModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={() => setEditModalOpen(false)}
-        >
-          <div
-            className="bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              animation: 'modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-          >
-            {/* Modal Header */}
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent">
-                Edit Video
-              </h3>
-              <button
-                onClick={() => setEditModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800 rounded-lg"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
+      <EditModal 
+        editModalOpen={editModalOpen}
+        setEditModalOpen={setEditModalOpen}
+        selectedVideo={selectedVideo}
+        thumbnailPreview={thumbnailPreview}
+        handleThumbnailChange={handleThumbnailChange}
+        handleUpdateThumbnail={handleUpdateThumbnail}
+        handleRemoveThumbnail={handleRemoveThumbnail}
+        updating={updating}
+        editForm={editForm}
+        handleEditChange={handleEditChange}
+        handleSaveVideoDetails={handleSaveVideoDetails}
+      />
 
-            {/* Modal Content */}
-            <div className="p-6">
-              <form onSubmit={handleUpdateThumbnail}>
-                {/* Current Thumbnail */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-400 mb-3">
-                    Current Thumbnail
-                  </label>
-                  <div className="rounded-lg overflow-hidden bg-slate-800 border border-slate-700">
-                    {selectedVideo.thumbnailUrl ? (
-                      <img
-                        src={selectedVideo.thumbnailUrl}
-                        alt="Current thumbnail"
-                        className="w-full aspect-video object-cover"
-                      />
-                    ) : (
-                      <div className="w-full aspect-video flex items-center justify-center text-6xl opacity-30">
-                        🎬
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Upload New Thumbnail */}
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-slate-400 mb-3">
-                    Upload New Thumbnail
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleThumbnailChange}
-                    className="hidden"
-                    id="thumbnailInput"
-                  />
-                  <label
-                    htmlFor="thumbnailInput"
-                    className="block p-8 border-2 border-dashed border-slate-700 hover:border-pink-500 rounded-lg text-center cursor-pointer transition-all hover:bg-slate-800/50"
-                  >
-                    <Upload className="w-12 h-12 mx-auto mb-4 text-slate-500" />
-                    <p className="text-slate-400 mb-1">Click to upload or drag and drop</p>
-                    <p className="text-xs text-slate-500">PNG, JPG, GIF up to 10MB</p>
-                  </label>
-                  
-                  {thumbnailPreview && (
-                    <div className="mt-4 rounded-lg overflow-hidden border border-pink-500/30">
-                      <img
-                        src={thumbnailPreview}
-                        alt="Preview"
-                        className="w-full aspect-video object-cover"
-                      />
-                    </div>
-                  )}
-                </div>
-<div className="mb-4">
-  <label className="block text-sm font-semibold text-slate-400 mb-2">
-    Title
-  </label>
-  <input
-    name="title"
-    value={editForm.title}
-    onChange={handleEditChange}
-    maxLength={100}
-    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:border-pink-500 outline-none"
-  />
-</div>
-<div className="mb-4">
-  <label className="block text-sm font-semibold text-slate-400 mb-2">
-    Description
-  </label>
-  <textarea
-    name="description"
-    value={editForm.description}
-    onChange={handleEditChange}
-    rows={4}
-    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg focus:border-pink-500 outline-none"
-  />
-</div>
-<div className="mb-4">
-  <label className="block text-sm font-semibold text-slate-400 mb-2">
-    Visibility
-  </label>
-  <select
-    name="visibility"
-    value={editForm.visibility}
-    onChange={handleEditChange}
-    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg"
-  >
-    <option value="public">Public</option>
-    <option value="private">Private</option>
-  </select>
-</div>
-<div className="mb-6">
-  <label className="block text-sm font-semibold text-slate-400 mb-2">
-    Schedule Publish
-  </label>
-  <input
-    type="datetime-local"
-    name="scheduledAt"
-    value={editForm.scheduledAt}
-    onChange={handleEditChange}
-    className="w-full px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg"
-  />
-</div>
-<button
-  type="button"
-  onClick={handleSaveVideoDetails}
-  disabled={updating}
-  className="flex-1 px-6 py-3 rounded-lg bg-green-600 hover:bg-green-700 font-semibold"
->
-  Save Changes
-</button>
-
-                {/* Actions */}
-                <div className="flex gap-3">
-                  <button
-                    type="submit"
-                    disabled={updating}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-pink-500 to-orange-500 hover:from-pink-600 hover:to-orange-600 transition-all duration-200 shadow-lg shadow-pink-500/30 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-                  >
-                    {updating ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        <span>Updating...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="w-4 h-4" />
-                        <span>Update Thumbnail</span>
-                      </>
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleRemoveThumbnail}
-                    disabled={updating}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-red-500/20 hover:bg-red-500 border border-red-500 hover:border-red-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    <span>Remove</span>
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* About Modal */}
-      {aboutModalOpen && (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-          onClick={() => setAboutModalOpen(false)}
-        >
-          <div
-            className="bg-slate-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-slate-700 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              animation: 'modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-            }}
-          >
-            {/* Modal Header */}
-            <div className="p-6 border-b border-slate-800 flex items-center justify-between">
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-white to-pink-200 bg-clip-text text-transparent">
-                About This Channel
-              </h3>
-              <button
-                onClick={() => setAboutModalOpen(false)}
-                className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800 rounded-lg"
-              >
-                <X className="w-6 h-6" />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6">
-              {!aboutData ? (
-                <div className="text-center py-12">
-                  <div className="inline-block w-8 h-8 border-4 border-slate-700 border-t-pink-500 rounded-full animate-spin"></div>
-                </div>
-              ) : (
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-400 mb-2">Channel Name</h4>
-                    <p className="text-lg font-medium">{aboutData.data.displayName || 'Your Channel'}</p>
-                  </div>
-                  {aboutData.description && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-400 mb-2">Description</h4>
-                      <p className="text-slate-300">{aboutData.description}</p>
-                    </div>
-                  )}
-                  {aboutData.email && (
-                    <div>
-                      <h4 className="text-sm font-semibold text-slate-400 mb-2">Email</h4>
-                      <p className="text-slate-300 font-mono">{aboutData.data.email}</p>
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="text-sm font-semibold text-slate-400 mb-2">Joined</h4>
-                    <p className="text-slate-300">{formatDate(aboutData.data.createdAt)}</p>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <AboutModal 
+        aboutModalOpen={aboutModalOpen}
+        setAboutModalOpen={setAboutModalOpen}
+        aboutData={aboutData}
+      />
 
       <style jsx>{`
         @keyframes fadeInUp {

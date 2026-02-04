@@ -16,6 +16,11 @@ API.interceptors.request.use(
   (error) => Promise.reject(error)
 )
 
+// 👤 Get current user information
+export const getAboutMe = () => {
+  return API.get("/aboutme")
+}
+
 // 📹 Get all uploaded videos
 export const getMyVideos = () => {
   return API.get("/my-videos")

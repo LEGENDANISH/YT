@@ -22,10 +22,16 @@ import Signup from "./page/Signup";
 import VideoTestPage from "./VideoTestPage";
 // import Test from "./test";
 import AnalyticsPage from "./page/channelAnalytics/AnalyticsPage";
+import AnalyticsDashboard from "./page/channelAnalytics/Analyticsdashboard";
+import VideoAnalyticsPage from "./page/yourchannel/VideoAnalyticsPage";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
+<Route
+  path="/studio/analytics/video/:videoId"
+  element={<VideoAnalyticsPage />}
+/>
 
       {/* 🔓 Routes WITHOUT Topbar / Sidebar */}
       <Route path="/signin" element={<Signin />} />
@@ -33,7 +39,7 @@ createRoot(document.getElementById("root")).render(
         {/* <Route path="/test" element={<Test />} /> */}
       <Route path="/video" element={<VideoTestPage />} />
         <Route path="/channel" element={<ChannelPage />} />
-        <Route path="/analytics" element={< AnalyticsPage/>} />
+        <Route path="/analytics" element={< AnalyticsDashboard/>} />
       {/* ✅ Routes WITH Topbar & Sidebar */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
