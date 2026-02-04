@@ -20,7 +20,8 @@ import ChannelPageview from "./page/viewchannel/channelpage";
 import Signin from "./page/Signin";
 import Signup from "./page/Signup";
 import VideoTestPage from "./VideoTestPage";
-import Test from "./test";
+// import Test from "./test";
+import AnalyticsPage from "./page/channelAnalytics/AnalyticsPage";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -29,9 +30,10 @@ createRoot(document.getElementById("root")).render(
       {/* 🔓 Routes WITHOUT Topbar / Sidebar */}
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/test" element={<Test />} />
+        {/* <Route path="/test" element={<Test />} /> */}
       <Route path="/video" element={<VideoTestPage />} />
-
+        <Route path="/channel" element={<ChannelPage />} />
+        <Route path="/analytics" element={< AnalyticsPage/>} />
       {/* ✅ Routes WITH Topbar & Sidebar */}
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
@@ -41,9 +43,9 @@ createRoot(document.getElementById("root")).render(
         <Route path="/subscriptions" element={<Subscriptions />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/results" element={<SearchResultsPage />} />
-        <Route path="/channel" element={<ChannelPage />} />
         <Route path="/upload" element={<UploadPage />} />
         <Route path="/channel/:channelId" element={<ChannelPageview />} />
+
       </Route>
 
     </Routes>
