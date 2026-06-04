@@ -76,14 +76,13 @@ try {
       })
     );
 
-    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
-  }
+finalThumbnailUrl =
+  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
 
   // CASE 2 — thumbnail as base64
   else if (req.body.thumbnailBase64) {
     const base64Data = req.body.thumbnailBase64.split(",")[1];
     const buffer = Buffer.from(base64Data, "base64");
-
     const thumbKey = `thumbnails/${videoId}.jpg`;
 
     await s3.send(
@@ -95,8 +94,8 @@ try {
       })
     );
 
-    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
-  }
+finalThumbnailUrl =
+  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
 
   // CASE 3 — thumbnail from URL
   else if (req.body.thumbnailUrl) {
@@ -115,8 +114,8 @@ try {
       })
     );
 
-    finalThumbnailUrl = `https://${process.env.S3_PROCESSED_BUCKET}.s3.amazonaws.com/${thumbKey}`;
-  }
+finalThumbnailUrl =
+  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
 } catch (err) {
   console.error("Thumbnail upload failed:", err);
 }
