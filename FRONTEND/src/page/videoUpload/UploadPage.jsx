@@ -66,12 +66,15 @@ const videoIdRef = useRef(null)
               setStatus("Uploading to server...")
             } else if (data.status === "PROCESSING") {
   setUploadPhase("processing")
-  setProgress(100)
+ if (data.processingProgress !== undefined) {
+    setProgress(data.processingProgress)
+  }
+
   const stageLabels = {
-    DOWNLOAD:  "Downloading from storage...",
-    TRANSCODE: "Transcoding to HLS...",
-    UPLOAD:    "Uploading processed files...",
-    FINALIZE:  "Finalizing...",
+    DOWNLOAD:  "Downloading from storage... 20%",
+    TRANSCODE: "Transcoding to HLS... 70%",
+    UPLOAD:    "Uploading processed files... 90%",
+    FINALIZE:  "Finalizing... 100%",
   }
   setStatus(stageLabels[data.processingStage] || "Processing video...")
 } else if (data.status === "READY") {

@@ -50,3 +50,20 @@ module.exports = {
   emitToUser,
   emitVideoUpdate,
 }
+// ADD FROM HERE ↓
+const Redis = require("ioredis");
+
+const subscriber = new Redis({
+  host: process.env.REDIS_HOST || "localhost",
+  port: process.env.REDIS_PORT || 6379,
+});
+
+subscriber.subscribe("video:updates", (err) => {
+  if (err) console.error("Redis subscribe error:", err);
+  else console.log("Subscribed to video:updates channel");
+});
+
+subscriber.on("message", (channel, message) => {
+  const data = JSON.parse(message);
+  emitToUser(data.userId, "video:update", data);
+});
