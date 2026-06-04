@@ -17,7 +17,7 @@ const VideoUpload = () => {
   const [status, setStatus] = useState(null)
   const [videoId, setVideoId] = useState(null)
   const [uploadPhase, setUploadPhase] = useState("idle") // idle, uploading, processing, complete, failed
-
+const videoIdRef = useRef(null)
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem("theme")
     return saved ? saved === "dark" : true
@@ -50,7 +50,7 @@ const VideoUpload = () => {
       socket.on("video:update", (data) => {
         console.log("📡 WebSocket update:", data)
         
-        if (data.videoId === videoId) {
+        if (data.videoId === videoIdRef.current) {
           // Update progress from server (if provided)
           if (data.uploadProgress !== undefined) {
             setProgress(data.uploadProgress)
@@ -65,10 +65,16 @@ const VideoUpload = () => {
               setUploadPhase("uploading")
               setStatus("Uploading to server...")
             } else if (data.status === "PROCESSING") {
-              setUploadPhase("processing")
-              setProgress(100)
-              setStatus("Processing video... This may take a few minutes.")
-            } else if (data.status === "READY") {
+  setUploadPhase("processing")
+  setProgress(100)
+  const stageLabels = {
+    DOWNLOAD:  "Downloading from storage...",
+    TRANSCODE: "Transcoding to HLS...",
+    UPLOAD:    "Uploading processed files...",
+    FINALIZE:  "Finalizing...",
+  }
+  setStatus(stageLabels[data.processingStage] || "Processing video...")
+} else if (data.status === "READY") {
               setUploadPhase("complete")
               setStatus("✅ Video uploaded and processed successfully!")
               setTimeout(() => {
@@ -232,6 +238,7 @@ const VideoUpload = () => {
 
       const { videoId: newVideoId, uploadUrl } = init.data
       setVideoId(newVideoId)
+      videoIdRef.current = newVideoId
       console.log("✅ Upload initialized. Video ID:", newVideoId)
       
       setStatus("Uploading to cloud storage...")

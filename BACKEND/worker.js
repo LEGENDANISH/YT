@@ -8,6 +8,7 @@ const path = require("path");
 const os = require("os");
 const { Readable } = require("stream");
 const ffmpeg = require("fluent-ffmpeg");
+const { emitVideoUpdate } = require("./websocket"); 
 
 const execPromise = promisify(exec);
 const prisma = new PrismaClient();
@@ -139,7 +140,10 @@ const worker = new Worker(
       });
 
       console.log(`Downloaded to ${localInput}`);
-
+emitVideoUpdate(userId, videoId, {
+  status: "PROCESSING", processingStage: "DOWNLOAD",
+  message: "Downloaded — starting thumbnail & transcode..."
+});
       // --------------------
       // THUMBNAIL GENERATION
       // --------------------
@@ -306,7 +310,10 @@ const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/
       }
 
       console.log(`Uploaded ${files.length} files`);
-
+emitVideoUpdate(userId, videoId, {
+  status: "PROCESSING", processingStage: "UPLOAD",
+  message: "Upload done — finalizing..."
+});
       // UPDATE STATUS READY
       console.log(`\n========== FINAL UPDATE START ==========`);
       console.log(` [FINAL] Duration value being set: ${videoDuration}`);
@@ -334,6 +341,9 @@ const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/
       console.log(`========== FINAL UPDATE END ==========\n`);
 
       console.log(`Video ${videoId} READY with duration: ${videoDuration}s`);
+      emitVideoUpdate(userId, videoId, {
+  status: "READY", processingStage: "FINALIZE"
+});
     } catch (error) {
       console.error(`Processing failed for ${videoId}:`, error);
       // Check if video exists before updating
@@ -341,16 +351,22 @@ const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/
         const videoExists = await prisma.video.findUnique({
           where: { id: videoId },
         });
-        if (videoExists) {
-          await prisma.video.update({
-            where: { id: videoId },
-            data: {
-              status: "PROCESSING_FAILED", 
-              errorMessage: error.message,
-              processingAttempts: { increment: 1 },
-              lastProcessedAt: new Date(),
-            },
-          });
+       if (videoExists) {
+  await prisma.video.update({
+    where: { id: videoId },
+    data: {
+      status: "PROCESSING_FAILED",
+      errorMessage: error.message,
+      processingAttempts: { increment: 1 },
+      lastProcessedAt: new Date(),
+    },
+  });
+
+  // ADD THIS RIGHT HERE ↓
+  emitVideoUpdate(userId, videoId, {
+    status: "FAILED",
+    message: error.message,
+  });
         } else {
           console.error(` Cannot update - video ${videoId} doesn't exist`);
         }
