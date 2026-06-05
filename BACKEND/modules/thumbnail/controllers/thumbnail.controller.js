@@ -49,7 +49,7 @@ const updateThumbnail = async (req, res) => {
       })
     );
 
-    const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
 
     //  Step 4 — Update Prisma
     await prisma.video.update({

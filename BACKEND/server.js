@@ -9,6 +9,10 @@ const videoRoutes = require("./modules/video/routes/video.routes");
 const subscriptionRoutes = require("./modules/subscription/routes/subscription.routes");
 const feedRoutes = require("./modules/feed/routes/feed.routes");
 const recommendationRoutes = require("./modules/recommendation/routes/recommendation.routes"); 
+
+const cron = require("node-cron");
+const axios = require("axios");
+
 const app = express();
 
 //  Create HTTP server
@@ -47,4 +51,14 @@ const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`WebSocket server initialized`);
+});
+
+// Ping self every 14 minutes to prevent Render sleep
+cron.schedule("*/14 * * * *", async () => {
+  try {
+    await axios.get(`${process.env.BACKEND_URL}/health`);
+    console.log("Self ping successful");
+  } catch (err) {
+    console.log("Self ping failed:", err.message);
+  }
 });

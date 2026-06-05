@@ -196,7 +196,7 @@
             
             console.log(` [THUMBNAIL] S3 upload result:`, uploadResult);
             
-  const thumbUrl = `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
             console.log(` [THUMBNAIL] Thumbnail URL: ${thumbUrl}`);
             
             // Update database
@@ -386,16 +386,18 @@
       }
     },
     {
-      connection: {
-        host: process.env.REDIS_HOST || "localhost",
-        port: process.env.REDIS_PORT || 6379,
-      },
-      concurrency: 2,
-      limiter: {
-        max: 5,
-        duration: 60000,
-      },
-    }
+  connection: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT) || 6379,
+    password: process.env.REDIS_PASSWORD,
+    tls: {}
+  },
+  concurrency: 1,
+  limiter: {
+    max: 5,
+    duration: 60000,
+  },
+}
   );
 
   // --------------------

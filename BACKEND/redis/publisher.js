@@ -2,7 +2,9 @@ const Redis = require("ioredis");
 
 const publisher = new Redis({
   host: process.env.REDIS_HOST || "localhost",
-  port: process.env.REDIS_PORT || 6379,
+  port: parseInt(process.env.REDIS_PORT) || 6379,
+  password: process.env.REDIS_PASSWORD,
+  tls: {}
 });
 
 const publishVideoUpdate = async (userId, videoId, data) => {

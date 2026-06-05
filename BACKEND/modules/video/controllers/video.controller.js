@@ -12,7 +12,6 @@ function serializeBigInt(data) {
 
 const getVideoById = async (req, res) => {
   const { id } = req.params;
-
   const video = await prisma.video.findUnique({
     where: { id },
     include: {
@@ -25,21 +24,28 @@ const getVideoById = async (req, res) => {
       },
     },
   });
-
   if (!video) {
     return res.status(404).json({ message: "Video not found" });
   }
-
   if (video.visibility !== "PUBLIC") {
     return res.status(403).json({ message: "Video is private" });
   }
 
-  return res.json(serializeBigInt(video));
+  // construct full public URLs
+  const baseUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public`;
+  const serialized = serializeBigInt(video);
+
+  return res.json({
+    ...serialized,
+    thumbnailUrl: video.thumbnailUrl,  // already full URL from worker
+    streamUrl: video.masterPlaylist
+      ? `${baseUrl}/${process.env.S3_PROCESSED_BUCKET}/${video.masterPlaylist}`
+      : null,
+  });
 };
 
 const getStreamUrl = async (req, res) => {
   const { id } = req.params;
-
   const video = await prisma.video.findUnique({
     where: { id },
     select: {
@@ -47,13 +53,11 @@ const getStreamUrl = async (req, res) => {
       masterPlaylist: true,
     },
   });
-
   if (!video || video.status !== "READY") {
     return res.status(404).json({ message: "Video not ready" });
   }
-
   return res.json({
-    streamUrl: `http://localhost:9000/${process.env.S3_PROCESSED_BUCKET}/${video.masterPlaylist}`,
+    streamUrl: `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${video.masterPlaylist}`,
   });
 };
 
