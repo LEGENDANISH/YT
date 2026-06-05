@@ -412,4 +412,31 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
   });
 
   console.log("Video processing worker started");
- 
+
+
+
+  const express = require("express");
+const cron = require("node-cron");
+const axios = require("axios");
+
+// Small HTTP server so Render keeps it alive as a Web Service
+const app = express();
+const PORT = process.env.WORKER_PORT || 3001;
+
+app.get("/health", (req, res) => {
+  res.json({ status: "worker running", timestamp: new Date() });
+});
+
+app.listen(PORT, () => {
+  console.log(`Worker health server on port ${PORT}`);
+});
+
+// Self ping every 14 mins to prevent Render sleep
+cron.schedule("*/14 * * * *", async () => {
+  try {
+    await axios.get(`${process.env.WORKER_URL}/health`);
+    console.log("Worker self-ping ok");
+  } catch (err) {
+    console.log("Worker self-ping failed:", err.message);
+  }
+});
