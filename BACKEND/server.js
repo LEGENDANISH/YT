@@ -3,62 +3,114 @@ require("dotenv").config();
 const express = require("express");
 const http = require("http");
 const cors = require("cors");
+const cron = require("node-cron");
+const axios = require("axios");
+const rateLimit = require("express-rate-limit");
+const { client, apiRequestDuration, Pushgateway } = require("prom-client");
+const logger = require("./logger");
+
 const { initializeWebSocket } = require("./websocket");
 const authRoutes = require("./modules/auth/routes/authRoutes");
 const videoRoutes = require("./modules/video/routes/video.routes");
 const subscriptionRoutes = require("./modules/subscription/routes/subscription.routes");
 const feedRoutes = require("./modules/feed/routes/feed.routes");
-const recommendationRoutes = require("./modules/recommendation/routes/recommendation.routes"); 
-
-const cron = require("node-cron");
-const axios = require("axios");
+const recommendationRoutes = require("./modules/recommendation/routes/recommendation.routes");
 
 const app = express();
-
-//  Create HTTP server
 const server = http.createServer(app);
+
+// ── Rate limiting ─────────────────────────────────────
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { error: "Too many requests" },
+});
+
+const uploadLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 10,
+  message: { error: "Upload limit reached" },
+});
 
 app.use(cors());
 app.use(express.json());
+app.use("/api", limiter);
+app.use("/api/videos/upload", uploadLimiter);
 
-// Initialize WebSocket 
+// ── Request duration metrics ──────────────────────────
+app.use((req, res, next) => {
+  const end = apiRequestDuration.startTimer();
+  res.on("finish", () => {
+    end({
+      method: req.method,
+      route: req.route?.path || req.path,
+      status: res.statusCode,
+    });
+  });
+  next();
+});
+
+// ── Request logging ───────────────────────────────────
+app.use((req, res, next) => {
+  logger.info({ method: req.method, url: req.url, ip: req.ip });
+  next();
+});
+
+// Initialize WebSocket
 initializeWebSocket(server);
 
 // Routes
 app.use("/api", authRoutes);
 app.use("/api/videos", videoRoutes);
 app.use("/api/feed", feedRoutes);
-// console.log("DATABASE_URL =", process.env.DATABASE_URL);
 app.use("/api", subscriptionRoutes);
 app.use("/api/search", require("./modules/search/routes/search.routes"));
 app.use("/api", recommendationRoutes);
 app.use("/api", require("./modules/thumbnail/routes/thumbnail.routes"));
 app.use("/api/analytics", require("./modules/analytics/routes/analytics.routes"));
-// check endpoint
+
+// ── Health check ──────────────────────────────────────
 app.get("/health", (req, res) => {
-  res.json({ status: "ok" });
+  res.json({ status: "ok", uptime: process.uptime(), timestamp: new Date() });
 });
 
+// ── Prometheus metrics endpoint ───────────────────────
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
+});
 
-// Error handling middleware
+// ── Error handling ────────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.error({ message: err.message, stack: err.stack, url: req.url });
   res.status(500).json({ message: "Something went wrong!" });
 });
 
 const PORT = process.env.PORT || 8000;
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-  console.log(`WebSocket server initialized`);
+  logger.info(`Server running on port ${PORT}`);
 });
 
-// Ping self every 14 minutes to prevent Render sleep
+// ── Self ping ─────────────────────────────────────────
 cron.schedule("*/14 * * * *", async () => {
   try {
     await axios.get(`${process.env.BACKEND_URL}/health`);
-    console.log("Self ping successful");
+    logger.info("Backend self-ping ok");
   } catch (err) {
-    console.log("Self ping failed:", err.message);
+    logger.warn("Backend self-ping failed");
   }
 });
+
+// ── Grafana push (only if URL is set) ─────────────────
+// change this:
+if (process.env.GRAFANA_PUSH_URL) {
+  const gateway = new Pushgateway(process.env.GRAFANA_PUSH_URL);
+  setInterval(async () => {
+    try {
+      await gateway.pushAdd({ jobName: "yt-backend" });
+    } catch (err) {
+      logger.warn("Metrics push failed");
+    }
+  }, 15000);
+}

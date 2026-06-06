@@ -95,6 +95,8 @@
     async (job) => {
       const { videoId, userId, s3Key } = job.data;
       console.log(`Processing video: ${videoId}`);
+      logger.info({ event: "job_started", videoId, userId });
+
       console.log(`S3 Key: ${s3Key}`);
 
       const localInput = path.join(BASE_TEMP_DIR, `${videoId}-input.mp4`);
@@ -256,6 +258,7 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
         if (!fs.existsSync(outputDir)) {
           fs.mkdirSync(outputDir, { recursive: true });
         }
+const endTranscode = transcodeDuration.startTimer();
 
         // TRANSCODE (HLS)
         await prisma.video.update({
@@ -311,6 +314,7 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
         }
 
         console.log(`Uploaded ${files.length} files`);
+endTranscode();
 
   publishVideoUpdate(userId, videoId, {
     status: "PROCESSING", processingStage: "TRANSCODE",
@@ -344,12 +348,18 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
 
         console.log(`Video ${videoId} READY with duration: ${videoDuration}s`);
 
+        logger.info({ event: "job_completed", videoId, duration: videoDuration });
+
+
   publishVideoUpdate(userId, videoId, {
     status: "READY", processingStage: "FINALIZE",
     processingProgress: 100
   });
       } catch (error) {
         console.error(`Processing failed for ${videoId}:`, error);
+
+
+        logger.error({ event: "job_failed", videoId, error: error.message });
         // Check if video exists before updating
         try {
           const videoExists = await prisma.video.findUnique({
@@ -405,12 +415,15 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
   // --------------------
   worker.on("completed", (job) => {
     console.log(`Job ${job.id} completed`);
-  });
+ completedJobsCounter.inc();
+  logger.info({ event: "job_completed", jobId: job.id });
+});
 
   worker.on("failed", (job, err) => {
     console.error(`Job ${job?.id} failed:`, err.message);
-  });
-
+ failedJobsCounter.inc();
+  logger.error({ event: "job_failed", jobId: job?.id, error: err.message });
+}); 
   console.log("Video processing worker started");
 
 
@@ -440,3 +453,12 @@ cron.schedule("*/14 * * * *", async () => {
     console.log("Worker self-ping failed:", err.message);
   }
 });
+
+const logger = require("./logger");
+const {
+  transcodeDuration,
+  failedJobsCounter,
+  completedJobsCounter,
+  jobQueueGauge,
+} = require("./metrics");
+
