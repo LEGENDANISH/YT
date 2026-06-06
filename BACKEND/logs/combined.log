@@ -2303,3 +2303,38 @@
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:37:44.679Z"}
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T15:37:45.482Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:37:59.736Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:38:14.717Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:38:29.744Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:38:44.726Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:38:59.783Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:39:14.751Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:39:29.787Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:39:44.773Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:39:59.815Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:40:14.802Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:40:29.832Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T15:40:42.693Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/search?q=linkhub"},"timestamp":"2026-06-06T15:40:44.799Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:40:44.886Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:40:59.825Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:41:15.276Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:41:29.837Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:41:45.001Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:41:59.858Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:42:14.930Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T15:42:25.097Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:42:30.039Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:42:44.891Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:42:59.909Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:43:14.910Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:43:29.959Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:43:44.919Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:43:59.961Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-06T15:44:01.063Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:44:15.497Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:44:29.949Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:44:44.980Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-06T15:44:57.293Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:44:59.960Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T15:45:00.046Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:45:15.024Z"}
