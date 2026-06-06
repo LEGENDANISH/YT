@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, Info, Users, Video } from 'lucide-react';
+import { RefreshCw, Video, Upload } from 'lucide-react';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { getHeaders } from './auth';
@@ -12,6 +12,7 @@ import AboutModal from './AboutModal';
 import EditChannelModal from './EditChannelModal';
 
 const ChannelPage = () => {
+  // --- State (Logic Unchanged) ---
   const [videos, setVideos] = useState([]);
   const [subscriberCount, setSubscriberCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -23,9 +24,8 @@ const ChannelPage = () => {
   const [updating, setUpdating] = useState(false);
   const [aboutData, setAboutData] = useState(null);
   const [channelId, setChannelId] = useState(null);
-  const [openEdit, setOpenEdit] = useState(false)
-const [channelData, setChannelData] = useState(null)
-
+  const [openEdit, setOpenEdit] = useState(false);
+  const [channelData, setChannelData] = useState(null);
 
   const [editForm, setEditForm] = useState({
     title: "",
@@ -35,6 +35,7 @@ const [channelData, setChannelData] = useState(null)
     tags: ""
   });
 
+  // --- Handlers (Logic Unchanged) ---
   const handleEditClick = (video) => {
     setSelectedVideo(video);
     setThumbnailFile(null);
@@ -271,52 +272,80 @@ const [channelData, setChannelData] = useState(null)
     await loadAboutData();
   };
 
+  // --- Render ---
   return (
-<div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white selection:bg-white selection:text-black">
       <Header 
         aboutData={aboutData}
         subscriberCount={subscriberCount}
         handleAboutClick={handleAboutClick}
-          handleSettingsClick={() => setOpenEdit(true)}
+        handleSettingsClick={() => setOpenEdit(true)}
       />
-       {openEdit && (
-  <EditChannelModal
-    user={channelData}
-    onClose={() => setOpenEdit(false)}
-    onUpdated={updatedUser => setChannelData(updatedUser)}
-  />
-)}
 
-
-      <main className="max-w-7xl mx-auto px-4 py-8">
+      <main className="max-w-7xl mx-auto px-6 py-10 space-y-10">
+        
+        {/* Stats Section */}
         <StatsSection 
           subscriberCount={subscriberCount}
           videosCount={videos.length}
         />
 
-          <div className="mb-6 flex items-center justify-between">
-  <h2 className="text-2xl font-semibold text-white tracking-tight">
-    Your Videos
-  </h2>
+        {/* Videos Header & Actions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+          <div>
+            <h2 className="text-2xl font-semibold tracking-tight text-white">
+              Your Videos
+            </h2>
+            <p className="text-zinc-500 text-sm mt-1">
+              Manage your content and performance metrics.
+            </p>
+          </div>
 
-  <button
-    onClick={loadVideos}
-    className="flex items-center gap-2 px-4 py-2 rounded-md bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:border-neutral-700 transition-all duration-200"
-  >
-    <RefreshCw className="w-4 h-4 text-neutral-400" />
-    <span className="text-sm font-medium">Refresh</span>
-  </button>
-</div>
+          <button
+            onClick={loadVideos}
+            disabled={loading}
+            className="flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-white text-black font-medium hover:bg-gray-200 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span>Refresh Data</span>
+          </button>
+        </div>
 
-
-        <VideosGrid 
-          loading={loading}
-          videos={videos}
-          handleEditClick={handleEditClick}
-          handleDeleteVideo={handleDeleteVideo}
-        />
+        {/* Content Area */}
+        {loading ? (
+          // Simple Loading Skeleton
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="aspect-video bg-zinc-900 rounded-xl animate-pulse" />
+            ))}
+          </div>
+        ) : videos.length === 0 ? (
+          // Empty State
+          <div className="flex flex-col items-center justify-center py-24 border border-dashed border-zinc-800 rounded-2xl bg-zinc-900/20">
+            <div className="w-16 h-16 bg-zinc-900 rounded-full flex items-center justify-center mb-4">
+              <Video className="w-8 h-8 text-zinc-500" />
+            </div>
+            <h3 className="text-xl font-semibold text-white">No videos yet</h3>
+            <p className="text-zinc-400 mt-2 max-w-sm text-center">
+              Start sharing your story with the world. Upload your first video to get started.
+            </p>
+            <button className="mt-6 px-6 py-2.5 bg-white text-black rounded-md font-medium hover:bg-gray-200 transition-colors flex items-center gap-2">
+              <Upload className="w-4 h-4" />
+              Upload Video
+            </button>
+          </div>
+        ) : (
+          // Videos Grid
+          <VideosGrid 
+            loading={false}
+            videos={videos}
+            handleEditClick={handleEditClick}
+            handleDeleteVideo={handleDeleteVideo}
+          />
+        )}
       </main>
 
+      {/* Modals */}
       <EditModal 
         editModalOpen={editModalOpen}
         setEditModalOpen={setEditModalOpen}
@@ -337,29 +366,13 @@ const [channelData, setChannelData] = useState(null)
         aboutData={aboutData}
       />
 
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes modalSlideIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-          }
-        }
-      `}</style>
+      {openEdit && (
+        <EditChannelModal
+          user={channelData}
+          onClose={() => setOpenEdit(false)}
+          onUpdated={updatedUser => setChannelData(updatedUser)}
+        />
+      )}
     </div>
   );
 };
