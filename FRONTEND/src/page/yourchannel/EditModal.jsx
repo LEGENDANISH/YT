@@ -24,7 +24,14 @@ const EditModal = ({
       const fetchProfile = async () => {
         try {
           setLoadingProfile(true)
-          const response = await fetch(`${API_BASE_URL}/aboutme`)
+          const response = await fetch(`${API_BASE_URL}/aboutme`,
+            {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+          )
           if (response.ok) {
             const data = await response.json()
             setUserProfile(data)
