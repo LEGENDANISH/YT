@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Navigate, useNavigate } from "react-router-dom"
+import { API_BASE_URL } from "@/page/yourchannel/config"
 const PORT = import.meta.env.VITE_BACKEND_PORT 
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -52,7 +53,7 @@ console.log(JSON.stringify({
     setLoading(true)
 
     try {
-const res = await fetch(`http://localhost:${PORT}/api/register`, {
+const res = await fetch(`${API_BASE_URL}/api/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
