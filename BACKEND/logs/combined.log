@@ -1312,3 +1312,24 @@
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:28.694Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:43.652Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:58.695Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:10:13.671Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:10:28.721Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:10:43.718Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:10:58.824Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/api/register"},"timestamp":"2026-06-06T13:11:10.507Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:11:13.700Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:11:28.937Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:11:43.779Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:11:58.729Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-06T13:12:01.589Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:12:13.890Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/api/register"},"timestamp":"2026-06-06T13:12:13.971Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"//api/register"},"timestamp":"2026-06-06T13:12:17.947Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:12:28.725Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"//api/register"},"timestamp":"2026-06-06T13:12:35.974Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:12:43.753Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/register"},"timestamp":"2026-06-06T13:12:44.733Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:12:58.860Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-06T13:12:59.594Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T13:13:00.675Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:13:13.740Z"}
