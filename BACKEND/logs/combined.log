@@ -1617,3 +1617,21 @@
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T13:54:33.572Z"}
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T13:54:33.584Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:54:45.011Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:55:00.018Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:55:15.020Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:55:30.180Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:55:45.010Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/analytics/video/64471b97-1224-4806-a5d6-c2a165a27875"},"timestamp":"2026-06-06T13:55:55.869Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:56:00.268Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:56:15.070Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:56:30.076Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/analytics/video/64471b97-1224-4806-a5d6-c2a165a27875"},"timestamp":"2026-06-06T13:56:37.740Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:56:47.261Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:57:00.637Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T13:57:04.096Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T13:57:05.163Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T13:57:06.050Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T13:57:06.070Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:57:15.218Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:57:30.089Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:57:45.134Z"}
