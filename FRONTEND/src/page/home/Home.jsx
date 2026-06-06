@@ -15,8 +15,8 @@
   import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
   import Topbar from "../home/components/Topbar"
   import Sidebar from "./Sidebar"
+import { API_BASE_URL } from "../yourchannel/config"
   const PORT = import.meta.env.VITE_BACKEND_PORT
-  const BASE_URL = `http://localhost:${PORT}/api`
 
   const Home = () => {
     const [videos, setVideos] = useState([])
@@ -30,7 +30,7 @@
         try {
           const token = localStorage.getItem("token")
 
-          const res = await fetch(`${BASE_URL}/feed/home`, {
+          const res = await fetch(`${API_BASE_URL}/feed/home`, {
             headers: {
               Authorization: `Bearer ${token}`,
             },

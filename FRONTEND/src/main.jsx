@@ -21,8 +21,6 @@ import ChannelPageview from "./page/viewchannel/channelpage";
 import Signin from "./page/Signin";
 import Signup from "./page/Signup";
 import VideoTestPage from "./VideoTestPage";
-import AnalyticsDashboard from "./page/channelAnalytics/Analyticsdashboard";
-import VideoAnalyticsPage from "./page/yourchannel/VideoAnalyticsPage";
 
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -34,14 +32,7 @@ createRoot(document.getElementById("root")).render(
       <Route path="/video" element={<VideoTestPage />} />
 
       {/* ================= PROTECTED ROUTES (NO LAYOUT) ================= */}
-      <Route
-        path="/studio/analytics/video/:videoId"
-        element={
-          <AuthWrapper>
-            <VideoAnalyticsPage />
-          </AuthWrapper>
-        }
-      />
+    
 
       <Route
         path="/channel"
@@ -52,15 +43,7 @@ createRoot(document.getElementById("root")).render(
         }
       />
 
-      <Route
-        path="/analytics"
-        element={
-          <AuthWrapper>
-            <AnalyticsDashboard />
-          </AuthWrapper>
-        }
-      />
-
+      
       {/* ================= ROUTES WITH LAYOUT ================= */}
       <Route element={<Layout />}>
 

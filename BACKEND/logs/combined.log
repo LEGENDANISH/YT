@@ -2053,3 +2053,96 @@
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:10:39.086Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:10:51.792Z"}
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:10:52.322Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:11:06.686Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:11:21.690Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:11:38.203Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:11:51.704Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-06T15:12:01.188Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:12:06.700Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:12:21.885Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:12:36.711Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:40.681Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:41.843Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:12:52.142Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:52.874Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:53.766Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:54.631Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:12:54.649Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:12:54.665Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:55.500Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:56.237Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:12:57.294Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:13:06.926Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:13:10.744Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:13:11.626Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:13:21.737Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:13:36.750Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:13:51.860Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:14:06.814Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:14:21.805Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:14:31.903Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:14:36.938Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:14:51.265Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:14:51.798Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:14:53.791Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:14:54.707Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:14:54.722Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:14:56.350Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:15:02.280Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:15:06.988Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:15:21.840Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:15:36.866Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:15:51.860Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:16:06.848Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:16:11.526Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:16:22.202Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/analytics/video/5202eea4-0194-4bbe-9802-bfde974d11d7"},"timestamp":"2026-06-06T15:16:22.263Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:16:30.576Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:16:31.467Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:16:32.373Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:16:32.381Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:16:36.196Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:16:36.859Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:16:51.953Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:17:06.915Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:17:17.616Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:17:18.794Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:17:19.704Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:17:19.715Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:17:21.869Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:17:37.145Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:17:37.689Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:17:39.339Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:17:44.440Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:17:51.882Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:18:06.948Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:18:22.042Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:18:36.926Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/channel/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:18:41.178Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribe/check/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:18:41.244Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:18:52.263Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:19:06.934Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/subscribe/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:19:09.116Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:19:18.768Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:19:21.981Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:19:24.030Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:19:24.926Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T15:19:25.828Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T15:19:25.834Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:19:37.264Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:19:49.208Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:19:50.273Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:19:52.147Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:20:04.674Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:20:05.677Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:20:06.955Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:20:09.978Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:20:22.057Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:20:24.749Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:20:25.623Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:20:36.963Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:20:52.008Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:21:07.498Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:21:08.720Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T15:21:10.097Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T15:21:22.038Z"}
