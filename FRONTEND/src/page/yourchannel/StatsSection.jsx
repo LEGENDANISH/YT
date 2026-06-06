@@ -4,31 +4,45 @@ import { formatNumber } from "./formatters"
 
 const StatsSection = ({ subscriberCount, videosCount, onAnalyticsClick }) => {
   return (
-    <div className="mb-8 flex flex-wrap items-center gap-4">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
       
-      {/* Subscribers */}
-      <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-black border border-neutral-800 shadow-sm">
-        <Users className="w-5 h-5 text-neutral-300" />
-        <span className="font-semibold text-white">
-          {formatNumber(subscriberCount)}
-        </span>
-        <span className="text-neutral-400">subscribers</span>
+      {/* Stats Group */}
+      <div className="flex flex-wrap items-center gap-3">
+        
+        {/* Subscribers */}
+        <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-zinc-900/50 border border-zinc-800">
+          <Users className="w-4 h-4 text-white" />
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-bold text-white text-lg">
+              {formatNumber(subscriberCount)}
+            </span>
+            <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
+              Subs
+            </span>
+          </div>
+        </div>
+
+        {/* Videos */}
+        <div className="flex items-center gap-3 px-5 py-2.5 rounded-full bg-zinc-900/50 border border-zinc-800">
+          <Video className="w-4 h-4 text-white" />
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-bold text-white text-lg">
+              {videosCount}
+            </span>
+            <span className="text-xs font-medium text-zinc-400 uppercase tracking-wide">
+              Videos
+            </span>
+          </div>
+        </div>
       </div>
 
-      {/* Videos */}
-      <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-black border border-neutral-800 shadow-sm">
-        <Video className="w-5 h-5 text-neutral-300" />
-        <span className="font-semibold text-white">{videosCount}</span>
-        <span className="text-neutral-400">videos</span>
-      </div>
-
-      {/* Analytics Button */}
+      {/* Analytics Button - Primary Action */}
       <button
         onClick={onAnalyticsClick}
-        className="ml-auto flex items-center gap-2 px-5 py-3 rounded-full bg-neutral-900 border border-neutral-800 text-neutral-200 hover:bg-neutral-800 hover:border-neutral-700 transition-all duration-200"
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-white text-black font-semibold hover:bg-gray-200 transition-all duration-200 shadow-lg shadow-white/5"
       >
-        <BarChart3 className="w-5 h-5" />
-        <span className="font-medium">Analytics</span>
+        <BarChart3 className="w-4 h-4" />
+        <span>View Analytics</span>
       </button>
 
     </div>

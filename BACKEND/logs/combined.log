@@ -1604,3 +1604,16 @@
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T13:52:20.554Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:52:29.899Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:52:45.005Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:52:59.897Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:53:15.061Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:53:29.928Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:53:45.065Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T13:53:59.512Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:53:59.998Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:54:15.339Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:54:30.272Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T13:54:31.504Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/aboutme"},"timestamp":"2026-06-06T13:54:32.639Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4aed5695-2920-4375-9b55-f2b96978af8b"},"timestamp":"2026-06-06T13:54:33.572Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/my-videos"},"timestamp":"2026-06-06T13:54:33.584Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:54:45.011Z"}
