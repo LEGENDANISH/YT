@@ -6,7 +6,8 @@ const cors = require("cors");
 const cron = require("node-cron");
 const axios = require("axios");
 const rateLimit = require("express-rate-limit");
-const { client, apiRequestDuration, Pushgateway } = require("prom-client");
+const promClient = require("prom-client");
+const { Pushgateway } = promClient;
 const logger = require("./logger");
 
 const { initializeWebSocket } = require("./websocket");
@@ -40,6 +41,7 @@ app.use("/api/videos/upload", uploadLimiter);
 // ── Request duration metrics ──────────────────────────
 app.use((req, res, next) => {
   const end = apiRequestDuration.startTimer();
+
   res.on("finish", () => {
     end({
       method: req.method,
@@ -47,6 +49,7 @@ app.use((req, res, next) => {
       status: res.statusCode,
     });
   });
+
   next();
 });
 
@@ -76,8 +79,8 @@ app.get("/health", (req, res) => {
 
 // ── Prometheus metrics endpoint ───────────────────────
 app.get("/metrics", async (req, res) => {
-  res.set("Content-Type", client.register.contentType);
-  res.end(await client.register.metrics());
+res.set("Content-Type", promClient.register.contentType);
+res.end(await promClient.register.metrics());
 });
 
 // ── Error handling ────────────────────────────────────

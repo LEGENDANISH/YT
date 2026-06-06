@@ -177,3 +177,37 @@
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T10:59:49.804Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:00:04.842Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:00:20.239Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-06T11:00:41.413Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:00:56.631Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:01:11.595Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:01:26.711Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:01:41.518Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:01:56.552Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:02:11.521Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:02:26.567Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:02:41.542Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:02:56.547Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:03:11.920Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:03:26.582Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:03:41.593Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:03:56.583Z"}
+{"level":"error","message":"Cannot read properties of undefined (reading 'startTimer')","stack":"TypeError: Cannot read properties of undefined (reading 'startTimer')\n    at C:\\Dev\\YT-main-backup\\BACKEND\\server.js:42:34\n    at Layer.handle [as handle_request] (C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express\\lib\\router\\layer.js:95:5)\n    at trim_prefix (C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express\\lib\\router\\index.js:328:13)\n    at C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express\\lib\\router\\index.js:286:9\n    at router.process_params (C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express\\lib\\router\\index.js:346:12)\n    at next (C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express\\lib\\router\\index.js:280:10)\n    at C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express-rate-limit\\dist\\index.cjs:999:7\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async C:\\Dev\\YT-main-backup\\BACKEND\\node_modules\\express-rate-limit\\dist\\index.cjs:854:5","timestamp":"2026-06-06T11:04:01.586Z","url":"/api/feed/home"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:04:11.570Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:04:26.586Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:04:41.601Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:04:56.642Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:05:11.600Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:05:26.632Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:05:41.615Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:05:56.670Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:06:11.643Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:06:26.677Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:06:41.680Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:06:56.702Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:07:11.646Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:07:26.678Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:07:41.987Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T11:07:56.674Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-06T11:08:11.970Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-06T11:08:25.421Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-06T11:08:41.790Z"}
