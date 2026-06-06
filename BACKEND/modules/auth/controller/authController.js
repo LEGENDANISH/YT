@@ -127,13 +127,15 @@ const updateUser = async (req, res) => {
       bio,
     };
 
-    if (avatarFile) {
-      data.avatarUrl = avatarFile.location; // S3 URL
-    }
+  if (avatarFile) {
+  data.avatarUrl =
+    `${process.env.SUPABASE_PUBLIC_STORAGE_URL}/${process.env.S3_USER_MEDIA_BUCKET}/${avatarFile.key}`;
+}
 
-    if (bannerFile) {
-      data.channelBanner = bannerFile.location;
-    }
+if (bannerFile) {
+  data.channelBanner =
+    `${process.env.SUPABASE_PUBLIC_STORAGE_URL}/${process.env.S3_USER_MEDIA_BUCKET}/${bannerFile.key}`;
+}
 
     const user = await prisma.user.update({
       where: { id: req.user.id },

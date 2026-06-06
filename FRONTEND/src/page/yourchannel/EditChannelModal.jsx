@@ -1,7 +1,7 @@
 import { useState } from "react"
 import axios from "axios"
+import { API_BASE_URL } from "./config"
 
-const API_BASE_URL = "http://localhost:8000"
 
 const EditChannelModal = ({ user, onClose, onUpdated }) => {
   const [form, setForm] = useState({
@@ -31,7 +31,7 @@ const EditChannelModal = ({ user, onClose, onUpdated }) => {
       if (bannerFile) formData.append("banner", bannerFile)
 
       const res = await axios.put(
-        `${API_BASE_URL}/api/update`,
+        `${API_BASE_URL }/update`,
         formData,
         {
           headers: {
