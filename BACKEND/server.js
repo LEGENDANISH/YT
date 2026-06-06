@@ -17,6 +17,13 @@ const subscriptionRoutes = require("./modules/subscription/routes/subscription.r
 const feedRoutes = require("./modules/feed/routes/feed.routes");
 const recommendationRoutes = require("./modules/recommendation/routes/recommendation.routes");
 
+// ── Prometheus metrics ────────────────────────────────
+const apiRequestDuration = new promClient.Histogram({
+  name: "api_request_duration_seconds",
+  help: "Duration of API requests in seconds",
+  labelNames: ["method", "route", "status"],
+  buckets: [0.05, 0.1, 0.3, 0.5, 1, 2, 5],
+});
 const app = express();
 const server = http.createServer(app);
 
