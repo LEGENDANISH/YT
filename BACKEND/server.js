@@ -30,13 +30,13 @@ const server = http.createServer(app);
 // ── Rate limiting ─────────────────────────────────────
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 100,
+  max: 10000,
   message: { error: "Too many requests" },
 });
 
 const uploadLimiter = rateLimit({
   windowMs: 60 * 60 * 1000,
-  max: 10,
+  max: 1000,
   message: { error: "Upload limit reached" },
 });
 

@@ -76,8 +76,12 @@ try {
       })
     );
 
-finalThumbnailUrl =
-  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
+finalThumbnailUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+
+
+
+
+}
 
   // CASE 2 — thumbnail as base64
   else if (req.body.thumbnailBase64) {
@@ -94,8 +98,11 @@ finalThumbnailUrl =
       })
     );
 
-finalThumbnailUrl =
-  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
+finalThumbnailUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+
+
+
+}
 
   // CASE 3 — thumbnail from URL
   else if (req.body.thumbnailUrl) {
@@ -113,9 +120,8 @@ finalThumbnailUrl =
         ContentType: "image/jpeg",
       })
     );
-
-finalThumbnailUrl =
-  `${process.env.S3_ENDPOINT}/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;  }
+finalThumbnailUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
+}
 } catch (err) {
   console.error("Thumbnail upload failed:", err);
 }

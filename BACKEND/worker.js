@@ -23,36 +23,45 @@
   }
 
   // GET VIDEO DURATION HELPER WITH EXTENSIVE LOGGING
-  const getVideoDuration = (filePath) => {
-    return new Promise((resolve, reject) => {
-      console.log(` [DURATION] Starting ffprobe on: ${filePath}`);
-      console.log(` [DURATION] File exists: ${fs.existsSync(filePath)}`);
+  // const getVideoDuration = (filePath) => {
+  //   return new Promise((resolve, reject) => {
+  //     console.log(` [DURATION] Starting ffprobe on: ${filePath}`);
+  //     console.log(` [DURATION] File exists: ${fs.existsSync(filePath)}`);
       
-      if (fs.existsSync(filePath)) {
-        const stats = fs.statSync(filePath);
-        console.log(` [DURATION] File size: ${stats.size} bytes`);
-      }
+  //     if (fs.existsSync(filePath)) {
+  //       const stats = fs.statSync(filePath);
+  //       console.log(` [DURATION] File size: ${stats.size} bytes`);
+  //     }
       
-      ffmpeg.ffprobe(filePath, (err, metadata) => {
-        if (err) {
-          console.error(` [DURATION] ffprobe error:`, err);
-          return reject(err);
-        }
+  //     ffmpeg.ffprobe(filePath, (err, metadata) => {
+  //       if (err) {
+  //         console.error(` [DURATION] ffprobe error:`, err);
+  //         return reject(err);
+  //       }
         
-        console.log(`[DURATION] Metadata received:`, JSON.stringify(metadata, null, 2));
+  //       console.log(`[DURATION] Metadata received:`, JSON.stringify(metadata, null, 2));
         
-        if (!metadata || !metadata.format || !metadata.format.duration) {
-          console.error(` [DURATION] Missing duration in metadata`);
-          return reject(new Error("Duration not found in metadata"));
-        }
+  //       if (!metadata || !metadata.format || !metadata.format.duration) {
+  //         console.error(` [DURATION] Missing duration in metadata`);
+  //         return reject(new Error("Duration not found in metadata"));
+  //       }
         
-        const duration = Math.floor(metadata.format.duration);
-        console.log(`[DURATION] Extracted duration: ${duration} seconds`);
-        resolve(duration);
-      });
+  //       const duration = Math.floor(metadata.format.duration);
+  //       console.log(`[DURATION] Extracted duration: ${duration} seconds`);
+  //       resolve(duration);
+  //     });
+  //   });
+  // };
+const getVideoMetadata = (filePath) => {
+  return new Promise((resolve, reject) => {
+    ffmpeg.ffprobe(filePath, (err, metadata) => {
+      if (err) return reject(err);
+      const duration = Math.floor(metadata.format.duration);
+      const hasAudio = metadata.streams.some(s => s.codec_type === 'audio');
+      resolve({ duration, hasAudio });
     });
-  };
-
+  });
+};
   // GENERATE THUMBNAIL HELPER
   const generateThumbnail = (inputPath, outputPath) => {
     return new Promise((resolve, reject) => {
@@ -199,10 +208,9 @@
             console.log(` [THUMBNAIL] S3 upload result:`, uploadResult);
             
 const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage/v1/object/public/${process.env.S3_PROCESSED_BUCKET}/${thumbKey}`;
-            console.log(` [THUMBNAIL] Thumbnail URL: ${thumbUrl}`);
-            
-            // Update database
-            const updateResult = await prisma.video.update({
+
+
+const updateResult = await prisma.video.update({
               where: { id: videoId },
               data: { thumbnailUrl: thumbUrl },
             });
@@ -224,8 +232,12 @@ const thumbUrl = `https://${process.env.SUPABASE_PROJECT_ID}.supabase.co/storage
         // --------------------
         console.log(`\n========== DURATION EXTRACTION START ==========`);
         
+         let hasAudio = false;
         try {
-          videoDuration = await getVideoDuration(localInput);
+          // videoDuration = await getVideoDuration(localInput);
+const { duration: videoDuration2, hasAudio: _hasAudio } = await getVideoMetadata(localInput);
+videoDuration = videoDuration2;
+hasAudio = _hasAudio;
           console.log(` [MAIN] Video duration captured: ${videoDuration}s`);
           console.log(` [MAIN] Duration type: ${typeof videoDuration}`);
           console.log(` [MAIN] Duration value check: ${videoDuration !== null && videoDuration !== undefined ? 'VALID' : 'INVALID'}`);
@@ -267,18 +279,21 @@ const endTranscode = transcodeDuration.startTimer();
         });
 
         console.log(`Transcoding video with FFmpeg...`);
-        const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
-    -map 0:v -map 0:v -map 0:a -map 0:a \
+const audioMaps    = hasAudio ? `-map 0:a -map 0:a` : ``;
+const audioCodec   = hasAudio ? `-c:a aac -b:a 128k -ac 2` : ``;
+const varStreamMap = hasAudio ? `v:0,a:0 v:1,a:1` : `v:0 v:1`;
+
+const ffmpegCommand = `ffmpeg -y -i "${localInput}" \
+    -map 0:v -map 0:v ${audioMaps} \
     -c:v libx264 -crf 22 \
     -filter:v:0 scale=640:360 -maxrate:v:0 800k -bufsize:v:0 1200k \
     -filter:v:1 scale=1280:720 -maxrate:v:1 2800k -bufsize:v:1 4200k \
-    -c:a aac -b:a 128k -ac 2 \
-    -var_stream_map "v:0,a:0 v:1,a:1" \
+    ${audioCodec} \
+    -var_stream_map "${varStreamMap}" \
     -master_pl_name master.m3u8 \
     -f hls -hls_time 6 -hls_playlist_type vod \
     -hls_segment_filename "${outputDir}/stream_%v_%03d.ts" \
     "${outputDir}/stream_%v.m3u8"`;
-
         await execPromise(ffmpegCommand);
 
         const generatedFiles = fs.readdirSync(outputDir);
@@ -395,12 +410,24 @@ endTranscode();
           fs.rmSync(outputDir, { recursive: true, force: true });
       }
     },
-    {
+//     {
+//   connection: {
+//     host: process.env.REDIS_HOST,
+//     port: parseInt(process.env.REDIS_PORT) || 6379,
+//     password: process.env.REDIS_PASSWORD,
+//     tls: {}
+//   },
+//   concurrency: 1,
+//   limiter: {
+//     max: 5,
+//     duration: 60000,
+//   },
+// }
+
+{
   connection: {
-    host: process.env.REDIS_HOST,
+    host: process.env.REDIS_HOST || "localhost",
     port: parseInt(process.env.REDIS_PORT) || 6379,
-    password: process.env.REDIS_PASSWORD,
-    tls: {}
   },
   concurrency: 1,
   limiter: {

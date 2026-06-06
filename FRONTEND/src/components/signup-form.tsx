@@ -70,8 +70,8 @@ const res = await fetch(`http://localhost:${PORT}/api/register`, {
         return
       }
 
-      alert("Account created successfully 🎉")
-        navigate("/Signin") // change if needed
+      alert("Account created successfully ")
+        navigate("/Signin") 
     } catch (err) {
       alert("Server not reachable")
     } finally {

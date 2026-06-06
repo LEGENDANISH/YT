@@ -19,7 +19,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
 const PORT = import.meta.env.VITE_BACKEND_PORT
-const BASE_URL = `http://localhost:${PORT}`
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function LoginForm({
   className,
@@ -44,7 +44,7 @@ const handleLogin = async (e: React.FormEvent) => {
     const { user, token } = res.data
 
     if (token && user) {
-      localStorage.setItem("token", token) // ✅ SAVE JWT
+      localStorage.setItem("token", token) 
       localStorage.setItem("user", JSON.stringify(user))
 
       navigate("/") // Home
