@@ -17,9 +17,9 @@ import { Input } from "@/components/ui/input"
 import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
+import { API_BASE_URL } from "@/page/yourchannel/config"
 
 const PORT = import.meta.env.VITE_BACKEND_PORT
-const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 export function LoginForm({
   className,
@@ -36,7 +36,7 @@ const handleLogin = async (e: React.FormEvent) => {
   setLoading(true)
 
   try {
-    const res = await axios.post(`${BASE_URL}/api/login`, {
+    const res = await axios.post(`${API_BASE_URL}/api/login`, {
       email,
       password,
     })

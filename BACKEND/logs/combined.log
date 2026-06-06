@@ -1296,3 +1296,19 @@
 {"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-06T13:05:56.229Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:05:58.655Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:06:13.744Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:06:28.557Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:06:43.552Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:06:58.708Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:07:13.566Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/cc9a9cbb-34e6-4699-adca-bf7a69ce85ef/stream"},"timestamp":"2026-06-06T13:07:23.741Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:07:28.626Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:07:43.746Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:07:58.892Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:08:13.617Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:08:28.663Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:08:43.722Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:08:58.683Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:13.914Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:28.694Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:43.652Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-06T13:09:58.695Z"}
