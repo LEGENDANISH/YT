@@ -95,7 +95,7 @@ const [channelData, setChannelData] = useState(null)
   useEffect(() => {
     const fetchChannelId = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/api/aboutme`, {
+        const res = await axios.get(`${API_BASE_URL}/aboutme`, {
           headers: getHeaders(),
         });
         console.log("hii")
