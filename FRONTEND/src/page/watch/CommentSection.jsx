@@ -9,8 +9,9 @@ import {
   Loader2,
   MessageSquare
 } from "lucide-react"
+import { API_BASE_URL } from "../yourchannel/config"
 
-const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
+// const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
 
 // ─── AVATAR ───────────────────────────────────────────────────────────────────
 const Avatar = ({ user, size = "md" }) => {
@@ -213,7 +214,7 @@ const CommentItem = ({
     setLoadingReplies(true)
     try {
       const { data } = await axios.get(
-        `${API_BASE}/videos/${videoId}/comments/${comment.id}/replies?page=${page}&limit=10`
+        `${API_BASE_URL}/videos/${videoId}/comments/${comment.id}/replies?page=${page}&limit=10`
       )
       if (page === 1) setReplies(data.replies)
       else setReplies((prev) => [...prev, ...data.replies])
@@ -238,7 +239,7 @@ const CommentItem = ({
   const handleReplySubmit = async (content) => {
     try {
       const { data } = await axios.post(
-        `${API_BASE}/videos/${videoId}/comments`,
+        `${API_BASE_URL}/videos/${videoId}/comments`,
         { content, parentId: comment.id },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -254,7 +255,7 @@ const CommentItem = ({
   const handleEditSubmit = async (content) => {
     try {
       const { data } = await axios.put(
-        `${API_BASE}/videos/${videoId}/comments/${comment.id}`,
+        `${API_BASE_URL}/videos/${videoId}/comments/${comment.id}`,
         { content },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -269,7 +270,7 @@ const CommentItem = ({
     setShowMenu(false)
     if (!window.confirm("Delete this comment?")) return
     try {
-      await axios.delete(`${API_BASE}/videos/${videoId}/comments/${comment.id}`, {
+      await axios.delete(`${API_BASE_URL}/videos/${videoId}/comments/${comment.id}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       onDeleted?.(comment.id)
@@ -286,7 +287,7 @@ const CommentItem = ({
     setLikes((prev) => (liked ? prev - 1 : prev + 1))
     try {
       const { data } = await axios.post(
-        `${API_BASE}/videos/${videoId}/comments/${comment.id}/like`,
+        `${API_BASE_URL}/videos/${videoId}/comments/${comment.id}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -501,7 +502,7 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
       setError(null)
       try {
         const { data } = await axios.get(
-          `${API_BASE}/videos/${videoId}/comments?page=${pageNum}&limit=20&sort=${currentSort}`
+          `${API_BASE_URL}/videos/${videoId}/comments?page=${pageNum}&limit=20&sort=${currentSort}`
         )
         setComments((prev) =>
           reset || pageNum === 1 ? data.comments : [...prev, ...data.comments]
@@ -526,7 +527,7 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
   const handleNewComment = async (content) => {
     try {
       const { data } = await axios.post(
-        `${API_BASE}/videos/${videoId}/comments`,
+        `${API_BASE_URL}/videos/${videoId}/comments`,
         { content },
         { headers: { Authorization: `Bearer ${token}` } }
       )

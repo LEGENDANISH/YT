@@ -2915,3 +2915,87 @@
 {"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T10:17:40.504Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:17:55.960Z"}
 {"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-07T10:18:03.264Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T10:18:08.827Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:18:23.999Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-07T10:18:24.548Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-07T10:18:27.272Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5"},"timestamp":"2026-06-07T10:18:31.121Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/stream/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5"},"timestamp":"2026-06-07T10:18:31.130Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/recommend"},"timestamp":"2026-06-07T10:18:31.135Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/likes"},"timestamp":"2026-06-07T10:18:31.141Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4c9791f5-9cfa-477d-9dfd-d924e081f1a7"},"timestamp":"2026-06-07T10:18:37.334Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribe/check/4c9791f5-9cfa-477d-9dfd-d924e081f1a7"},"timestamp":"2026-06-07T10:18:37.341Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:18:39.139Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments?page=1&limit=20&sort=newest"},"timestamp":"2026-06-07T10:18:40.892Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:18:44.833Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:18:53.286Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:18:54.520Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:19:09.566Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/like/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5"},"timestamp":"2026-06-07T10:19:14.087Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/likes"},"timestamp":"2026-06-07T10:19:16.364Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:19:19.509Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:19:24.204Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:19:40.210Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:19:44.673Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:19:54.136Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:19:55.230Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:19:58.471Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:04.481Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:20:08.983Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:15.956Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:20:24.239Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:27.859Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:38.830Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:20:39.000Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:50.888Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:20:54.135Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:20:57.291Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:21:05.974Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:21:05.979Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:21:09.076Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:21:24.155Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:21:35.165Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:21:39.126Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:21:54.062Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:01.109Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5"},"timestamp":"2026-06-07T10:22:08.132Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/stream/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5"},"timestamp":"2026-06-07T10:22:08.140Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/recommend"},"timestamp":"2026-06-07T10:22:08.150Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/likes"},"timestamp":"2026-06-07T10:22:08.164Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:22:09.621Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribers/4c9791f5-9cfa-477d-9dfd-d924e081f1a7"},"timestamp":"2026-06-07T10:22:11.478Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/subscribe/check/4c9791f5-9cfa-477d-9dfd-d924e081f1a7"},"timestamp":"2026-06-07T10:22:11.498Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments?page=1&limit=20&sort=newest"},"timestamp":"2026-06-07T10:22:12.803Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments"},"timestamp":"2026-06-07T10:22:19.376Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:22:24.981Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments/bdfebf6d-c32f-4e63-80fc-5fe95b751e71/like"},"timestamp":"2026-06-07T10:22:28.253Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:30.049Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:35.779Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:38.146Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:22:39.459Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:41.057Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:22:44.500Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:22:54.739Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:23:03.064Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:23:09.459Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:23:24.672Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:23:39.552Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:23:46.467Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:23:46.472Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:23:54.633Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:24:09.515Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:24:25.053Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:24:40.025Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:24:54.593Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:25:09.535Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments?page=1&limit=20&sort=newest"},"timestamp":"2026-06-07T10:25:23.483Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:25:24.783Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:25:25.334Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:25:40.128Z"}
+{"level":"info","message":{"ip":"::1","method":"DELETE","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/comments/bdfebf6d-c32f-4e63-80fc-5fe95b751e71"},"timestamp":"2026-06-07T10:25:52.892Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:25:54.607Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-07T10:26:00.934Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:26:03.920Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:26:08.132Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T10:26:09.753Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/b191f2b0-bfb7-4c2f-ae00-ce53e1ae11d5/view"},"timestamp":"2026-06-07T10:26:15.049Z"}
