@@ -4552,3 +4552,4 @@
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:12:27.678Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:12:42.552Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:12:57.556Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T15:13:16.620Z"}
