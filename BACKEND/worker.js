@@ -16,7 +16,8 @@
   // S3 CLIENT
   const { s3 } = require("./config/s3");
 console.log("REDIS_URL from worker.js:", process.env.REDIS_URL?.slice(0, 50));
-
+console.log("REDIS_HOST:", process.env.REDIS_HOST);
+console.log("REDIS_PORT:", process.env.REDIS_PORT);
   // TEMP DIRECTORY (CROSS-PLATFORM)
   const BASE_TEMP_DIR = path.join(os.tmpdir(), "yt-worker");
   if (!fs.existsSync(BASE_TEMP_DIR)) {
