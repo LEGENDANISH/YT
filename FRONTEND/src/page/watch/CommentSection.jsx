@@ -1,25 +1,35 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import axios from "axios"
+import { 
+  ThumbsUp, 
+  MoreVertical, 
+  Trash2, 
+  Edit3, 
+  Smile, 
+  Loader2,
+  MessageSquare
+} from "lucide-react"
 
 const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
 
 // ─── AVATAR ───────────────────────────────────────────────────────────────────
 const Avatar = ({ user, size = "md" }) => {
   const sizeMap = {
-    sm: "w-7 h-7 text-xs",
-    md: "w-9 h-9 text-sm",
-    lg: "w-11 h-11 text-base",
+    sm: "w-8 h-8 text-xs",
+    md: "w-10 h-10 text-sm",
+    lg: "w-12 h-12 text-base",
   }
   const initials = (user?.displayName || user?.username || "?")[0].toUpperCase()
+  
   return user?.avatarUrl ? (
     <img
       src={user.avatarUrl}
       alt={user.displayName || user.username}
-      className={`${sizeMap[size]} rounded-full object-cover flex-shrink-0`}
+      className={`${sizeMap[size]} rounded-full object-cover flex-shrink-0 bg-zinc-800`}
     />
   ) : (
     <div
-      className={`${sizeMap[size]} rounded-full flex-shrink-0 flex items-center justify-center font-semibold bg-gradient-to-br from-violet-500 to-indigo-600 text-white`}
+      className={`${sizeMap[size]} rounded-full flex-shrink-0 flex items-center justify-center font-semibold bg-zinc-800 text-zinc-400 border border-zinc-700`}
     >
       {initials}
     </div>
@@ -58,7 +68,6 @@ const CommentInput = ({
   const [text, setText] = useState(initialValue)
   const [focused, setFocused] = useState(autoFocus || !!initialValue)
   const textareaRef = useRef(null)
-  // Tracks whether pointer is held on the action buttons so blur doesn't hide them prematurely
   const mouseDownOnActions = useRef(false)
 
   useEffect(() => {
@@ -96,7 +105,6 @@ const CommentInput = ({
     onCancel?.()
   }
 
-  // Only hide the actions bar on blur if the pointer is NOT on the buttons
   const handleBlur = () => {
     if (mouseDownOnActions.current) return
     if (!text.trim()) setFocused(false)
@@ -111,8 +119,8 @@ const CommentInput = ({
   }
 
   return (
-    <div className={`flex gap-2 sm:gap-3 items-start`}>
-      {user && <Avatar user={user} size={compact ? "sm" : "md"} />}
+    <div className={`flex gap-3 items-start w-full`}>
+      {!compact && user && <Avatar user={user} size="md" />}
       <div className="flex-1 min-w-0">
         <textarea
           ref={textareaRef}
@@ -127,35 +135,33 @@ const CommentInput = ({
           }}
           onKeyDown={handleKeyDown}
           className={`
-            w-full resize-none overflow-hidden bg-transparent border-b-2 outline-none
-            ${focused ? "border-white" : "border-zinc-600"}
+            w-full resize-none overflow-hidden bg-transparent border-b outline-none
+            ${focused ? "border-white" : "border-zinc-700"}
             text-sm text-zinc-100 placeholder-zinc-500
-            py-1.5 leading-relaxed transition-colors duration-150
+            py-2 leading-relaxed transition-colors duration-200
           `}
         />
         {focused && (
           <div
-            className="flex items-center justify-end gap-2 mt-2"
-            // preventDefault on mousedown prevents textarea blur before button click fires
+            className="flex items-center justify-end gap-2 mt-3"
             onMouseDown={(e) => {
               mouseDownOnActions.current = true
               e.preventDefault()
             }}
             onMouseUp={() => { mouseDownOnActions.current = false }}
-            // Touch support: same fix for mobile
             onTouchStart={() => { mouseDownOnActions.current = true }}
             onTouchEnd={() => { mouseDownOnActions.current = false }}
           >
             <button
               onClick={handleCancel}
-              className="px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-medium text-zinc-300 hover:bg-zinc-700 active:bg-zinc-600 transition-colors"
+              className="px-4 py-2 rounded-full text-xs font-medium text-zinc-300 hover:bg-zinc-800 transition-colors"
             >
               Cancel
             </button>
             <button
               onClick={handleSubmit}
               disabled={!text.trim()}
-              className="px-3 sm:px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold bg-blue-600 text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              className="px-4 py-2 rounded-full text-xs font-semibold bg-blue-600 text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {initialValue ? "Save" : "Comment"}
             </button>
@@ -276,7 +282,6 @@ const CommentItem = ({
     if (!token) return
     const prevLiked = liked
     const prevLikes = likes
-    // Optimistic update
     setLiked(!liked)
     setLikes((prev) => (liked ? prev - 1 : prev + 1))
     try {
@@ -285,41 +290,41 @@ const CommentItem = ({
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       )
-      // Sync with server truth
       setLiked(data.liked)
       setLikes(data.likes)
     } catch (err) {
-      // Revert on error
       setLiked(prevLiked)
       setLikes(prevLikes)
     }
   }
 
   return (
-    <div className={`flex gap-2 sm:gap-3 group ${isReply ? "ml-9 sm:ml-12 mt-3" : ""}`}>
-      <Avatar user={comment.user} size={isReply ? "sm" : "md"} />
+    <div className={`flex gap-3 group ${isReply ? "ml-0 mt-4" : ""}`}>
+      <div className="flex-shrink-0">
+         <Avatar user={comment.user} size={isReply ? "sm" : "md"} />
+      </div>
 
       <div className="flex-1 min-w-0">
         {/* Header row */}
-        <div className="flex items-start justify-between gap-1">
-          <div className="flex items-center gap-1.5 flex-wrap min-w-0">
-            <span className="text-sm font-semibold text-zinc-100 truncate max-w-[140px] sm:max-w-none">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-center gap-2 flex-wrap min-w-0">
+            <span className="text-sm font-semibold text-zinc-100 truncate">
               {comment.user?.displayName || comment.user?.username}
             </span>
             {comment.isPinned && (
-              <span className="hidden sm:inline text-[10px] font-medium px-1.5 py-0.5 rounded bg-zinc-700 text-zinc-400">
-                📌 Pinned
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700">
+                Pinned
               </span>
             )}
             <span className="text-xs text-zinc-500 flex-shrink-0">
               {formatRelativeTime(comment.createdAt)}
             </span>
             {comment.isEdited && (
-              <span className="text-xs text-zinc-600 italic">(edited)</span>
+              <span className="text-xs text-zinc-600">(edited)</span>
             )}
           </div>
 
-          {/* 3-dot menu: always visible on mobile, hover-only on desktop */}
+          {/* Menu */}
           {isOwner && (
             <div
               className="relative flex-shrink-0 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
@@ -327,25 +332,23 @@ const CommentItem = ({
             >
               <button
                 onClick={() => setShowMenu((prev) => !prev)}
-                className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 active:bg-zinc-700 transition-colors"
+                className="p-1.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
+                <MoreVertical className="w-4 h-4" />
               </button>
               {showMenu && (
-                <div className="absolute right-0 top-8 z-20 min-w-[130px] bg-zinc-800 border border-zinc-700 rounded-xl shadow-xl overflow-hidden">
+                <div className="absolute right-0 top-8 z-20 min-w-[140px] bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-100">
                   <button
                     onClick={() => { setEditing(true); setShowMenu(false) }}
-                    className="w-full text-left text-sm px-4 py-3 text-zinc-200 hover:bg-zinc-700 active:bg-zinc-600 transition-colors"
+                    className="w-full text-left text-sm px-4 py-3 text-zinc-300 hover:bg-zinc-800 flex items-center gap-2"
                   >
-                    ✏️ Edit
+                    <Edit3 className="w-4 h-4" /> Edit
                   </button>
                   <button
                     onClick={handleDelete}
-                    className="w-full text-left text-sm px-4 py-3 text-red-400 hover:bg-zinc-700 active:bg-zinc-600 transition-colors"
+                    className="w-full text-left text-sm px-4 py-3 text-red-400 hover:bg-zinc-800 flex items-center gap-2"
                   >
-                    🗑 Delete
+                    <Trash2 className="w-4 h-4" /> Delete
                   </button>
                 </div>
               )}
@@ -355,7 +358,7 @@ const CommentItem = ({
 
         {/* Body or edit */}
         {editing ? (
-          <div className="mt-2">
+          <div className="mt-3">
             <CommentInput
               user={currentUser}
               onSubmit={handleEditSubmit}
@@ -366,42 +369,30 @@ const CommentItem = ({
             />
           </div>
         ) : (
-          <p className="mt-1 text-sm text-zinc-200 leading-relaxed break-words whitespace-pre-wrap">
+          <p className="mt-1.5 text-sm text-zinc-200 leading-relaxed break-words whitespace-pre-wrap">
             {comment.content}
           </p>
         )}
 
         {/* Action buttons */}
         {!editing && (
-          <div className="flex items-center gap-0.5 mt-1.5 flex-wrap">
+          <div className="flex items-center gap-1 mt-2 flex-wrap">
             <button
               onClick={handleLike}
-              className={`flex items-center gap-1 text-xs px-2 py-1.5 rounded-full transition-colors touch-manipulation ${
+              className={`flex items-center gap-1.5 text-xs px-2 py-1.5 rounded-full transition-colors ${
                 liked
                   ? "text-blue-400"
-                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 active:bg-zinc-700"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
               }`}
             >
-              <svg
-                className="w-3.5 h-3.5 flex-shrink-0"
-                fill={liked ? "currentColor" : "none"}
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                />
-              </svg>
+              <ThumbsUp className={`w-3.5 h-3.5 ${liked ? "fill-current" : ""}`} />
               {likes > 0 && <span>{likes}</span>}
             </button>
 
             {!isReply && token && (
               <button
                 onClick={() => setReplying((prev) => !prev)}
-                className="text-xs px-2 py-1.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 active:bg-zinc-700 transition-colors font-medium touch-manipulation"
+                className="text-xs px-3 py-1.5 rounded-full text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 font-medium transition-colors"
               >
                 Reply
               </button>
@@ -410,11 +401,11 @@ const CommentItem = ({
             {!isReply && repliesTotal > 0 && (
               <button
                 onClick={handleShowReplies}
-                className="text-xs px-2 py-1.5 rounded-full text-blue-400 hover:text-blue-300 hover:bg-zinc-800 active:bg-zinc-700 transition-colors font-medium touch-manipulation"
+                className="text-xs px-3 py-1.5 rounded-full text-blue-400 hover:text-blue-300 hover:bg-zinc-800 font-medium transition-colors"
               >
                 {showReplies
-                  ? "▲ Hide replies"
-                  : `▼ ${repliesTotal} ${repliesTotal === 1 ? "reply" : "replies"}`}
+                  ? "Hide replies"
+                  : `${repliesTotal} ${repliesTotal === 1 ? "reply" : "replies"}`}
               </button>
             )}
           </div>
@@ -422,7 +413,7 @@ const CommentItem = ({
 
         {/* Reply input */}
         {replying && (
-          <div className="mt-3">
+          <div className="mt-4 mb-2">
             <CommentInput
               user={currentUser}
               onSubmit={handleReplySubmit}
@@ -436,7 +427,7 @@ const CommentItem = ({
 
         {/* Replies */}
         {showReplies && (
-          <div className="mt-2 space-y-3">
+          <div className="mt-4 space-y-4 border-l-2 border-zinc-800 pl-4 ml-1">
             {replies.map((reply) => (
               <CommentItem
                 key={reply.id}
@@ -461,11 +452,15 @@ const CommentItem = ({
               <button
                 onClick={() => loadReplies(repliesPage + 1)}
                 disabled={loadingReplies}
-                className="ml-9 sm:ml-12 text-xs text-blue-400 hover:text-blue-300 font-medium disabled:opacity-50 py-1 touch-manipulation"
+                className="text-xs text-blue-400 hover:text-blue-300 font-medium disabled:opacity-50 py-1 flex items-center gap-2"
               >
-                {loadingReplies
-                  ? "Loading…"
-                  : `Show ${repliesTotal - replies.length} more replies`}
+                {loadingReplies ? (
+                   <>
+                    <Loader2 className="w-3 h-3 animate-spin" /> Loading...
+                   </>
+                ) : (
+                   `Show more replies`
+                )}
               </button>
             )}
           </div>
@@ -479,10 +474,10 @@ const CommentItem = ({
 const SortButton = ({ value, current, onChange, label }) => (
   <button
     onClick={() => onChange(value)}
-    className={`text-sm font-medium px-3 py-1.5 rounded-full transition-colors touch-manipulation ${
+    className={`text-sm font-medium px-3 py-1.5 rounded-full transition-colors ${
       current === value
-        ? "bg-zinc-700 text-zinc-100"
-        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800 active:bg-zinc-700"
+        ? "bg-zinc-800 text-zinc-100"
+        : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800"
     }`}
   >
     {label}
@@ -543,13 +538,13 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
   }
 
   return (
-    <div className="pt-4 pb-8">
+    <div className="pt-6 pb-10">
       {/* Header */}
-      <div className="flex items-center gap-2 sm:gap-4 mb-5 flex-wrap">
-        <h2 className="text-base sm:text-lg font-semibold text-zinc-100">
+      <div className="flex items-center gap-4 mb-6 flex-wrap">
+        <h2 className="text-lg font-bold text-zinc-100 flex items-center gap-2">
           {total > 0 ? `${total.toLocaleString()} Comments` : "Comments"}
         </h2>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 bg-zinc-900/50 p-1 rounded-full">
           <SortButton value="newest" current={sort} onChange={setSort} label="Newest" />
           <SortButton value="top" current={sort} onChange={setSort} label="Top" />
         </div>
@@ -557,26 +552,27 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
 
       {/* Input */}
       {currentUser ? (
-        <div className="mb-6">
+        <div className="mb-8">
           <CommentInput
             user={currentUser}
             onSubmit={handleNewComment}
-            placeholder="Add a comment…"
+            placeholder="Add a comment..."
           />
         </div>
       ) : (
-        <div className="mb-6 text-sm text-zinc-500 py-3 px-4 rounded-xl bg-zinc-900 border border-zinc-800">
+        <div className="mb-8 text-sm text-zinc-500 py-4 px-5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center gap-3">
+          <MessageSquare className="w-5 h-5" />
           Sign in to leave a comment
         </div>
       )}
 
       {/* Skeleton */}
       {loading && (
-        <div className="space-y-5">
-          {[...Array(4)].map((_, i) => (
+        <div className="space-y-6">
+          {[...Array(3)].map((_, i) => (
             <div key={i} className="flex gap-3 animate-pulse">
-              <div className="w-9 h-9 rounded-full bg-zinc-800 flex-shrink-0" />
-              <div className="flex-1 space-y-2">
+              <div className="w-10 h-10 rounded-full bg-zinc-800 flex-shrink-0" />
+              <div className="flex-1 space-y-3 py-1">
                 <div className="h-3 bg-zinc-800 rounded w-32" />
                 <div className="h-3 bg-zinc-800 rounded w-full" />
                 <div className="h-3 bg-zinc-800 rounded w-3/4" />
@@ -601,15 +597,15 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
 
       {/* Empty */}
       {!loading && !error && comments.length === 0 && (
-        <div className="text-center py-10 text-zinc-500">
-          <p className="text-3xl mb-2">💬</p>
-          <p className="text-sm">No comments yet. Be the first!</p>
+        <div className="text-center py-12 text-zinc-500 flex flex-col items-center">
+          <MessageSquare className="w-12 h-12 mb-3 opacity-20" />
+          <p className="text-sm">No comments yet. Be the first to start the conversation!</p>
         </div>
       )}
 
       {/* List */}
       {!loading && (
-        <div className="space-y-5 sm:space-y-6">
+        <div className="space-y-6">
           {comments.map((comment) => (
             <CommentItem
               key={comment.id}
@@ -633,19 +629,16 @@ const CommentSection = ({ videoId, currentUser, token, initialCount = 0 }) => {
 
       {/* Load more */}
       {hasMore && !loading && !error && (
-        <div className="mt-6 text-center">
+        <div className="mt-8 text-center">
           <button
             onClick={() => fetchComments(page + 1)}
             disabled={loadingMore}
-            className="px-5 py-2.5 rounded-full text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 active:bg-zinc-600 disabled:opacity-50 transition-colors touch-manipulation"
+            className="px-6 py-2.5 rounded-full text-sm font-medium bg-zinc-800 text-zinc-300 hover:bg-zinc-700 disabled:opacity-50 transition-colors"
           >
             {loadingMore ? (
               <span className="flex items-center gap-2">
-                <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                </svg>
-                Loading…
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Loading...
               </span>
             ) : "Show more comments"}
           </button>
