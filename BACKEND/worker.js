@@ -416,7 +416,7 @@ endTranscode();
     host: process.env.REDIS_HOST,
     port: parseInt(process.env.REDIS_PORT) || 6379,
     password: process.env.REDIS_PASSWORD,
-    tls: {}
+    tls: { rejectUnauthorized: false },  
   },
   concurrency: 1,
   limiter: {
