@@ -1,5 +1,5 @@
 const Redis = require("ioredis");
-
+console.log("REDIS_URL:", process.env.REDIS_URL?.slice(0, 50)); 
 const redis = process.env.REDIS_URL
   ? new Redis(process.env.REDIS_URL, {
       tls: { rejectUnauthorized: false },
