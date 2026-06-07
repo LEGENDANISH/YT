@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react"
+import  { useState, useEffect } from "react"
 import { X, Upload, Image as ImageIcon, User, Loader2, Check, Camera } from "lucide-react"
 import axios from "axios"
-import { API_BASE_URL } from "./config"
+import { API_BASE_URL } from "../../../config/config"
 
 const EditChannelModal = ({ user, onClose, onUpdated }) => {
   const [form, setForm] = useState({

@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
 const Subscriptions = () => {
   const token = localStorage.getItem("token")

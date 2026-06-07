@@ -1,4 +1,3 @@
-import React from 'react';
 import { Edit, Trash2 } from 'lucide-react';
 import { formatNumber, formatDate } from './formatters';
 

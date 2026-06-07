@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { useNavigate } from "react-router-dom"
-import { API_BASE_URL } from "@/page/yourchannel/config"
+import { API_BASE_URL } from "../../config/config"
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [form, setForm] = useState({

@@ -27,7 +27,7 @@ import {
   formatDuration,
   formatDate,
 } from "./formatters"
-import { API_BASE_URL } from "./config"
+import { API_BASE_URL } from "../../../config/config"
 
 const VideoRow = ({ video, handleEditClick, onDelete }) => {
   const navigate = useNavigate()

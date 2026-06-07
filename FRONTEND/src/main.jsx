@@ -1,39 +1,30 @@
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./index.css";
-
 import Layout from "./layout";
 import AuthWrapper from "./wrapper/AuthWrapper";
-
 // Pages
 import Home from "./page/home/Home";
 import Watch from "./page/watch/Watch";
 import HistoryPage from "./page/history/HistoryPage";
 import LikedVideos from "./page/likedvideos/LikedVideos";
 import Subscriptions from "./page/subscriptions/Subscriptions";
-import SearchResults from "./page/SearchResults";
+import SearchResults from "./page/searches/SearchResults";
 import SearchResultsPage from "./page/searches/SearchContext";
 import ChannelPage from "./page/yourchannel/channnel";
 import UploadPage from "./page/videoUpload/UploadPage";
 import ChannelPageview from "./page/viewchannel/channelpage";
-
 // Auth / standalone pages
-import Signin from "./page/Signin";
-import Signup from "./page/Signup";
-import VideoTestPage from "./VideoTestPage";
-
+import Signin from "./AUTH/Signin";
+import Signup from "./AUTH/Signup";
+import VideoAnalyticsPage from "./page/yourchannel/VideoAnalyticsPage";
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <Routes>
-
       {/* ================= PUBLIC ROUTES ================= */}
       <Route path="/signin" element={<Signin />} />
       <Route path="/signup" element={<Signup />} />
-      <Route path="/video" element={<VideoTestPage />} />
-
       {/* ================= PROTECTED ROUTES (NO LAYOUT) ================= */}
-    
-
       <Route
         path="/channel"
         element={
@@ -41,9 +32,15 @@ createRoot(document.getElementById("root")).render(
             <ChannelPage />
           </AuthWrapper>
         }
+      /> 
+      <Route
+        path="/studio/analytics/video/:videoId"
+        element={
+          <AuthWrapper>
+            <VideoAnalyticsPage />
+          </AuthWrapper>
+        }
       />
-
-      
       {/* ================= ROUTES WITH LAYOUT ================= */}
       <Route element={<Layout />}>
 
@@ -58,7 +55,6 @@ createRoot(document.getElementById("root")).render(
 />        <Route path="/videos/:id" element={<Watch />} />
         <Route path="/search" element={<SearchResults />} />
         <Route path="/results" element={<SearchResultsPage />} />
-
         {/* Protected with layout */}
         <Route
           path="/feed/history"
@@ -68,7 +64,6 @@ createRoot(document.getElementById("root")).render(
             </AuthWrapper>
           }
         />
-
         <Route
           path="/liked-videos"
           element={
@@ -77,7 +72,6 @@ createRoot(document.getElementById("root")).render(
             </AuthWrapper>
           }
         />
-
         <Route
           path="/subscriptions"
           element={
@@ -86,7 +80,6 @@ createRoot(document.getElementById("root")).render(
             </AuthWrapper>
           }
         />
-
         <Route
           path="/upload"
           element={
@@ -95,8 +88,7 @@ createRoot(document.getElementById("root")).render(
             </AuthWrapper>
           }
         />
-
-        <Route
+      <Route
           path="/channel/:channelId"
           element={
             <AuthWrapper>
@@ -104,9 +96,7 @@ createRoot(document.getElementById("root")).render(
             </AuthWrapper>
           }
         />
-
       </Route>
-
     </Routes>
   </BrowserRouter>
 );

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { useUserStore } from "../store/userStore";
-import { fetchAboutMe } from "../services/userService";
+import { useUserStore } from "../page/home/store/userStore";
+import { fetchAboutMe } from "../page/home/services/userService";
 
 export const useUser = () => {
   const { user, setUser } = useUserStore();

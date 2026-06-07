@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import  { useEffect, useState } from "react"
 import { X, Upload, Trash2, Image as ImageIcon, User, Loader2, Check } from "lucide-react"
-import { API_BASE_URL } from "./config"
+import { API_BASE_URL } from "../../../config/config"
 
 const EditModal = ({
   editModalOpen,

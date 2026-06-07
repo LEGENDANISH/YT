@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import axios from "axios"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import { API_BASE_URL } from "@/page/yourchannel/config"
+import { API_BASE_URL } from "../../config/config"
 
 export function LoginForm({
   className,

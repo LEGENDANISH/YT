@@ -4,7 +4,7 @@ import axios from "axios"
 import { Trash2, Clock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
 const HistoryPage = () => {
   const navigate = useNavigate()

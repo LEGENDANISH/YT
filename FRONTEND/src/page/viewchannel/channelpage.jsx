@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import { API_BASE_URL } from "../../../config/config";
+import  { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const API_BASE_URL = "http://localhost:8000/api";
+
 
 const ChannelPageview = () => {
   const { channelId } = useParams();

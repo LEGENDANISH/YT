@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { X, Mail, Calendar, User, Loader2, Link as LinkIcon } from 'lucide-react';
+import { API_BASE_URL } from '../../../config/config';
 
-const API_BASE_URL = "http://localhost:8000";
+// const API_BASE_URL = "http://localhost:8000";
 
 const formatDate = (dateString) => {
   if (!dateString) return "N/A";
@@ -21,7 +22,7 @@ const AboutModal = ({ aboutModalOpen, setAboutModalOpen }) => {
       const fetchProfile = async () => {
         try {
           setLoading(true);
-          const response = await fetch(`${API_BASE_URL}/api/aboutme`,
+          const response = await fetch(`${API_BASE_URL}/aboutme`,
             {
               headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,

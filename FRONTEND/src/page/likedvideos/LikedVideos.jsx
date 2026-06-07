@@ -4,7 +4,7 @@ import axios from "axios"
 import { ThumbsUp, X } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
 const LikedVideos = () => {
   const token = localStorage.getItem("token")

@@ -1,4 +1,3 @@
-import React from "react"
 import { Users, Video, BarChart3 } from "lucide-react"
 import { formatNumber } from "./formatters"
 

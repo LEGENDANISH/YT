@@ -8,6 +8,7 @@ import { Clock, Eye, User, CheckCircle2, Filter } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { API_BASE_URL } from "../../../config/config"
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams()
@@ -34,8 +35,8 @@ const SearchResultsPage = () => {
       setError(null)
 
       const url = cursor
-        ? `http://localhost:8000/api/search?q=${encodeURIComponent(query)}&cursor=${cursor}`
-        : `http://localhost:8000/api/search?q=${encodeURIComponent(query)}`
+        ? `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&cursor=${cursor}`
+        : `${API_BASE_URL}/search?q=${encodeURIComponent(query)}`
 
       const res = await axios.get(url, {
         headers: {

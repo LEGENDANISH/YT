@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom"
-import { useEffect, useRef, useState } from "react"
+import {  useState } from "react"
 import HlsPlayer from "./HlsPlayer"
 import VideoMeta from "./VideoMeta"
 import RelatedVideos from "./RelatedVideos"
@@ -7,7 +7,7 @@ import CommentSection from "./CommentSection"
 import { useVideoData } from "./data/userVideoData"
 import { useViewTracking } from "./data/useViewTracker"
 import { useVideoActions } from "./data/uservideeoAction"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
 const Watch = () => {
   const { id } = useParams()

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
 const Home = () => {
   const [videos, setVideos] = useState([])

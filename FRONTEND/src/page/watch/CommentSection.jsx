@@ -9,9 +9,8 @@ import {
   Loader2,
   MessageSquare
 } from "lucide-react"
-import { API_BASE_URL } from "../yourchannel/config"
+import { API_BASE_URL } from "../../../config/config"
 
-// const API_BASE = `http://localhost:${import.meta.env.VITE_BACKEND_PORT}/api`
 
 // ─── AVATAR ───────────────────────────────────────────────────────────────────
 const Avatar = ({ user, size = "md" }) => {

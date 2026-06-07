@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react"
 import axios from "axios"
 import { UploadCloud, X, Check, Loader2, AlertCircle } from "lucide-react"
 import { socket, connectSocket, disconnectSocket } from "../../lib/socket"
+import { API_BASE_URL } from "../../../config/config"
 
-const API_BASE_URL = "http://localhost:8000/api/videos"
+const BASE_URL = `${API_BASE_URL}/videos`
 
 const VideoUpload = () => {
   /* ---------------- STATE ---------------- */
@@ -169,7 +170,7 @@ const videoIdRef = useRef(null)
             lastReportedProgress = progressPercent
             try {
               await axios.put(
-                `${API_BASE_URL}/upload/progress/${videoId}`,
+                `${BASE_URL}/upload/progress/${videoId}`,
                 { progress: progressPercent },
                 { headers: { Authorization: `Bearer ${token}` } }
               )
@@ -234,7 +235,7 @@ const videoIdRef = useRef(null)
 
       console.log("📤 Initializing upload with backend...")
       const init = await axios.post(
-        `${API_BASE_URL}/upload/init`,
+        `${BASE_URL}/upload/init`,
         form,
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -257,7 +258,7 @@ const videoIdRef = useRef(null)
       // Step 3: Complete upload
       console.log("📤 Completing upload with backend...")
       await axios.post(
-        `${API_BASE_URL}/upload/complete`,
+        `${BASE_URL}/upload/complete`,
         { videoId: newVideoId },
         { headers: { Authorization: `Bearer ${token}` } }
       )

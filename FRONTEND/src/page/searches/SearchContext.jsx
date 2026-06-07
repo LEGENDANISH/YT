@@ -6,9 +6,9 @@ import { useSearchParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Clock, Eye, User, CheckCircle2, Loader2, Filter } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
+import { API_BASE_URL } from "../../../config/config"
 
 const SearchResultsPage = () => {
   const [searchParams] = useSearchParams()
@@ -35,8 +35,8 @@ const SearchResultsPage = () => {
       setError(null)
 
       const url = cursor
-        ? `http://localhost:8000/api/search?q=${encodeURIComponent(query)}&cursor=${cursor}`
-        : `http://localhost:8000/api/search?q=${encodeURIComponent(query)}`
+        ? `${API_BASE_URL}/search?q=${encodeURIComponent(query)}&cursor=${cursor}`
+        : `${API_BASE_URL}/search?q=${encodeURIComponent(query)}`
 
       const res = await axios.get(url, {
         headers: {
@@ -117,7 +117,7 @@ if (cursor) {
   if (!query) return null
 
   return (
-    <div className="min-h-screen bg-white dark:bg-zinc-950 pt-20">
+    <div className="min-h-screen bg-white dark:bg-zinc-950 pt-0">
       <div className="max-w-6xl mx-auto px-3 sm:px-4 py-4 sm:py-6">
         
         {/* Header with Filters */}

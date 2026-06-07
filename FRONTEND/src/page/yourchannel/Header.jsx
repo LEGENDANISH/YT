@@ -1,4 +1,3 @@
-import React from "react"
 import { Info, Settings } from "lucide-react"
 import { formatNumber } from "./formatters"
 

@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { RefreshCw, Video, Upload } from 'lucide-react';
 import axios from 'axios';
-import { API_BASE_URL } from './config';
+import { API_BASE_URL } from '../../../config/config';
 import { getHeaders } from './auth';
-import { formatNumber, formatDate } from './formatters';
 import Header from './Header';
 import StatsSection from './StatsSection';
 import VideosGrid from './VideosGrid';
