@@ -38,7 +38,7 @@ const Layout = () => {
       <div className="flex pt-14 min-h-screen">
 
         <aside className={`
-          fixed left-0 top-14 bottom-0 z-30 transition-all duration-300 ease-in-out
+          fixed left-0 top-12 bottom-0 z-30 transition-all duration-300 ease-in-out
           bg-white dark:bg-zinc-950 border-r border-zinc-200 dark:border-zinc-800 overflow-hidden
           ${sidebarOpen ? "w-60 translate-x-0" : "w-0 -translate-x-full md:w-16 md:translate-x-0"}
         `}>

@@ -1,14 +1,57 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-// change this logic based on your auth system
-// example: token stored in localStorage
-const isAuthenticated = () => {
-  const token = localStorage.getItem("token");
-  return !!token;
+const isTokenExpired = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (!payload.exp) return false;
+    return Date.now() >= payload.exp * 1000;
+  } catch {
+    return true;
+  }
+};
+
+const getTokenExpiryMs = (token) => {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    if (!payload.exp) return null;
+    return payload.exp * 1000 - Date.now();
+  } catch {
+    return null;
+  }
 };
 
 const AuthWrapper = ({ children }) => {
-  if (!isAuthenticated()) {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+
+  // Check expiry on mount and auto-logout when token expires
+  useEffect(() => {
+    if (!token) return;
+
+    const msUntilExpiry = getTokenExpiryMs(token);
+    if (msUntilExpiry === null) return;
+
+    if (msUntilExpiry <= 0) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/signin", { replace: true });
+      return;
+    }
+
+    // Auto logout exactly when token expires
+    const timer = setTimeout(() => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      navigate("/signin", { replace: true });
+    }, msUntilExpiry);
+
+    return () => clearTimeout(timer);
+  }, [token]);
+
+  if (!token || isTokenExpired(token)) {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     return <Navigate to="/signin" replace />;
   }
 
