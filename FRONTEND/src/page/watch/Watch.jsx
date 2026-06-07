@@ -35,8 +35,11 @@ const Watch = () => {
     subscribed, setSubscribed, subscriberCount, setSubscriberCount, channelId,
   } = useVideoData(id, token, API_BASE_URL)
 
-  const { watchStartRef, sentViewRef, viewIntervalRef, sendView, sendWatchTimeUpdate, getWatchDuration } =
-    useViewTracking(id, token, API_BASE_URL)
+const {
+  watchStartRef, sentViewRef, viewIntervalRef,
+  onVideoPlay, onVideoPause,        // ← use these now
+  sendView, sendWatchTimeUpdate, getWatchDuration
+} = useViewTracking(id, token, API_BASE_URL)
 
   const { handleLike, handleDislike, handleShare, handleSubscribe } = useVideoActions(
     id, token, API_BASE_URL,
@@ -120,25 +123,27 @@ const Watch = () => {
             {/* Player */}
             <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl aspect-video">
               {streamUrl ? (
-                <HlsPlayer
-                  src={streamUrl}
-                  onPlay={() => {
-                    if (!watchStartRef.current) watchStartRef.current = Date.now()
-                    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
-                    viewIntervalRef.current = setTimeout(() => {
-                      sendView(getWatchDuration())
-                    }, 20000)
-                  }}
-                  onPause={() => {
-                    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
-                    const duration = getWatchDuration()
-                    if (duration >= 20) sendWatchTimeUpdate(duration, true)
-                  }}
-                  onEnded={() => {
-                    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
-                    sendWatchTimeUpdate(getWatchDuration(), true)
-                  }}
-                />
+               <HlsPlayer
+  src={streamUrl}
+  onPlay={() => {
+    onVideoPlay()                   // ← start timer
+    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
+    viewIntervalRef.current = setTimeout(() => {
+      sendView(getWatchDuration())  // ← send view once after 20s
+    }, 20000)
+  }}
+  onPause={() => {
+    onVideoPause()                  // ← pause timer
+    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
+    const duration = getWatchDuration()
+    if (duration >= 20) sendWatchTimeUpdate(duration, true)
+  }}
+  onEnded={() => {
+    onVideoPause()                  // ← stop timer
+    if (viewIntervalRef.current) clearTimeout(viewIntervalRef.current)
+    sendWatchTimeUpdate(getWatchDuration(), true)
+  }}
+/>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-zinc-500 text-sm">
                   Stream unavailable

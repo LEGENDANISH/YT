@@ -3,159 +3,116 @@ import axios from "axios"
 
 export const useViewTracking = (id, token, API_BASE) => {
   const watchStartRef = useRef(null)
+  const totalWatchedRef = useRef(0)      // accumulated seconds actually watched
   const sentViewRef = useRef(false)
   const viewIntervalRef = useRef(null)
-  const periodicUpdateIntervalRef = useRef(null)
-  const lastSentDurationRef = useRef(0)
+  const periodicRef = useRef(null)
+  const lastSentRef = useRef(0)
+
+  // Call this when video PLAYS
+  const onVideoPlay = () => {
+    watchStartRef.current = Date.now()
+  }
+
+  // Call this when video PAUSES — accumulate time
+  const onVideoPause = () => {
+    if (watchStartRef.current) {
+      totalWatchedRef.current += Math.floor((Date.now() - watchStartRef.current) / 1000)
+      watchStartRef.current = null
+    }
+  }
 
   const getWatchDuration = () => {
-    if (!watchStartRef.current) return 0
-    return Math.floor((Date.now() - watchStartRef.current) / 1000)
+    const current = watchStartRef.current
+      ? Math.floor((Date.now() - watchStartRef.current) / 1000)
+      : 0
+    return totalWatchedRef.current + current
   }
 
-  // Send watch time update to backend
   const sendWatchTimeUpdate = async (duration, force = false) => {
-    // Don't send if no token, no duration, or already sent the same duration
-    if (!token || duration === 0) {
-      console.log("⏭️ Skipping update: no token or zero duration")
-      return
-    }
+    if (!token || !id || duration === 0) return
+    if (!force && duration === lastSentRef.current) return
+    if (duration - lastSentRef.current < 5 && !force) return // min 5s difference
 
-    // Only send if duration changed by at least 1 second (unless forced)
-    if (!force && duration === lastSentDurationRef.current) {
-      return
-    }
-
-    console.log(`📤 Sending watch time update: ${duration}s`)
-    lastSentDurationRef.current = duration
-
+    lastSentRef.current = duration
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_BASE}/videos/${id}/view`,
         { watchDuration: duration },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       )
-      console.log("✅ Watch time updated:", response.data)
     } catch (err) {
-      console.error("❌ Failed to update watch time:", err.response?.data || err.message)
+      console.error("Failed to update watch time:", err.message)
     }
   }
 
-  // Send initial view after 20 seconds
+  // Only called once after 20s of actual playback
   const sendView = async (duration) => {
-    if (sentViewRef.current || !token) {
-      console.log("⏭️ View already sent or no token")
-      return
-    }
-
-    console.log(`📤 Sending initial view: ${duration}s`)
+    if (sentViewRef.current || !token || !id) return
     sentViewRef.current = true
-
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_BASE}/videos/${id}/view`,
         { watchDuration: duration },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       )
-      console.log("✅ Initial view recorded:", response.data)
-      lastSentDurationRef.current = duration
+      lastSentRef.current = duration
     } catch (err) {
-      console.error("❌ Failed to record view:", err.response?.data || err.message)
+      console.error("Failed to record view:", err.message)
       sentViewRef.current = false
-    }
-  }
-
-  // Send watch time when leaving page/tab
-  const sendBeforeUnload = () => {
-    const duration = getWatchDuration()
-    if (duration > 0 && token && id) {
-      console.log(`🚪 Sending final watch time on unload: ${duration}s`)
-      
-      // Use sendBeacon for reliable delivery when page is closing
-      const data = JSON.stringify({ watchDuration: duration })
-      const blob = new Blob([data], { type: 'application/json' })
-      const sent = navigator.sendBeacon(
-        `${API_BASE}/videos/${id}/view`,
-        blob
-      )
-      
-      // Fallback to synchronous XHR if sendBeacon fails
-      if (!sent) {
-        try {
-          const xhr = new XMLHttpRequest()
-          xhr.open('POST', `${API_BASE}/videos/${id}/view`, false) // synchronous
-          xhr.setRequestHeader('Content-Type', 'application/json')
-          xhr.setRequestHeader('Authorization', `Bearer ${token}`)
-          xhr.send(data)
-        } catch (err) {
-          console.error("Failed to send final watch time:", err)
-        }
-      }
-    }
-  }
-
-  // Handle visibility change (tab switching)
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      const duration = getWatchDuration()
-      console.log(`👁️ Tab hidden - sending watch time: ${duration}s`)
-      sendWatchTimeUpdate(duration, true)
     }
   }
 
   useEffect(() => {
     if (!id || !token) return
 
-    // Add event listeners for tab close/switch
-    window.addEventListener('beforeunload', sendBeforeUnload)
-    document.addEventListener('visibilitychange', handleVisibilityChange)
+    // Reset everything for new video
+    watchStartRef.current = null
+    totalWatchedRef.current = 0
+    sentViewRef.current = false
+    lastSentRef.current = 0
 
-    // Send periodic updates every 30 seconds while watching
-    periodicUpdateIntervalRef.current = setInterval(() => {
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        onVideoPause()
+        const duration = getWatchDuration()
+        if (duration > 0) sendWatchTimeUpdate(duration, true)
+      }
+    }
+
+    const handleBeforeUnload = () => {
+      onVideoPause()
+      const duration = getWatchDuration()
+      if (duration > 0 && token && id) {
+        const blob = new Blob(
+          [JSON.stringify({ watchDuration: duration })],
+          { type: "application/json" }
+        )
+        navigator.sendBeacon(`${API_BASE}/videos/${id}/view`, blob)
+      }
+    }
+
+    // Periodic update every 30s — only if video is actually playing
+    periodicRef.current = setInterval(() => {
       if (watchStartRef.current && !document.hidden) {
         const duration = getWatchDuration()
-        if (duration > 0) {
-          console.log(`⏰ Periodic update: ${duration}s`)
-          sendWatchTimeUpdate(duration)
-        }
+        if (duration > 0) sendWatchTimeUpdate(duration)
       }
-    }, 30000) // Every 30 seconds
+    }, 30000)
 
-    // Cleanup function when video changes or component unmounts
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+    window.addEventListener("beforeunload", handleBeforeUnload)
+
     return () => {
-      console.log("🧹 Cleaning up view tracking...")
-      
-      // Send final watch time before cleanup
+      // Final send only if something was actually watched
+      onVideoPause()
       const finalDuration = getWatchDuration()
-      if (finalDuration > 0) {
-        console.log(`📊 Final watch time on cleanup: ${finalDuration}s`)
-        sendWatchTimeUpdate(finalDuration, true)
-      }
+      if (finalDuration > 0) sendWatchTimeUpdate(finalDuration, true)
 
-      // Clear all intervals and timeouts
-      if (viewIntervalRef.current) {
-        clearTimeout(viewIntervalRef.current)
-      }
-      if (periodicUpdateIntervalRef.current) {
-        clearInterval(periodicUpdateIntervalRef.current)
-      }
-
-      // Remove event listeners
-      window.removeEventListener('beforeunload', sendBeforeUnload)
-      document.removeEventListener('visibilitychange', handleVisibilityChange)
-
-      // Reset refs
-      sentViewRef.current = false
-      watchStartRef.current = null
-      lastSentDurationRef.current = 0
+      clearTimeout(viewIntervalRef.current)
+      clearInterval(periodicRef.current)
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+      window.removeEventListener("beforeunload", handleBeforeUnload)
     }
   }, [id, token])
 
@@ -163,6 +120,8 @@ export const useViewTracking = (id, token, API_BASE) => {
     watchStartRef,
     sentViewRef,
     viewIntervalRef,
+    onVideoPlay,
+    onVideoPause,
     sendView,
     sendWatchTimeUpdate,
     getWatchDuration,

@@ -158,14 +158,13 @@ const HlsPlayer = ({ src, onPlay, onPause, onEnded }) => {
   const bufferedPct = duration > 0 ? (buffered / duration) * 100 : 0
 
   return (
-    <div
-      ref={containerRef}
-      className="relative w-full h-full bg-black select-none overflow-hidden group"
-      onMouseMove={resetControlsTimer}
-      onMouseLeave={() => playing && setShowControls(false)}
-      onTouchStart={resetControlsTimer}
-      onClick={handlePlayPause}
-    >
+<div
+  ref={containerRef}
+  className="relative w-full h-full bg-black select-none overflow-hidden group"
+  onMouseMove={resetControlsTimer}
+  onMouseLeave={() => playing && setShowControls(false)}
+  onTouchStart={resetControlsTimer}
+>
       {/* Video */}
       <video
         ref={videoRef}
@@ -188,6 +187,11 @@ const HlsPlayer = ({ src, onPlay, onPause, onEnded }) => {
         </div>
       )}
 
+      {/* Click to play/pause */}
+      <div
+        className="absolute inset-0 z-[5] cursor-pointer"
+        onClick={handlePlayPause}
+      />
       {/* Controls overlay */}
       <div
         className={`absolute inset-0 flex flex-col justify-end transition-opacity duration-300 ${showControls ? "opacity-100" : "opacity-0 pointer-events-none"}`}
