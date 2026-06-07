@@ -1,12 +1,14 @@
     const { Queue } = require("bullmq");
 
 const clearQueue = async () => {
-  const queue = new Queue("video-processing", {
-    connection: {
-      host: process.env.REDIS_HOST || "localhost",
-      port: process.env.REDIS_PORT || 6379,
-    },
-  });
+const queue = new Queue("video-processing", {
+  connection: {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+    password: process.env.REDIS_PASSWORD,
+    tls: {},
+  },
+});
 
   await queue.obliterate({ force: true });
   console.log("✅ Queue cleared");

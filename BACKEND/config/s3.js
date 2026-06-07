@@ -10,4 +10,4 @@ const s3 = new S3Client({
   forcePathStyle: true,
 });
   
-module.exports = s3;
+module.exports = { s3 };

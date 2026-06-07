@@ -1,10 +1,8 @@
-// src/pages/SearchResultsPage.jsx
-// Dedicated page for search results (like YouTube's /results page)
 
 import { useEffect, useState } from "react"
 import { useSearchParams, useNavigate } from "react-router-dom"
 import axios from "axios"
-import { Clock, Eye, User, CheckCircle2, Loader2, Filter } from "lucide-react"
+import { Clock, Eye, User, CheckCircle2, Filter } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Button } from "@/components/ui/button"
