@@ -8,11 +8,9 @@ import { ArrowLeft, AlertCircle } from "lucide-react"
 const VideoAnalyticsPage = () => {
   const { videoId } = useParams()
   const navigate = useNavigate()
-  
   const [analytics, setAnalytics] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-
   useEffect(() => {
     const fetchAnalytics = async () => {
       try {
@@ -33,13 +31,11 @@ const VideoAnalyticsPage = () => {
             },
           }
         )
-
         if (!res.ok) {
           // Try to get error message from backend, fallback to generic
           const errData = await res.json().catch(() => ({}))
           throw new Error(errData.message || "Failed to fetch analytics")
         }
-
         const data = await res.json()
         setAnalytics(data)
       } catch (err) {
@@ -49,12 +45,10 @@ const VideoAnalyticsPage = () => {
         setLoading(false)
       }
     }
-
     if (videoId) {
       fetchAnalytics()
     }
   }, [videoId])
-
   // 1. Premium Loading State
   if (loading) {
     return (
@@ -87,7 +81,6 @@ const VideoAnalyticsPage = () => {
       </div>
     )
   }
-
   return (
     <div className="min-h-screen bg-black px-6 py-8 md:px-12">
       <div className="max-w-7xl mx-auto space-y-8">
