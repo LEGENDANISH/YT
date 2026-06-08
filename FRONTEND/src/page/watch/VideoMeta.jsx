@@ -27,23 +27,33 @@ const VideoMeta = ({
       {/* CHANNEL + ACTIONS */}
       <div className="flex flex-wrap items-center gap-4 justify-between">
         {/* CHANNEL */}
-        <Link
-          to={`/channel/${channelId}`}
-          className="flex items-center gap-3 hover:opacity-90"
-        >
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
-            {video.user?.username?.[0]?.toUpperCase() || "U"}
-          </div>
+     <Link
+  to={`/channel/${channelId}`}
+  className="flex items-center gap-3 hover:opacity-90"
+>
+  {/* AVATAR IMAGE */}
+  {video.user?.avatarUrl ? (
+    <img
+      src={video.user.avatarUrl}
+      alt={video.user.username || "User"}
+      className="w-10 h-10 rounded-full object-cover"
+    />
+  ) : (
+    // FALLBACK: Initials
+    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold">
+      {video.user?.username?.[0]?.toUpperCase() || "U"}
+    </div>
+  )}
 
-          <div className="flex flex-col">
-            <span className="font-semibold text-sm hover:underline">
-              {video.user?.username || "Unknown"}
-            </span>
-            <span className="text-xs text-gray-600 dark:text-gray-400">
-              {formatViews(subscriberCount)} subscribers
-            </span>
-          </div>
-        </Link>
+  <div className="flex flex-col">
+    <span className="font-semibold text-sm hover:underline">
+      {video.user?.username || "Unknown"}
+    </span>
+    <span className="text-xs text-gray-600 dark:text-gray-400">
+      {formatViews(subscriberCount)} subscribers
+    </span>
+  </div>
+</Link>
 
         {/* SUBSCRIBE */}
         <button

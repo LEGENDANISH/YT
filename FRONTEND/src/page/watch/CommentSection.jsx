@@ -195,7 +195,6 @@ const CommentItem = ({
   const menuRef = useRef(null)
 
   const isOwner = currentUser?.id === comment.user?.id
-
   useEffect(() => {
     const handler = (e) => {
       if (menuRef.current && !menuRef.current.contains(e.target)) setShowMenu(false)

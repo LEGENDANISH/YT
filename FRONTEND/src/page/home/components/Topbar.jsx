@@ -52,7 +52,6 @@ const Topbar = ({
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
 
   const user = JSON.parse(localStorage.getItem("user"))
-  console.log("Topbar User Data:", user)
 
   // Load search history on mount
   useEffect(() => {
@@ -107,7 +106,6 @@ const Topbar = ({
     if (e.key === "Escape") setMobileSearchOpen(false)
   }
 
-  console.log("User:", user)
 
   const handleDeleteHistory = (itemQuery, e) => {
     e.stopPropagation()

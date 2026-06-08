@@ -17,7 +17,7 @@ const EditModal = ({
 }) => {
   const [userProfile, setUserProfile] = useState(null)
   const [loadingProfile, setLoadingProfile] = useState(false)
-
+const token = localStorage.getItem("token")
   // Fetch user profile for header context
   useEffect(() => {
     if (editModalOpen) {

@@ -80,7 +80,7 @@ const videoIdRef = useRef(null)
   setStatus(stageLabels[data.processingStage] || "Processing video...")
 } else if (data.status === "READY") {
               setUploadPhase("complete")
-              setStatus("✅ Video uploaded and processed successfully!")
+              setStatus(" Video uploaded and processed successfully!")
               setTimeout(() => {
                 reset()
               }, 3000)

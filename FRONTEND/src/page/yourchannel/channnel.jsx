@@ -98,11 +98,9 @@ const ChannelPage = () => {
         const res = await axios.get(`${API_BASE_URL}/aboutme`, {
           headers: getHeaders(),
         });
-        console.log("hii")
-        console.log("About Me Response:", res.data);
+     
         const id = res.data?.data?.id;
         setChannelId(id);
-        console.log("Channel ID:", id);
       } catch (err) {
         console.error("Failed to fetch channel ID:", err);
       }
@@ -127,7 +125,6 @@ const ChannelPage = () => {
       const data = await response.json();
 
       setSubscriberCount(data.subscribers || 0);
-      console.log("Subscriber Count:", data.subscribers);
     } catch (error) {
       console.error('Error loading subscriber count:', error);
     }
@@ -163,7 +160,6 @@ const ChannelPage = () => {
       const data = await response.json();
       setAboutData(data);
        setChannelData(data.data);
-      console.log("About Data:", data); 
     } catch (error) {
       console.error('Error loading about info:', error);
     }
@@ -218,8 +214,7 @@ const ChannelPage = () => {
     const det = axios.get(`${API_BASE_URL}/videos/${selectedVideo.id}`, {
         headers: getHeaders(),
         });
-        console.log("data:",det.data);
-        console.log("videoid:",selectedVideo.id);
+    
   };
 
   const handleRemoveThumbnail = async () => {

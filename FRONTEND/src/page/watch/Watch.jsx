@@ -13,21 +13,22 @@ const Watch = () => {
   const { id } = useParams()
   const token = localStorage.getItem("token")
   const [showFullDescription, setShowFullDescription] = useState(false)
-
-  const currentUser = (() => {
-    if (!token) return null
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]))
-      return {
-        id: payload.id || payload.userId || payload.sub,
-        username: payload.username,
-        displayName: payload.displayName || payload.username,
-        avatarUrl: payload.avatarUrl || null,
-      }
-    } catch {
-      return null
-    }
-  })()
+const currentUser = JSON.parse(localStorage.getItem("user") || "null")
+  // const currentUser = (() => {
+  //   if (!token) return null
+  //   try {
+  //     const payload = JSON.parse(atob(token.split(".")[1]))
+  //     return {
+  //       id: payload.id || payload.userId || payload.sub,
+  //       username: payload.username,
+  //       displayName: payload.displayName || payload.username,
+  //       avatarUrl: payload.avatarUrl || null,
+  //     }
+  //   } catch {
+  //     return null
+  //   }
+  // })()
+      console.log("Decoded user from token:",JSON.stringify(currentUser));
 
   const {
     video, setVideo, streamUrl, related, loading,
@@ -144,6 +145,7 @@ const {
     sendWatchTimeUpdate(getWatchDuration(), true)
   }}
 />
+
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-zinc-500 text-sm">
                   Stream unavailable
