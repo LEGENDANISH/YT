@@ -28,7 +28,6 @@ const currentUser = JSON.parse(localStorage.getItem("user") || "null")
   //     return null
   //   }
   // })()
-      console.log("Decoded user from token:",JSON.stringify(currentUser));
 
   const {
     video, setVideo, streamUrl, related, loading,
