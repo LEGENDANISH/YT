@@ -4674,3 +4674,199 @@
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:42:34.446Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:42:49.471Z"}
 {"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:43:08.250Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T15:45:40.556Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:45:55.822Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:46:10.641Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:46:25.792Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:46:44.383Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:46:55.716Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:47:10.733Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:47:25.698Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:47:40.761Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:47:55.713Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:48:10.769Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:48:26.593Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T15:48:37.783Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:48:52.926Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:49:07.906Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:49:22.903Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:49:37.907Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:49:52.910Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:50:11.571Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:50:23.042Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:50:37.890Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:50:52.955Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:51:08.052Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-07T15:51:36.320Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:51:53.039Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:52:06.427Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:52:21.560Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:52:36.463Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:52:51.479Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:53:06.435Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:53:21.484Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:53:38.472Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:53:51.683Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:54:06.505Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:54:21.500Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T15:54:37.034Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-07T18:54:48.636Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:01:26.461Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:01:40.688Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:01:56.769Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:02:10.682Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:02:28.382Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:02:43.104Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:03:13.748Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:03:16.829Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:03:32.178Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:03:41.447Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:03:56.956Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:04:11.997Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:04:26.539Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:04:41.965Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:04:56.539Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:05:11.598Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:05:26.564Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:05:41.591Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:05:56.571Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:06:11.620Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:06:26.573Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:06:41.659Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:06:56.660Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:07:11.652Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:07:26.800Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:07:42.016Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:07:56.815Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:08:11.684Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:08:26.730Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:08:41.713Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:08:57.251Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:09:11.869Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:09:26.729Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:09:41.802Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:09:57.125Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:10:11.855Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:10:26.778Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:10:41.777Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:10:56.842Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:11:11.853Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:11:26.799Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:11:41.874Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:11:57.364Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-08T05:12:01.234Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:12:11.808Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:12:26.796Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:12:41.960Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:12:56.819Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:13:11.889Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:13:26.821Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:13:41.861Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:13:57.031Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:14:11.903Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:14:26.860Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:14:41.962Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:14:56.921Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:15:11.936Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:15:26.896Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:15:41.993Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:15:56.937Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:16:12.473Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:16:26.935Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:16:42.238Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:16:56.962Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:17:11.961Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:17:26.938Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:17:41.979Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:17:57.110Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:18:12.124Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:18:26.982Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:18:42.035Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:18:57.023Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:19:11.994Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:19:27.116Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:19:42.055Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:19:57.076Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:20:12.427Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:20:27.073Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:20:42.109Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:20:57.286Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:21:12.893Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:21:27.998Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:21:42.111Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:21:57.233Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:22:12.129Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:22:27.137Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:22:42.490Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:22:57.176Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:23:12.268Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:23:27.368Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:23:42.294Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:23:57.195Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:24:12.444Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:24:27.163Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:24:42.698Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:24:57.252Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:25:12.353Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:25:27.431Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:25:42.208Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:25:57.258Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-08T05:26:00.882Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:26:12.356Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:26:27.232Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:26:42.256Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:26:57.394Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:27:12.522Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:27:27.256Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:27:42.391Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:27:57.323Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:28:12.311Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:28:27.417Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:28:42.323Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:28:57.320Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:29:12.447Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:29:27.298Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-08T05:29:38.797Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:29:44.946Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/login"},"timestamp":"2026-06-08T05:29:49.637Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-08T05:29:52.896Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:30:00.189Z"}
+{"level":"warn","message":"Backend self-ping failed","timestamp":"2026-06-08T05:30:00.970Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/upload/init"},"timestamp":"2026-06-08T05:30:06.577Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:09.804Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:09.898Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:10.032Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:10.123Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:10.309Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:10.416Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:12.835Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:14.089Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:14.270Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/133265f2-023c-43dd-81f6-22130cd54987"},"timestamp":"2026-06-08T05:30:14.454Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/upload/complete"},"timestamp":"2026-06-08T05:30:14.634Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:30:15.028Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:30:30.050Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:30:45.214Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:31:00.042Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:31:15.243Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:31:30.433Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:31:45.086Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:32:00.109Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:32:15.301Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:32:30.354Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:32:45.134Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:33:00.403Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:33:15.525Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:33:30.236Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:33:45.368Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:34:00.156Z"}
+{"level":"info","message":"Server running on port 8000","timestamp":"2026-06-08T05:34:08.082Z"}
+{"level":"info","message":{"ip":"::1","method":"GET","url":"/api/feed/home"},"timestamp":"2026-06-08T05:34:14.264Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/upload/init"},"timestamp":"2026-06-08T05:34:21.532Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:34:23.317Z"}
+{"level":"info","message":{"ip":"::1","method":"PUT","url":"/api/videos/upload/progress/f2533188-dc1f-424c-bc2a-042af290b9ae"},"timestamp":"2026-06-08T05:34:24.233Z"}
+{"level":"info","message":{"ip":"::1","method":"POST","url":"/api/videos/upload/complete"},"timestamp":"2026-06-08T05:34:25.464Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:34:38.205Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:34:53.215Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:35:08.351Z"}
+{"level":"warn","message":"Metrics push failed","timestamp":"2026-06-08T05:35:23.210Z"}
