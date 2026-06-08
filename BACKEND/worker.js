@@ -23,7 +23,7 @@ const {
   const prisma = new PrismaClient();
 
   // S3 CLIENT
-  const s3  = require("./config/s3");
+  const {s3}  = require("./config/s3");
 console.log("REDIS_URL from worker.js:", process.env.REDIS_URL?.slice(0, 50));
 console.log("REDIS_HOST:", process.env.REDIS_HOST);
 console.log("REDIS_PORT:", process.env.REDIS_PORT);
