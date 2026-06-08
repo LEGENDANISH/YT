@@ -44,7 +44,6 @@ const SearchResultsPage = () => {
         },
       })
 
-      console.log("API Response:", res.data)
 
       setIntent(res.data.intent)
 

@@ -49,18 +49,15 @@ const videoIdRef = useRef(null)
       connectSocket()
 
       socket.on("video:update", (data) => {
-        console.log("📡 WebSocket update:", data)
         
         if (data.videoId === videoIdRef.current) {
           // Update progress from server (if provided)
           if (data.uploadProgress !== undefined) {
             setProgress(data.uploadProgress)
-            console.log("Progress from server:", data.uploadProgress)
           }
 
           // Update status based on video processing status
           if (data.status) {
-            console.log("Status update:", data.status)
             
             if (data.status === "UPLOADING") {
               setUploadPhase("uploading")
@@ -94,11 +91,9 @@ const videoIdRef = useRef(null)
       })
 
       socket.on("connect", () => {
-        console.log("✅ Socket connected")
       })
 
       socket.on("disconnect", () => {
-        console.log("❌ Socket disconnected")
       })
 
       socket.on("connect_error", (error) => {
@@ -160,7 +155,6 @@ const videoIdRef = useRef(null)
           // Always update local UI immediately
           setProgress(progressPercent)
           
-          console.log(`Upload progress: ${progressPercent}%`)
 
           // Report to backend every 5% or at 100%
           if (
@@ -174,7 +168,6 @@ const videoIdRef = useRef(null)
                 { progress: progressPercent },
                 { headers: { Authorization: `Bearer ${token}` } }
               )
-              console.log(`✅ Reported ${progressPercent}% to server`)
             } catch (err) {
               console.error("⚠️ Progress report failed:", err)
               // Don't fail the upload if progress reporting fails
@@ -185,7 +178,6 @@ const videoIdRef = useRef(null)
 
       xhr.onload = () => {
         if (xhr.status >= 200 && xhr.status < 300) {
-          console.log("✅ Upload to S3 complete")
           resolve()
         } else {
           console.error("❌ Upload failed with status:", xhr.status)
@@ -199,7 +191,6 @@ const videoIdRef = useRef(null)
       }
       
       xhr.onabort = () => {
-        console.log("⚠️ Upload cancelled by user")
         reject(new Error("Upload cancelled"))
       }
 
@@ -222,8 +213,6 @@ const videoIdRef = useRef(null)
       setUploadPhase("uploading")
       setStatus("Initializing upload...")
 
-      console.log("🚀 Starting upload process...")
-
       // Step 1: Initialize upload
       const form = new FormData()
       form.append("title", title.trim())
@@ -233,7 +222,6 @@ const videoIdRef = useRef(null)
       form.append("originalName", video.name)
       if (thumbnail) form.append("thumbnail", thumbnail)
 
-      console.log("📤 Initializing upload with backend...")
       const init = await axios.post(
         `${BASE_URL}/upload/init`,
         form,
@@ -243,27 +231,22 @@ const videoIdRef = useRef(null)
       const { videoId: newVideoId, uploadUrl } = init.data
       setVideoId(newVideoId)
       videoIdRef.current = newVideoId
-      console.log("✅ Upload initialized. Video ID:", newVideoId)
       
       setStatus("Uploading to cloud storage...")
 
       // Step 2: Upload to S3 with progress tracking
-      console.log("📤 Starting S3 upload...")
       await uploadToS3(uploadUrl, video, newVideoId)
 
-      console.log("✅ S3 upload complete")
       setStatus("Finalizing upload...")
       setProgress(100)
 
       // Step 3: Complete upload
-      console.log("📤 Completing upload with backend...")
       await axios.post(
         `${BASE_URL}/upload/complete`,
         { videoId: newVideoId },
         { headers: { Authorization: `Bearer ${token}` } }
       )
 
-      console.log("✅ Upload completed. Waiting for processing...")
       setUploadPhase("processing")
       setStatus("Processing video... This may take a few minutes.")
       
@@ -280,7 +263,6 @@ const videoIdRef = useRef(null)
 
   /* ---------------- RESET ---------------- */
   const reset = () => {
-    console.log("🔄 Resetting form...")
     setVideo(null)
     setThumbnail(null)
     setThumbnailPreview(null)
@@ -297,7 +279,6 @@ const videoIdRef = useRef(null)
 
   /* ---------------- CANCEL ---------------- */
   const cancel = () => {
-    console.log("⚠️ Cancelling upload...")
     if (xhrRef.current) {
       xhrRef.current.abort()
     }
