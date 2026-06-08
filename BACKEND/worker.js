@@ -447,7 +447,25 @@ endTranscode();
 //   },
 // }
   );
+worker.on("error", (err) => {
+  console.error("Worker error:", err);
+});
 
+const { Queue } = require("bullmq");
+const testQueue = new Queue("video-processing", {
+  connection: {
+    host: process.env.REDIS_HOST,
+    port: Number(process.env.REDIS_PORT),
+    password: process.env.REDIS_PASSWORD,
+    tls: { rejectUnauthorized: false },
+  },
+});
+
+testQueue.getJobCounts().then(counts => {
+  console.log("Queue job counts:", counts);
+}).catch(err => {
+  console.error("Queue connection test failed:", err.message);
+});
   // --------------------
   // EVENTS
   // --------------------
