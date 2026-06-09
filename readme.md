@@ -1,4 +1,5 @@
-# 🎬 YouTube Clone Backend
+# 🎬Video Streaming platform
+
 
 > A production-grade video streaming backend built with Node.js, Express, PostgreSQL (Prisma), Redis, MinIO (S3-compatible), BullMQ, Socket.IO, and FFmpeg.
 
