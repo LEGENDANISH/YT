@@ -257,7 +257,7 @@ const Topbar = ({
             onClick={() => navigate("/")}
           >
             <Video className="h-7 w-7 text-red-600" />
-            <span className="text-xl font-semibold hidden sm:inline">VideoTube</span>
+            <span className="text-xl font-semibold hidden sm:inline">StreamForge</span>
           </div>
         </div>
 
